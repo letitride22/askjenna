@@ -87,7 +87,40 @@ nav{
 /* Subtle route line */
 .hero-route{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0.04}
 
-.hero-inner{max-width:1000px;margin:0 auto;width:100%;position:relative;z-index:1}
+.hero-inner{max-width:1000px;margin:0 auto;width:100%;position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+.hero-left{display:flex;flex-direction:column}
+/* Trip animation card */
+.hero-anim{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:1.5rem;backdrop-filter:blur(10px);position:relative;overflow:hidden}
+.hero-anim::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(201,168,76,0.06),rgba(26,144,112,0.06));pointer-events:none}
+.anim-header{font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.4);margin-bottom:1.2rem;display:flex;align-items:center;gap:0.5rem}
+.anim-header::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--teal2);animation:pulse 2s infinite}
+.anim-trip-name{color:var(--white);font-family:"Cormorant Garamond",serif;font-size:1.3rem;font-weight:600;margin-bottom:1.5rem}
+.anim-trip-dest{color:var(--gold);font-size:0.82rem;font-style:italic;margin-top:-1.1rem;margin-bottom:1.5rem;opacity:0.8}
+/* Member join animation */
+.anim-members{display:flex;flex-direction:column;gap:0.65rem;margin-bottom:1.5rem}
+.anim-member{display:flex;align-items:center;gap:0.75rem;background:rgba(255,255,255,0.05);border-radius:10px;padding:0.6rem 0.8rem;border:1px solid rgba(255,255,255,0.07);opacity:0;transform:translateX(20px);transition:all 0.5s cubic-bezier(.4,0,.2,1)}
+.anim-member.joined{opacity:1;transform:none}
+.anim-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.68rem;font-weight:500;flex-shrink:0}
+.anim-member-info{flex:1}
+.anim-member-name{font-size:0.82rem;color:var(--white);font-weight:500}
+.anim-member-status{font-size:0.68rem;color:rgba(255,255,255,0.4);margin-top:0.1rem}
+.anim-member-status.done{color:var(--teal3)}
+.anim-check{font-size:0.8rem;opacity:0;transition:opacity 0.3s}
+.anim-check.show{opacity:1}
+/* Score bar */
+.anim-score-label{font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.4);margin-bottom:0.6rem;display:flex;justify-content:space-between;align-items:center}
+.anim-score-num{font-family:"Cormorant Garamond",serif;font-size:1.4rem;color:var(--gold);font-weight:600;transition:all 0.5s}
+.anim-bar-track{height:6px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden;margin-bottom:1.2rem}
+.anim-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--teal),var(--gold));width:0%;transition:width 0.8s cubic-bezier(.4,0,.2,1)}
+/* Suggestion that appears */
+.anim-suggestion{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);border-radius:10px;padding:0.75rem;display:flex;align-items:center;gap:0.75rem;opacity:0;transform:translateY(10px);transition:all 0.5s}
+.anim-suggestion.show{opacity:1;transform:none}
+.anim-sug-icon{font-size:1.3rem;flex-shrink:0}
+.anim-sug-text{font-size:0.78rem;color:rgba(255,255,255,0.8);line-height:1.4}
+.anim-sug-match{font-size:0.72rem;color:var(--gold);font-weight:500;margin-top:0.2rem}
+/* Restart button */
+.anim-restart{background:transparent;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.4);font-size:0.7rem;padding:0.3rem 0.7rem;border-radius:20px;cursor:pointer;margin-top:1rem;transition:all 0.2s;font-family:"DM Sans",sans-serif;letter-spacing:0.05em}
+.anim-restart:hover{border-color:rgba(255,255,255,0.3);color:rgba(255,255,255,0.7)}
 .hero-eyebrow{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);padding:0.35rem 1rem;border-radius:20px;margin-bottom:2rem}
 .hero-eyebrow span{color:var(--gold);font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:500}
 .hero-eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--teal2);animation:pulse 2s infinite}
@@ -101,11 +134,7 @@ nav{
 .btn-hero-primary:hover{background:var(--gold2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(201,168,76,0.3)}
 .btn-hero-ghost{background:transparent;color:rgba(255,255,255,0.8);border:1px solid rgba(255,255,255,0.25);padding:0.9rem 2.2rem;border-radius:8px;font-size:0.95rem;transition:all 0.25s}
 .btn-hero-ghost:hover{border-color:rgba(255,255,255,0.6);background:rgba(255,255,255,0.05)}
-.hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid rgba(255,255,255,0.08);padding-top:2.5rem;max-width:520px}
-.hero-stat{padding-right:2rem}
-.hero-stat:not(:last-child){border-right:1px solid rgba(255,255,255,0.08);margin-right:2rem}
-.hero-stat-num{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:600;color:var(--gold);display:block;line-height:1}
-.hero-stat-label{font-size:0.72rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.08em;margin-top:0.4rem;display:block}
+/* hero stats removed */
 .hero-scroll{position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:0.5rem;color:rgba(255,255,255,0.3);font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;animation:bounce 2s infinite;z-index:1}
 @keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
 .scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,rgba(255,255,255,0.3),transparent)}
@@ -352,6 +381,8 @@ footer::before{content:'';position:absolute;inset:0;background-image:radial-grad
    RESPONSIVE
 ═══════════════════════ */
 @media(max-width:768px){
+  .hero-inner{grid-template-columns:1fr}
+  .hero-anim{display:none}
   .steps-container{grid-template-columns:1fr}
   .app-body{grid-template-columns:1fr}
   .app-left{border-right:none;border-bottom:1px solid var(--border)}
@@ -497,34 +528,79 @@ footer::before{content:'';position:absolute;inset:0;background-image:radial-grad
   </div>
 
   <div class="hero-inner container">
-    <div class="hero-eyebrow">
-      <div class="hero-eyebrow-dot"></div>
-      <span>AI-Powered Group Travel · Now in Beta</span>
+    <!-- LEFT: headline + CTA -->
+    <div class="hero-left">
+      <div class="hero-eyebrow">
+        <div class="hero-eyebrow-dot"></div>
+        <span>AI-Powered Group Travel · Now in Beta</span>
+      </div>
+      <h1>Where should<br>we go?<br><span class="accent">Jenna knows.</span></h1>
+      <p class="hero-sub">AskJenna turns your whole group's wishlist into one perfect, AI-crafted itinerary — then keeps discovering new experiences once you arrive.</p>
+      <div class="hero-tagline">✦ Group travel, finally done right</div>
+      <div class="hero-actions">
+        <button class="btn-hero-primary" onclick="document.getElementById('demo').scrollIntoView({behavior:'smooth'})">
+          ✦ Try the live demo
+        </button>
+        <button class="btn-hero-ghost" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">
+          See how it works
+        </button>
+      </div>
     </div>
-    <h1>Where should<br>we go?<br><span class="accent">Jenna knows.</span></h1>
-    <p class="hero-sub">AskJenna turns your whole group's wishlist into one perfect, AI-crafted itinerary — then keeps discovering new experiences once you arrive.</p>
-    <div class="hero-tagline">✦ Group travel, finally done right</div>
-    <div class="hero-actions">
-      <button class="btn-hero-primary" onclick="document.getElementById('demo').scrollIntoView({behavior:'smooth'})">
-        ✦ Try the live demo
-      </button>
-      <button class="btn-hero-ghost" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">
-        See how it works
-      </button>
-    </div>
-    <div class="hero-stats">
-      <div class="hero-stat">
-        <span class="hero-stat-num">$15T</span>
-        <span class="hero-stat-label">Travel market by 2040</span>
+
+    <!-- RIGHT: animated group joining card -->
+    <div class="hero-anim" id="heroAnim">
+      <div class="anim-header">Live preview</div>
+      <div class="anim-trip-name">Weekend in Barcelona 🇪🇸</div>
+      <div class="anim-trip-dest">May 16–19 · 4 travelers joining...</div>
+      <div class="anim-members">
+        <div class="anim-member" id="am1">
+          <div class="anim-av" style="background:#C9A84C;color:#0B1D35">JK</div>
+          <div class="anim-member-info">
+            <div class="anim-member-name">Jamie K.</div>
+            <div class="anim-member-status done" id="as1">✦ Interests added</div>
+          </div>
+          <div class="anim-check show" id="ac1">✓</div>
+        </div>
+        <div class="anim-member" id="am2">
+          <div class="anim-av" style="background:#1A9070;color:#fff">SM</div>
+          <div class="anim-member-info">
+            <div class="anim-member-name">Sofia M.</div>
+            <div class="anim-member-status" id="as2">Joining trip...</div>
+          </div>
+          <div class="anim-check" id="ac2">✓</div>
+        </div>
+        <div class="anim-member" id="am3">
+          <div class="anim-av" style="background:#534AB7;color:#fff">TR</div>
+          <div class="anim-member-info">
+            <div class="anim-member-name">Tyler R.</div>
+            <div class="anim-member-status" id="as3">Joining trip...</div>
+          </div>
+          <div class="anim-check" id="ac3">✓</div>
+        </div>
+        <div class="anim-member" id="am4">
+          <div class="anim-av" style="background:#D85A30;color:#fff">AL</div>
+          <div class="anim-member-info">
+            <div class="anim-member-name">Anika L.</div>
+            <div class="anim-member-status" id="as4">Joining trip...</div>
+          </div>
+          <div class="anim-check" id="ac4">✓</div>
+        </div>
       </div>
-      <div class="hero-stat">
-        <span class="hero-stat-num">22%</span>
-        <span class="hero-stat-label">AI travel growth/yr</span>
+      <div class="anim-score-label">
+        <span>Group match score</span>
+        <span class="anim-score-num" id="animScore">—</span>
       </div>
-      <div class="hero-stat">
-        <span class="hero-stat-num">0</span>
-        <span class="hero-stat-label">True group-match apps</span>
+      <div class="anim-bar-track">
+        <div class="anim-bar-fill" id="animBar"></div>
       </div>
+      <div class="anim-suggestion" id="animSug">
+        <div class="anim-sug-icon">🎸</div>
+        <div>
+          <div class="anim-sug-text">Primavera Sound Festival + Tapas Tour</div>
+          <div class="anim-sug-match">94% group match · Jenna's top pick</div>
+        </div>
+      </div>
+      <button class="anim-restart" onclick="runHeroAnim()">↺ Replay</button>
     </div>
   </div>
   <div class="hero-scroll">
@@ -908,6 +984,89 @@ function doSignup(){
   document.getElementById('sForm').style.display='none';
   document.getElementById('sSuccess').style.display='block';
 }
+
+// HERO ANIMATION
+function runHeroAnim(){
+  // Reset all
+  ['am1','am2','am3','am4'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){el.classList.remove('joined')}
+  });
+  ['ac2','ac3','ac4'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){el.classList.remove('show')}
+  });
+  ['as2','as3','as4'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){el.textContent='Joining trip...';el.classList.remove('done')}
+  });
+  const bar=document.getElementById('animBar');
+  const score=document.getElementById('animScore');
+  const sug=document.getElementById('animSug');
+  if(bar)bar.style.width='0%';
+  if(score)score.textContent='—';
+  if(sug)sug.classList.remove('show');
+
+  // Jamie already joined (shown from start)
+  setTimeout(()=>{
+    const m=document.getElementById('am1');
+    if(m)m.classList.add('joined');
+  },200);
+
+  // Sofia joins
+  setTimeout(()=>{
+    const m=document.getElementById('am2');
+    if(m)m.classList.add('joined');
+  },800);
+  setTimeout(()=>{
+    const s=document.getElementById('as2');
+    const c=document.getElementById('ac2');
+    if(s){s.textContent='✦ Interests added';s.classList.add('done')}
+    if(c)c.classList.add('show');
+    if(bar)bar.style.width='35%';
+    if(score)score.textContent='61%';
+  },1600);
+
+  // Tyler joins
+  setTimeout(()=>{
+    const m=document.getElementById('am3');
+    if(m)m.classList.add('joined');
+  },2400);
+  setTimeout(()=>{
+    const s=document.getElementById('as3');
+    const c=document.getElementById('ac3');
+    if(s){s.textContent='✦ Interests added';s.classList.add('done')}
+    if(c)c.classList.add('show');
+    if(bar)bar.style.width='62%';
+    if(score)score.textContent='76%';
+  },3200);
+
+  // Anika joins
+  setTimeout(()=>{
+    const m=document.getElementById('am4');
+    if(m)m.classList.add('joined');
+  },4000);
+  setTimeout(()=>{
+    const s=document.getElementById('as4');
+    const c=document.getElementById('ac4');
+    if(s){s.textContent='✦ Interests added';s.classList.add('done')}
+    if(c)c.classList.add('show');
+    if(bar)bar.style.width='94%';
+    if(score)score.textContent='94%';
+  },4800);
+
+  // Show suggestion
+  setTimeout(()=>{
+    const sug=document.getElementById('animSug');
+    if(sug)sug.classList.add('show');
+  },5600);
+
+  // Loop
+  setTimeout(()=>runHeroAnim(), 9000);
+}
+
+// Start animation when page loads
+window.addEventListener('load',()=>setTimeout(runHeroAnim,600));
 
 // SCROLL ANIMATIONS
 const obs=new IntersectionObserver(entries=>{
