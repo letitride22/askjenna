@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AskJenna — AI-Powered Group Travel Planning</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;scroll-behavior:smooth}
+:root{
+  --navy:#0B1D35;--navy2:#142847;--navy3:#1A3358;
+  --gold:#C9A84C;--gold2:#E2BF6E;--gold3:#F0D090;
+  --cream:#F7F2EA;--cream2:#EEE7D8;--cream3:#E4DAC6;
+  --teal:#1A9070;--teal2:#22B589;--teal3:#5ECFAC;
+  --text:#0B1D35;--muted:#5C6B82;--light:#8A97A8;
+  --white:#FFFFFF;--border:rgba(11,29,53,0.1);
+  --r:12px;--r-lg:18px;--r-xl:24px
+}
+html{font-size:16px}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);line-height:1.6;overflow-x:hidden}
+h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;line-height:1.15;font-weight:600}
+a{text-decoration:none;color:inherit}
+img{max-width:100%}
+button{cursor:pointer;font-family:'DM Sans',sans-serif}
+
+/* UTILITIES */
+.container{max-width:1000px;margin:0 auto;padding:0 2rem}
+.tag{display:inline-block;font-size:0.72rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--teal);margin-bottom:0.6rem}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--cream2)}
+::-webkit-scrollbar-thumb{background:var(--navy3);border-radius:3px}
+
+/* ═══════════════════════
+   TRAVEL SVG GRAPHICS
+═══════════════════════ */
+.travel-deco{position:absolute;pointer-events:none;opacity:0}
+.travel-deco.visible{opacity:1}
+
+/* Floating passport stamps */
+.stamp{position:absolute;pointer-events:none;border-radius:50%;border:2px solid;display:flex;align-items:center;justify-content:center;font-size:0.55rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;line-height:1.2;text-align:center;padding:0.3rem;transform:rotate(var(--rot))}
+
+/* ═══════════════════════
+   NAV
+═══════════════════════ */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:rgba(11,29,53,0.97);backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,255,255,0.06);
+  height:62px;display:flex;align-items:center;
+}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;width:100%;max-width:1000px;margin:0 auto;padding:0 2rem}
+.nav-logo{display:flex;align-items:center;gap:0.6rem}
+.nav-logo-mark{width:34px;height:34px;background:var(--gold);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-logo-mark svg{width:20px;height:20px;fill:var(--navy)}
+.nav-logo-text{font-family:'Cormorant Garamond',serif;font-size:1.45rem;font-weight:600;color:var(--white);letter-spacing:0.02em}
+.nav-logo-text span{color:var(--gold)}
+.nav-links{display:flex;gap:2rem;align-items:center}
+.nav-links a{color:rgba(255,255,255,0.6);font-size:0.82rem;letter-spacing:0.05em;text-transform:uppercase;transition:color 0.2s}
+.nav-links a:hover{color:var(--gold)}
+.nav-right{display:flex;align-items:center;gap:0.75rem}
+.btn-nav-ghost{background:transparent;color:rgba(255,255,255,0.7);border:1px solid rgba(255,255,255,0.2);padding:0.45rem 1.1rem;border-radius:6px;font-size:0.82rem;transition:all 0.2s}
+.btn-nav-ghost:hover{border-color:rgba(255,255,255,0.5);color:#fff}
+.btn-nav-cta{background:var(--gold);color:var(--navy);border:none;padding:0.5rem 1.2rem;border-radius:6px;font-size:0.82rem;font-weight:500;transition:all 0.2s}
+.btn-nav-cta:hover{background:var(--gold2)}
+
+/* ═══════════════════════
+   HERO
+═══════════════════════ */
+.hero{
+  min-height:100vh;background:var(--navy);
+  display:flex;flex-direction:column;justify-content:center;
+  padding:7rem 2rem 5rem;position:relative;overflow:hidden
+}
+/* Layered travel background */
+.hero-bg{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.hero-bg-orb1{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(26,144,112,0.18) 0%,transparent 70%);top:-100px;left:-100px}
+.hero-bg-orb2{position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,0.12) 0%,transparent 70%);bottom:-50px;right:-50px}
+.hero-bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);background-size:60px 60px}
+/* Dotted map grid overlay */
+.hero-bg-dots{position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,0.06) 1px,transparent 1px);background-size:32px 32px}
+/* SVG travel illustrations in hero */
+.hero-svg-compass{position:absolute;right:4%;bottom:20%;opacity:0.06}
+.hero-svg-mountains{position:absolute;bottom:0;left:0;right:0;opacity:0.05}
+/* Subtle route line */
+.hero-route{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0.04}
+
+.hero-inner{max-width:1000px;margin:0 auto;width:100%;position:relative;z-index:1}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);padding:0.35rem 1rem;border-radius:20px;margin-bottom:2rem}
+.hero-eyebrow span{color:var(--gold);font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:500}
+.hero-eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--teal2);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.hero h1{font-size:clamp(2.8rem,6vw,5rem);color:var(--white);max-width:700px;margin-bottom:1.5rem;font-weight:400;letter-spacing:-0.01em}
+.hero h1 .accent{color:var(--gold);font-style:italic}
+.hero-sub{color:rgba(255,255,255,0.55);font-size:1.05rem;max-width:480px;line-height:1.8;margin-bottom:0.8rem}
+.hero-tagline{color:var(--gold);font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-style:italic;margin-bottom:2rem;opacity:0.9}
+.hero-actions{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:4rem}
+.btn-hero-primary{background:var(--gold);color:var(--navy);border:none;padding:0.9rem 2.2rem;border-radius:8px;font-size:0.95rem;font-weight:500;transition:all 0.25s;display:flex;align-items:center;gap:0.5rem}
+.btn-hero-primary:hover{background:var(--gold2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(201,168,76,0.3)}
+.btn-hero-ghost{background:transparent;color:rgba(255,255,255,0.8);border:1px solid rgba(255,255,255,0.25);padding:0.9rem 2.2rem;border-radius:8px;font-size:0.95rem;transition:all 0.25s}
+.btn-hero-ghost:hover{border-color:rgba(255,255,255,0.6);background:rgba(255,255,255,0.05)}
+.hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid rgba(255,255,255,0.08);padding-top:2.5rem;max-width:520px}
+.hero-stat{padding-right:2rem}
+.hero-stat:not(:last-child){border-right:1px solid rgba(255,255,255,0.08);margin-right:2rem}
+.hero-stat-num{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:600;color:var(--gold);display:block;line-height:1}
+.hero-stat-label{font-size:0.72rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.08em;margin-top:0.4rem;display:block}
+.hero-scroll{position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:0.5rem;color:rgba(255,255,255,0.3);font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;animation:bounce 2s infinite;z-index:1}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+.scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,rgba(255,255,255,0.3),transparent)}
+
+/* ═══════════════════════
+   DESTINATION TICKER
+═══════════════════════ */
+.dest-ticker{background:rgba(255,255,255,0.04);border-top:1px solid rgba(255,255,255,0.06);border-bottom:1px solid rgba(255,255,255,0.06);padding:0.75rem 0;overflow:hidden;position:relative;z-index:1}
+.ticker-track{display:flex;gap:2.5rem;animation:ticker 25s linear infinite;white-space:nowrap;width:max-content}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.ticker-item{display:flex;align-items:center;gap:0.5rem;color:rgba(255,255,255,0.35);font-size:0.78rem;letter-spacing:0.06em}
+.ticker-dot{width:4px;height:4px;border-radius:50%;background:var(--gold);opacity:0.6;flex-shrink:0}
+
+/* ═══════════════════════
+   PROBLEM STRIP
+═══════════════════════ */
+.problem-strip{background:var(--cream2);padding:2rem 0;border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+.problem-strip::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(11,29,53,0.04) 1px,transparent 1px);background-size:24px 24px}
+.problem-inner{display:flex;align-items:center;justify-content:center;gap:3rem;flex-wrap:wrap;position:relative}
+.problem-item{display:flex;align-items:center;gap:0.7rem;color:var(--muted);font-size:0.85rem}
+.problem-icon{width:36px;height:36px;border-radius:8px;background:var(--cream3);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.problem-arrow{color:var(--teal);font-size:1.2rem;font-weight:300}
+
+/* ═══════════════════════
+   HOW IT WORKS
+═══════════════════════ */
+.how{background:var(--white);padding:6rem 0;position:relative;overflow:hidden}
+.how::after{content:'';position:absolute;bottom:-60px;right:-60px;width:300px;height:300px;border-radius:50%;border:1px solid rgba(201,168,76,0.08);pointer-events:none}
+.how::before{content:'';position:absolute;bottom:-90px;right:-90px;width:400px;height:400px;border-radius:50%;border:1px solid rgba(201,168,76,0.05);pointer-events:none}
+.section-header{margin-bottom:3.5rem;position:relative}
+.section-header h2{font-size:clamp(2rem,4vw,3rem);margin-bottom:0.8rem;font-weight:400}
+.section-header p{color:var(--muted);font-size:0.95rem;max-width:460px;line-height:1.8}
+.steps-container{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+.step{background:var(--cream);border-radius:var(--r-lg);padding:2rem;border:1px solid var(--border);transition:all 0.3s;cursor:pointer;position:relative;overflow:hidden}
+.step:hover{border-color:var(--gold);transform:translateY(-3px);box-shadow:0 12px 32px rgba(11,29,53,0.08)}
+.step.featured{background:var(--navy);border-color:var(--navy)}
+/* Subtle map pin watermark on steps */
+.step::after{content:'';position:absolute;bottom:-20px;right:-20px;width:80px;height:80px;border-radius:50%;border:1px solid rgba(201,168,76,0.1);pointer-events:none}
+.step-num{font-family:'Cormorant Garamond',serif;font-size:3rem;font-weight:600;color:var(--cream3);line-height:1;margin-bottom:1rem;display:block}
+.step.featured .step-num{color:rgba(255,255,255,0.1)}
+.step-icon{font-size:1.8rem;margin-bottom:1rem;display:block}
+.step h3{font-size:1.3rem;font-weight:600;margin-bottom:0.6rem;color:var(--navy)}
+.step.featured h3{color:var(--gold)}
+.step p{font-size:0.87rem;color:var(--muted);line-height:1.7}
+.step.featured p{color:rgba(255,255,255,0.6)}
+.step-features{display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:1.2rem}
+.step-pill{background:rgba(11,29,53,0.06);color:var(--navy);font-size:0.72rem;padding:0.25rem 0.65rem;border-radius:20px}
+.step.featured .step-pill{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7)}
+
+/* ═══════════════════════
+   DESTINATIONS STRIP
+═══════════════════════ */
+.dest-strip{background:var(--navy);padding:3.5rem 0;position:relative;overflow:hidden}
+.dest-strip::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,0.03) 1px,transparent 1px);background-size:28px 28px}
+.dest-strip-inner{position:relative}
+.dest-strip .tag{color:var(--teal3);display:block;text-align:center;margin-bottom:0.5rem}
+.dest-strip h3{font-family:'Cormorant Garamond',serif;font-size:1.6rem;color:var(--white);text-align:center;margin-bottom:2rem;font-weight:400}
+.dest-cards{display:flex;gap:1rem;overflow-x:auto;padding:0 2rem 1rem;scrollbar-width:none;justify-content:center;flex-wrap:wrap}
+.dest-cards::-webkit-scrollbar{display:none}
+.dest-card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:var(--r-lg);padding:1.2rem 1.5rem;flex-shrink:0;text-align:center;transition:all 0.2s;cursor:pointer;min-width:130px}
+.dest-card:hover{background:rgba(255,255,255,0.1);border-color:rgba(201,168,76,0.4);transform:translateY(-3px)}
+.dest-card-emoji{font-size:1.8rem;display:block;margin-bottom:0.5rem}
+.dest-card-name{font-size:0.82rem;color:rgba(255,255,255,0.8);font-weight:500}
+.dest-card-tag{font-size:0.68rem;color:rgba(255,255,255,0.4);margin-top:0.2rem}
+
+/* ═══════════════════════
+   GROUP DEMO
+═══════════════════════ */
+.demo{background:var(--cream2);padding:6rem 0;position:relative;overflow:hidden}
+/* Subtle topographic lines */
+.demo::before{content:'';position:absolute;inset:0;background-image:
+  repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(11,29,53,0.03) 39px,rgba(11,29,53,0.03) 40px);
+  pointer-events:none}
+.demo-app{background:var(--white);border-radius:var(--r-xl);border:1px solid var(--border);overflow:hidden;box-shadow:0 24px 64px rgba(11,29,53,0.1);margin-top:3rem;position:relative}
+.app-topbar{background:var(--navy);padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
+.app-trip-name{color:var(--white);font-size:0.9rem;font-weight:500;display:flex;align-items:center;gap:0.5rem}
+.app-trip-name::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--teal2)}
+.app-avatars{display:flex}
+.av{width:28px;height:28px;border-radius:50%;border:2px solid var(--navy);display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:500;margin-left:-6px;cursor:pointer}
+.av:first-child{margin-left:0}
+.app-body{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.app-left{padding:1.5rem;border-right:1px solid var(--border)}
+.app-right{padding:1.5rem}
+.app-section-title{font-size:0.75rem;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;color:var(--light);margin-bottom:1rem}
+.interests-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;margin-bottom:1rem}
+.int-tag{padding:0.5rem 0.4rem;border-radius:8px;border:1px solid var(--border);font-size:0.75rem;text-align:center;cursor:pointer;transition:all 0.2s;color:var(--muted);background:var(--cream);display:flex;flex-direction:column;align-items:center;gap:0.2rem;user-select:none}
+.int-tag .int-icon{font-size:1rem}
+.int-tag .int-label{font-size:0.65rem;line-height:1.2}
+.int-tag:hover{border-color:var(--gold);background:rgba(201,168,76,0.05)}
+.int-tag.on{background:var(--navy);border-color:var(--navy);color:var(--white)}
+.int-tag.on .int-label{color:rgba(255,255,255,0.7)}
+.int-tag.half{background:rgba(26,144,112,0.08);border-color:rgba(26,144,112,0.4);color:var(--teal)}
+.member-row{display:flex;gap:0.5rem;margin-bottom:1rem;flex-wrap:wrap}
+.member-btn{padding:0.3rem 0.75rem;border-radius:20px;border:1px solid var(--border);font-size:0.75rem;cursor:pointer;transition:all 0.2s;background:var(--cream)}
+.member-btn.active{background:var(--navy);color:var(--white);border-color:var(--navy)}
+.bars-section{margin-bottom:1.5rem}
+.bar-row{margin-bottom:0.75rem}
+.bar-meta{display:flex;justify-content:space-between;margin-bottom:0.3rem;font-size:0.78rem}
+.bar-meta span{color:var(--muted)}
+.bar-meta strong{color:var(--navy);font-weight:500}
+.bar-track{height:5px;background:var(--cream2);border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;transition:width 0.7s cubic-bezier(.4,0,.2,1)}
+.bf-gold{background:var(--gold)}
+.bf-teal{background:var(--teal)}
+.bf-navy{background:var(--navy3)}
+.bf-soft{background:var(--teal3)}
+.suggestions-list{display:flex;flex-direction:column;gap:0.7rem}
+.sug{display:flex;align-items:center;gap:0.8rem;background:var(--cream);border-radius:10px;padding:0.85rem;border:1px solid var(--border);cursor:pointer;transition:all 0.2s}
+.sug:hover{border-color:var(--gold);background:rgba(201,168,76,0.04)}
+.sug-emoji{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.sug-body{flex:1;min-width:0}
+.sug-name{font-size:0.85rem;font-weight:500;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sug-meta{font-size:0.72rem;color:var(--muted);margin-top:0.1rem}
+.sug-pct{font-size:0.72rem;font-weight:500;padding:0.2rem 0.55rem;border-radius:12px;white-space:nowrap;flex-shrink:0}
+.pct-high{background:rgba(26,144,112,0.12);color:var(--teal)}
+.pct-med{background:rgba(201,168,76,0.12);color:#8a6a20}
+.match-hero{background:var(--navy);border-radius:10px;padding:1rem;margin-bottom:1rem;text-align:center;position:relative;overflow:hidden}
+.match-hero::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,0.03) 1px,transparent 1px);background-size:16px 16px}
+.match-big{font-family:'Cormorant Garamond',serif;font-size:2.8rem;color:var(--gold);font-weight:600;line-height:1;position:relative}
+.match-label{font-size:0.72rem;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.08em;margin-top:0.3rem;position:relative}
+.match-sub{font-size:0.78rem;color:rgba(255,255,255,0.6);margin-top:0.5rem;position:relative}
+
+/* ═══════════════════════
+   LIVE EXPLORE
+═══════════════════════ */
+.explore{background:var(--white);padding:6rem 0;position:relative;overflow:hidden}
+/* Compass rose watermark */
+.explore-compass{position:absolute;right:-80px;top:50%;transform:translateY(-50%);width:300px;height:300px;opacity:0.025;pointer-events:none}
+.explore-tabs{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:2rem}
+.etab{padding:0.5rem 1.2rem;border-radius:6px;border:1px solid var(--border);font-size:0.82rem;cursor:pointer;transition:all 0.2s;color:var(--muted);background:transparent}
+.etab:hover{border-color:var(--navy);color:var(--navy)}
+.etab.on{background:var(--navy);color:var(--white);border-color:var(--navy)}
+.explore-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:1rem}
+.ecard{background:var(--cream);border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--border);transition:all 0.25s;cursor:pointer}
+.ecard:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(11,29,53,0.1);border-color:var(--gold)}
+.ecard-top{height:120px;display:flex;align-items:center;justify-content:center;font-size:2.8rem;position:relative}
+.ecard-status{position:absolute;top:8px;left:8px;font-size:0.68rem;padding:0.2rem 0.55rem;border-radius:10px;font-weight:500}
+.status-open{background:rgba(26,144,112,0.15);color:var(--teal)}
+.status-tonight{background:rgba(201,168,76,0.2);color:#8a6a20}
+.status-hot{background:rgba(216,90,48,0.15);color:#993c1d}
+.ecard-match{position:absolute;top:8px;right:8px;background:var(--navy);color:var(--gold);font-size:0.65rem;padding:0.2rem 0.5rem;border-radius:10px;font-weight:500}
+.ecard-body{padding:1rem}
+.ecard-name{font-size:0.9rem;font-weight:500;color:var(--navy);margin-bottom:0.2rem}
+.ecard-detail{font-size:0.75rem;color:var(--muted);line-height:1.5}
+.ecard-footer{display:flex;justify-content:space-between;align-items:center;margin-top:0.7rem;padding-top:0.7rem;border-top:1px solid var(--border)}
+.ecard-price{font-size:0.82rem;font-weight:500;color:var(--teal)}
+.ecard-dist{font-size:0.75rem;color:var(--light)}
+
+/* ═══════════════════════
+   FEATURES
+═══════════════════════ */
+.features{background:var(--cream2);padding:6rem 0;position:relative;overflow:hidden}
+/* Subtle wave lines */
+.features::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0.3}
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:3rem}
+.feat{background:var(--white);border-radius:var(--r-lg);padding:1.8rem;border:1px solid var(--border);transition:all 0.2s;position:relative;overflow:hidden}
+.feat::after{content:'';position:absolute;bottom:-30px;right:-30px;width:80px;height:80px;border-radius:50%;border:1px solid rgba(201,168,76,0.1);pointer-events:none}
+.feat:hover{border-color:var(--gold);box-shadow:0 8px 24px rgba(11,29,53,0.06)}
+.feat-icon{width:44px;height:44px;border-radius:10px;background:var(--navy);display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:1.2rem}
+.feat h3{font-size:1.05rem;font-weight:600;font-family:'DM Sans',sans-serif;color:var(--navy);margin-bottom:0.5rem}
+.feat p{font-size:0.82rem;color:var(--muted);line-height:1.7}
+.feat-coming{display:inline-block;background:rgba(201,168,76,0.12);color:#8a6a20;font-size:0.65rem;padding:0.15rem 0.5rem;border-radius:10px;margin-top:0.8rem;font-weight:500;letter-spacing:0.05em;text-transform:uppercase}
+
+/* ═══════════════════════
+   MONETIZATION
+═══════════════════════ */
+.money{background:var(--navy);padding:6rem 0;position:relative;overflow:hidden}
+.money::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,0.025) 1px,transparent 1px);background-size:30px 30px}
+/* Flight path decoration */
+.money-flightpath{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0.04;pointer-events:none}
+.money .tag{color:var(--teal3)}
+.money h2{color:var(--white)}
+.money .section-header p{color:rgba(255,255,255,0.5)}
+.money-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:3rem}
+.money-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);border-radius:var(--r-lg);padding:1.8rem;transition:all 0.2s;position:relative}
+.money-card:hover{background:rgba(255,255,255,0.07);border-color:rgba(201,168,76,0.3)}
+.money-card.primary{background:rgba(201,168,76,0.08);border-color:rgba(201,168,76,0.25)}
+.money-num{font-family:'Cormorant Garamond',serif;font-size:2rem;color:var(--gold);font-weight:600;display:block;margin-bottom:0.1rem}
+.money-title{font-size:0.88rem;font-weight:500;color:var(--white);margin-bottom:0.5rem}
+.money-desc{font-size:0.8rem;color:rgba(255,255,255,0.5);line-height:1.7}
+.money-est{margin-top:1rem;font-size:0.75rem;color:var(--teal3);font-weight:500;padding-top:0.8rem;border-top:1px solid rgba(255,255,255,0.08)}
+
+/* ═══════════════════════
+   MARKET
+═══════════════════════ */
+.market{background:var(--cream);padding:6rem 0;position:relative;overflow:hidden}
+.market::after{content:'';position:absolute;top:-80px;left:-80px;width:300px;height:300px;border-radius:50%;border:1px solid rgba(11,29,53,0.05);pointer-events:none}
+.market-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:3rem}
+.mstat{background:var(--white);border-radius:var(--r-lg);padding:1.5rem;border:1px solid var(--border);text-align:center;position:relative;overflow:hidden}
+.mstat::before{content:'';position:absolute;bottom:-20px;right:-20px;width:60px;height:60px;border-radius:50%;border:1px solid rgba(201,168,76,0.1)}
+.mstat-num{font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:600;color:var(--navy);display:block;line-height:1;margin-bottom:0.4rem}
+.mstat-label{font-size:0.78rem;color:var(--muted);line-height:1.5}
+.competitor-table{margin-top:3rem;background:var(--white);border-radius:var(--r-lg);border:1px solid var(--border);overflow:hidden}
+.comp-header{background:var(--navy);display:grid;grid-template-columns:1.5fr repeat(5,1fr);padding:1rem 1.5rem;gap:0.5rem}
+.comp-header span{font-size:0.72rem;text-transform:uppercase;letter-spacing:0.06em;color:rgba(255,255,255,0.5);font-weight:500}
+.comp-row{display:grid;grid-template-columns:1.5fr repeat(5,1fr);padding:0.85rem 1.5rem;gap:0.5rem;border-bottom:1px solid var(--border);align-items:center;transition:background 0.15s}
+.comp-row:hover{background:var(--cream)}
+.comp-row:last-child{border-bottom:none}
+.comp-row.askjenna-row{background:rgba(201,168,76,0.06)}
+.comp-name{font-size:0.85rem;font-weight:500;color:var(--navy)}
+.comp-name small{display:block;font-size:0.72rem;color:var(--muted);font-weight:400}
+.chk{text-align:center;font-size:1rem}
+.chk-yes{color:var(--teal)}
+.chk-no{color:var(--cream3)}
+.chk-part{color:var(--gold)}
+
+/* ═══════════════════════
+   CTA
+═══════════════════════ */
+.cta-section{background:var(--navy2);padding:6rem 2rem;text-align:center;position:relative;overflow:hidden}
+.cta-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(26,144,112,0.12) 0%,transparent 60%)}
+/* Horizon line graphic */
+.cta-horizon{position:absolute;bottom:0;left:0;right:0;height:120px;opacity:0.06;pointer-events:none}
+.cta-section h2{font-size:clamp(2rem,4vw,3.2rem);color:var(--white);max-width:600px;margin:0 auto 1rem;font-weight:400;position:relative}
+.cta-section h2 em{color:var(--gold);font-style:italic}
+.cta-tagline{color:var(--gold);font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-style:italic;margin-bottom:0.8rem;position:relative;opacity:0.9}
+.cta-section p{color:rgba(255,255,255,0.5);font-size:0.95rem;max-width:400px;margin:0 auto 2.5rem;line-height:1.8;position:relative}
+.signup-form{display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;position:relative}
+.signup-input{padding:0.9rem 1.2rem;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:#fff;font-size:0.9rem;font-family:'DM Sans',sans-serif;width:280px;outline:none;transition:border-color 0.2s}
+.signup-input::placeholder{color:rgba(255,255,255,0.3)}
+.signup-input:focus{border-color:var(--gold)}
+.signup-btn{background:var(--teal);color:#fff;border:none;padding:0.9rem 1.8rem;border-radius:8px;font-size:0.9rem;font-weight:500;font-family:'DM Sans',sans-serif;transition:all 0.2s;cursor:pointer}
+.signup-btn:hover{background:var(--teal2)}
+.signup-success{display:none;color:var(--teal3);font-size:0.9rem;padding:0.8rem;text-align:center;position:relative}
+
+/* ═══════════════════════
+   FOOTER
+═══════════════════════ */
+footer{background:var(--navy);padding:3rem 2rem;border-top:1px solid rgba(255,255,255,0.06);position:relative;overflow:hidden}
+footer::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,0.02) 1px,transparent 1px);background-size:24px 24px;pointer-events:none}
+.footer-inner{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;position:relative}
+.footer-brand-desc{font-size:0.82rem;color:rgba(255,255,255,0.4);line-height:1.7;margin-top:0.8rem;max-width:240px}
+.footer-tagline{font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--gold);font-size:0.9rem;margin-top:0.5rem;opacity:0.7}
+.footer-col h4{font-family:'DM Sans',sans-serif;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.4);font-weight:500;margin-bottom:1rem}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:0.5rem}
+.footer-col ul li a{font-size:0.82rem;color:rgba(255,255,255,0.5);transition:color 0.2s}
+.footer-col ul li a:hover{color:var(--gold)}
+.footer-bottom{max-width:1000px;margin:2rem auto 0;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;position:relative}
+.footer-bottom p{font-size:0.78rem;color:rgba(255,255,255,0.3)}
+.footer-logo{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--gold);font-weight:600}
+.footer-logo span{color:rgba(255,255,255,0.6)}
+
+/* ═══════════════════════
+   RESPONSIVE
+═══════════════════════ */
+@media(max-width:768px){
+  .steps-container{grid-template-columns:1fr}
+  .app-body{grid-template-columns:1fr}
+  .app-left{border-right:none;border-bottom:1px solid var(--border)}
+  .features-grid{grid-template-columns:1fr 1fr}
+  .money-grid{grid-template-columns:1fr}
+  .market-grid{grid-template-columns:1fr 1fr}
+  .footer-inner{grid-template-columns:1fr 1fr}
+  .nav-links{display:none}
+  .hero h1{font-size:2.4rem}
+  .comp-header,.comp-row{grid-template-columns:1.5fr repeat(3,1fr)}
+  .comp-header span:nth-child(4),.comp-header span:nth-child(5),
+  .comp-row .chk:nth-child(4),.comp-row .chk:nth-child(5){display:none}
+  .demo-app{border-radius:var(--r)}
+  .interests-grid{grid-template-columns:repeat(4,1fr)}
+  .member-row{gap:0.4rem}
+  .member-btn{padding:0.3rem 0.55rem;font-size:0.7rem}
+  .app-left,.app-right{padding:1rem}
+  .match-big{font-size:2.2rem}
+  .dest-cards{justify-content:flex-start}
+}
+@media(max-width:480px){
+  .hero-stats{grid-template-columns:1fr;gap:1rem}
+  .hero-stat{border-right:none!important;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:1rem;margin-right:0!important}
+  .features-grid{grid-template-columns:1fr}
+  .market-grid{grid-template-columns:1fr}
+  .footer-inner{grid-template-columns:1fr}
+  .interests-grid{grid-template-columns:repeat(3,1fr)}
+  .int-tag{padding:0.4rem 0.2rem}
+  .int-tag .int-icon{font-size:0.9rem}
+  .int-tag .int-label{font-size:0.6rem}
+  .sug{gap:0.6rem}
+  .sug-emoji{width:32px;height:32px;font-size:0.9rem}
+  .sug-name{font-size:0.8rem}
+  .app-topbar{padding:0.75rem 1rem}
+  .app-trip-name{font-size:0.8rem}
+  .dest-cards{gap:0.75rem}
+  .dest-card{min-width:110px;padding:1rem}
+}
+
+/* ANIMATIONS */
+.fade-up{opacity:0;transform:translateY(24px);transition:opacity 0.6s ease,transform 0.6s ease}
+.fade-up.visible{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">
+      <div class="nav-logo-mark">
+        <!-- Compass/pin logo mark -->
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="10" r="3" fill="#0B1D35"/>
+          <path d="M12 2C7.6 2 4 5.6 4 10c0 5.4 8 13 8 13s8-7.6 8-13c0-4.4-3.6-8-8-8z" fill="#0B1D35"/>
+          <circle cx="12" cy="10" r="2" fill="#C9A84C"/>
+        </svg>
+      </div>
+      <span class="nav-logo-text">Ask<span>Jenna</span></span>
+    </div>
+    <div class="nav-links">
+      <a href="#how">How it works</a>
+      <a href="#demo">Demo</a>
+      <a href="#explore">Discover</a>
+      
+      <a href="#cta">Get started</a>
+    </div>
+    <div class="nav-right">
+      <button class="btn-nav-ghost" onclick="document.getElementById('cta').scrollIntoView({behavior:'smooth'})">Sign in</button>
+      <button class="btn-nav-cta" onclick="document.getElementById('cta').scrollIntoView({behavior:'smooth'})">Create account →</button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="hero-bg">
+    <div class="hero-bg-orb1"></div>
+    <div class="hero-bg-orb2"></div>
+    <div class="hero-bg-grid"></div>
+    <div class="hero-bg-dots"></div>
+
+    <!-- Compass SVG -->
+    <svg class="hero-svg-compass" width="220" height="220" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="50" cy="50" r="45" stroke="white" stroke-width="1"/>
+      <circle cx="50" cy="50" r="38" stroke="white" stroke-width="0.5"/>
+      <circle cx="50" cy="50" r="3" fill="white"/>
+      <line x1="50" y1="8" x2="50" y2="18" stroke="white" stroke-width="1.5"/>
+      <line x1="50" y1="82" x2="50" y2="92" stroke="white" stroke-width="1"/>
+      <line x1="8" y1="50" x2="18" y2="50" stroke="white" stroke-width="1"/>
+      <line x1="82" y1="50" x2="92" y2="50" stroke="white" stroke-width="1"/>
+      <polygon points="50,15 46,45 50,48 54,45" fill="white"/>
+      <polygon points="50,85 46,55 50,52 54,55" fill="white" opacity="0.4"/>
+      <text x="47" y="6" fill="white" font-size="5" font-family="serif">N</text>
+      <text x="47" y="98" fill="white" font-size="4" font-family="serif" opacity="0.5">S</text>
+      <text x="2" y="52" fill="white" font-size="4" font-family="serif" opacity="0.5">W</text>
+      <text x="94" y="52" fill="white" font-size="4" font-family="serif" opacity="0.5">E</text>
+    </svg>
+
+    <!-- Mountain silhouette at base -->
+    <svg class="hero-svg-mountains" width="100%" height="180" viewBox="0 0 1200 180" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 180 L0 120 L150 40 L280 100 L420 20 L560 90 L680 30 L800 80 L950 10 L1050 70 L1200 35 L1200 180 Z" fill="white"/>
+    </svg>
+
+    <!-- Dashed flight route -->
+    <svg class="hero-route" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+      <path d="M-50 300 Q300 50 700 200 Q900 280 1300 100" stroke="white" stroke-width="1" stroke-dasharray="8 12" fill="none"/>
+      <circle cx="200" cy="155" r="4" fill="white"/>
+      <circle cx="600" cy="190" r="4" fill="white"/>
+      <circle cx="950" cy="148" r="4" fill="white"/>
+    </svg>
+  </div>
+
+  <!-- Destination ticker -->
+  <div class="dest-ticker">
+    <div class="ticker-track" id="ticker">
+      <div class="ticker-item"><span class="ticker-dot"></span>Paris, France</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Tokyo, Japan</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>New York City</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Bali, Indonesia</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Barcelona, Spain</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Cape Town, SA</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Santorini, Greece</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Kyoto, Japan</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Amalfi Coast</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Maldives</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Machu Picchu</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Safari, Kenya</div>
+      <!-- duplicate for seamless loop -->
+      <div class="ticker-item"><span class="ticker-dot"></span>Paris, France</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Tokyo, Japan</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>New York City</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Bali, Indonesia</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Barcelona, Spain</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Cape Town, SA</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Santorini, Greece</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Kyoto, Japan</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Amalfi Coast</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Maldives</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Machu Picchu</div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Safari, Kenya</div>
+    </div>
+  </div>
+
+  <div class="hero-inner container">
+    <div class="hero-eyebrow">
+      <div class="hero-eyebrow-dot"></div>
+      <span>AI-Powered Group Travel · Now in Beta</span>
+    </div>
+    <h1>Where should<br>we go?<br><span class="accent">Jenna knows.</span></h1>
+    <p class="hero-sub">AskJenna turns your whole group's wishlist into one perfect, AI-crafted itinerary — then keeps discovering new experiences once you arrive.</p>
+    <div class="hero-tagline">✦ Group travel, finally done right</div>
+    <div class="hero-actions">
+      <button class="btn-hero-primary" onclick="document.getElementById('demo').scrollIntoView({behavior:'smooth'})">
+        ✦ Try the live demo
+      </button>
+      <button class="btn-hero-ghost" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">
+        See how it works
+      </button>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="hero-stat-num">$15T</span>
+        <span class="hero-stat-label">Travel market by 2040</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-num">22%</span>
+        <span class="hero-stat-label">AI travel growth/yr</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-num">0</span>
+        <span class="hero-stat-label">True group-match apps</span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- PROBLEM STRIP -->
+<div class="problem-strip">
+  <div class="problem-inner container">
+    <div class="problem-item">
+      <div class="problem-icon">💬</div>
+      <span>47 unanswered group texts</span>
+    </div>
+    <div class="problem-arrow">→</div>
+    <div class="problem-item">
+      <div class="problem-icon">😤</div>
+      <span>Someone's always unhappy</span>
+    </div>
+    <div class="problem-arrow">→</div>
+    <div class="problem-item">
+      <div class="problem-icon">🗺</div>
+      <span>Generic tourist trap itinerary</span>
+    </div>
+    <div class="problem-arrow">→</div>
+    <div class="problem-item" style="color:var(--teal);font-weight:500">
+      <div class="problem-icon" style="background:rgba(26,144,112,0.12)">✦</div>
+      <span>AskJenna fixes all of this</span>
+    </div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="container">
+    <div class="section-header fade-up">
+      <div class="tag">How it works</div>
+      <h2>Four steps from<br>chaos to perfect trip</h2>
+      <p>No more endless group chats. AskJenna turns everyone's wishlist into a single, AI-optimized plan — and keeps working once you land.</p>
+    </div>
+    <div class="steps-container">
+      <div class="step fade-up">
+        <span class="step-num">01</span>
+        <span class="step-icon">👥</span>
+        <h3>Create your crew</h3>
+        <p>Start a trip in seconds and share a simple invite link. No app download required for guests. Set your destination, travel dates, and a rough budget range — or let Jenna suggest a destination based on everyone's interests.</p>
+        <div class="step-features">
+          <span class="step-pill">Shareable invite link</span>
+          <span class="step-pill">No download needed</span>
+          <span class="step-pill">Budget ranges</span>
+          <span class="step-pill">Anonymous preferences</span>
+        </div>
+      </div>
+      <div class="step featured fade-up">
+        <span class="step-num">02</span>
+        <span class="step-icon">🎯</span>
+        <h3>Share your vibe</h3>
+        <p>Each group member independently picks from 60+ interest categories — food, nightlife, museums, hiking, concerts, spas, sports, and more. Rate how important each is. Nobody sees each other's answers until Jenna compiles them.</p>
+        <div class="step-features">
+          <span class="step-pill">60+ categories</span>
+          <span class="step-pill">Priority weighting</span>
+          <span class="step-pill">Dietary preferences</span>
+          <span class="step-pill">Accessibility needs</span>
+        </div>
+      </div>
+      <div class="step fade-up">
+        <span class="step-num">03</span>
+        <span class="step-icon">✦</span>
+        <h3>Jenna works her magic</h3>
+        <p>AskJenna's AI scores every activity, restaurant, and experience against the whole group's preferences. It finds what satisfies the most people, surfaces smart compromises, and shows each traveler their personal satisfaction score.</p>
+        <div class="step-features">
+          <span class="step-pill">Group match score</span>
+          <span class="step-pill">Per-person fit %</span>
+          <span class="step-pill">Smart compromise logic</span>
+          <span class="step-pill">Veto & re-suggest</span>
+        </div>
+      </div>
+      <div class="step fade-up">
+        <span class="step-num">04</span>
+        <span class="step-icon">📍</span>
+        <h3>Live discovery</h3>
+        <p>Once you land, Jenna becomes your real-time guide. She surfaces nearby hidden gems, live events, concerts, sports games, and flash deals — even adapting to the weather. "It's raining — here are 5 incredible indoor things nearby."</p>
+        <div class="step-features">
+          <span class="step-pill">Real-time location</span>
+          <span class="step-pill">Live event feeds</span>
+          <span class="step-pill">Weather adaptation</span>
+          <span class="step-pill">Flash deals</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DESTINATIONS STRIP -->
+<div class="dest-strip">
+  <div class="dest-strip-inner container">
+    <div class="tag">Jenna knows them all</div>
+    <h3>From bucket list to backyard — she's got you covered</h3>
+    <div class="dest-cards">
+      <div class="dest-card"><span class="dest-card-emoji">🗼</span><div class="dest-card-name">Paris</div><div class="dest-card-tag">France</div></div>
+      <div class="dest-card"><span class="dest-card-emoji">🌸</span><div class="dest-card-name">Tokyo</div><div class="dest-card-tag">Japan</div></div>
+      <div class="dest-card"><span class="dest-card-emoji">🌉</span><div class="dest-card-name">San Francisco</div><div class="dest-card-tag">California</div></div>
+      <div class="dest-card"><span class="dest-card-emoji">🏖</span><div class="dest-card-name">Bali</div><div class="dest-card-tag">Indonesia</div></div>
+      <div class="dest-card"><span class="dest-card-emoji">🏛</span><div class="dest-card-name">Rome</div><div class="dest-card-tag">Italy</div></div>
+      <div class="dest-card"><span class="dest-card-emoji">🌵</span><div class="dest-card-name">Scottsdale</div><div class="dest-card-tag">Arizona</div></div>
+      <div class="dest-card"><span class="dest-card-emoji">🎭</span><div class="dest-card-name">New York</div><div class="dest-card-tag">New York</div></div>
+      <div class="dest-card"><span class="dest-card-emoji">🦁</span><div class="dest-card-name">Nairobi</div><div class="dest-card-tag">Kenya</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- DEMO -->
+<section class="demo" id="demo">
+  <div class="container">
+    <div class="section-header fade-up">
+      <div class="tag">Interactive demo</div>
+      <h2>See Jenna's group matching<br>engine in action</h2>
+      <p>Four friends planning a weekend in San Francisco. Click interests on and off to watch the AI match scores update in real time.</p>
+    </div>
+    <div class="demo-app fade-up">
+      <div class="app-topbar">
+        <div class="app-trip-name">SF Weekend Getaway — May 2025</div>
+        <div class="app-avatars">
+          <div class="av" style="background:#C9A84C;color:#0B1D35" title="Jamie K.">JK</div>
+          <div class="av" style="background:#1A9070;color:#fff" title="Sofia M.">SM</div>
+          <div class="av" style="background:#534AB7;color:#fff" title="Tyler R.">TR</div>
+          <div class="av" style="background:#D85A30;color:#fff" title="Anika L.">AL</div>
+        </div>
+      </div>
+      <div class="app-body">
+        <div class="app-left">
+          <div class="app-section-title">Group interests — click to toggle</div>
+          <div class="member-row">
+            <span style="font-size:0.75rem;color:var(--light);margin-right:0.25rem">Viewing as:</span>
+            <button class="member-btn active" onclick="setMember(this,'all')">All</button>
+            <button class="member-btn" onclick="setMember(this,'JK')" style="background:rgba(201,168,76,0.1);border-color:rgba(201,168,76,0.3)">JK</button>
+            <button class="member-btn" onclick="setMember(this,'SM')" style="background:rgba(26,144,112,0.1);border-color:rgba(26,144,112,0.3)">SM</button>
+            <button class="member-btn" onclick="setMember(this,'TR')" style="background:rgba(83,74,183,0.1);border-color:rgba(83,74,183,0.3)">TR</button>
+            <button class="member-btn" onclick="setMember(this,'AL')" style="background:rgba(216,90,48,0.1);border-color:rgba(216,90,48,0.3)">AL</button>
+          </div>
+          <div class="interests-grid" id="intGrid">
+            <div class="int-tag on" data-v="2" onclick="tog(this)"><span class="int-icon">🍷</span><span class="int-label">Fine dining</span></div>
+            <div class="int-tag on" data-v="2" onclick="tog(this)"><span class="int-icon">🎵</span><span class="int-label">Live music</span></div>
+            <div class="int-tag half" data-v="1" onclick="tog(this)"><span class="int-icon">🏔</span><span class="int-label">Hiking</span></div>
+            <div class="int-tag on" data-v="2" onclick="tog(this)"><span class="int-icon">🖼</span><span class="int-label">Museums</span></div>
+            <div class="int-tag half" data-v="1" onclick="tog(this)"><span class="int-icon">🌃</span><span class="int-label">Nightlife</span></div>
+            <div class="int-tag" data-v="0" onclick="tog(this)"><span class="int-icon">⚽</span><span class="int-label">Sports</span></div>
+            <div class="int-tag on" data-v="2" onclick="tog(this)"><span class="int-icon">🛍</span><span class="int-label">Shopping</span></div>
+            <div class="int-tag half" data-v="1" onclick="tog(this)"><span class="int-icon">🌊</span><span class="int-label">Beaches</span></div>
+            <div class="int-tag" data-v="0" onclick="tog(this)"><span class="int-icon">🎭</span><span class="int-label">Theater</span></div>
+            <div class="int-tag on" data-v="2" onclick="tog(this)"><span class="int-icon">🍜</span><span class="int-label">Street food</span></div>
+            <div class="int-tag half" data-v="1" onclick="tog(this)"><span class="int-icon">🧘</span><span class="int-label">Wellness</span></div>
+            <div class="int-tag" data-v="0" onclick="tog(this)"><span class="int-icon">📸</span><span class="int-label">Photography</span></div>
+            <div class="int-tag" data-v="0" onclick="tog(this)"><span class="int-icon">🚴</span><span class="int-label">Cycling</span></div>
+            <div class="int-tag on" data-v="2" onclick="tog(this)"><span class="int-icon">🍸</span><span class="int-label">Cocktail bars</span></div>
+            <div class="int-tag half" data-v="1" onclick="tog(this)"><span class="int-icon">🏛</span><span class="int-label">History</span></div>
+            <div class="int-tag" data-v="0" onclick="tog(this)"><span class="int-icon">🎨</span><span class="int-label">Art galleries</span></div>
+          </div>
+          <div style="font-size:0.72rem;color:var(--light);margin-top:0.5rem">
+            <span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--navy);margin-right:4px;vertical-align:middle"></span>Full match &nbsp;
+            <span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:rgba(26,144,112,0.3);margin-right:4px;vertical-align:middle"></span>Partial &nbsp;
+            <span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--cream3);border:1px solid var(--border);margin-right:4px;vertical-align:middle"></span>No match
+          </div>
+        </div>
+        <div class="app-right">
+          <div class="match-hero">
+            <div class="match-big" id="bigScore">84%</div>
+            <div class="match-label">Group compatibility score</div>
+            <div class="match-sub" id="matchComment">Great match — 3 of 4 will love most activities</div>
+          </div>
+          <div class="app-section-title">Individual satisfaction</div>
+          <div class="bars-section">
+            <div class="bar-row"><div class="bar-meta"><span>Jamie K.</span><strong id="s1">91%</strong></div><div class="bar-track"><div class="bar-fill bf-gold" id="b1" style="width:91%"></div></div></div>
+            <div class="bar-row"><div class="bar-meta"><span>Sofia M.</span><strong id="s2">88%</strong></div><div class="bar-track"><div class="bar-fill bf-teal" id="b2" style="width:88%"></div></div></div>
+            <div class="bar-row"><div class="bar-meta"><span>Tyler R.</span><strong id="s3">80%</strong></div><div class="bar-track"><div class="bar-fill bf-navy" id="b3" style="width:80%"></div></div></div>
+            <div class="bar-row"><div class="bar-meta"><span>Anika L.</span><strong id="s4">76%</strong></div><div class="bar-track"><div class="bar-fill bf-soft" id="b4" style="width:76%"></div></div></div>
+          </div>
+          <div class="app-section-title">Jenna's top suggestions for this group</div>
+          <div class="suggestions-list">
+            <div class="sug"><div class="sug-emoji" style="background:#FFF3CD">🎵</div><div class="sug-body"><div class="sug-name">Outside Lands Music Festival</div><div class="sug-meta">Golden Gate Park · All ages · Weekend</div></div><div class="sug-pct pct-high">95%</div></div>
+            <div class="sug"><div class="sug-emoji" style="background:#E8F5E9">🖼</div><div class="sug-body"><div class="sug-name">SF MoMA + Cafe 5 Lunch</div><div class="sug-meta">Museum + Fine dining combo · 3hrs</div></div><div class="sug-pct pct-high">89%</div></div>
+            <div class="sug"><div class="sug-emoji" style="background:#FDE8E0">🍜</div><div class="sug-body"><div class="sug-name">Ferry Building Marketplace</div><div class="sug-meta">Street food + Shopping · 2hrs · Free</div></div><div class="sug-pct pct-high">87%</div></div>
+            <div class="sug"><div class="sug-emoji" style="background:#E8EAF6">🍸</div><div class="sug-body"><div class="sug-name">Cocktail Crawl: North Beach</div><div class="sug-meta">5 bars · Guided tour · Evening</div></div><div class="sug-pct pct-med">78%</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LIVE EXPLORE -->
+<section class="explore" id="explore">
+  <!-- Compass rose watermark -->
+  <svg class="explore-compass" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="100" cy="100" r="95" stroke="#0B1D35" stroke-width="2" fill="none"/>
+    <circle cx="100" cy="100" r="80" stroke="#0B1D35" stroke-width="1" fill="none"/>
+    <circle cx="100" cy="100" r="5" fill="#0B1D35"/>
+    <polygon points="100,10 95,95 100,98 105,95" fill="#0B1D35"/>
+    <polygon points="100,190 95,105 100,102 105,105" fill="#0B1D35" opacity="0.4"/>
+    <polygon points="10,100 95,95 98,100 95,105" fill="#0B1D35" opacity="0.4"/>
+    <polygon points="190,100 105,95 102,100 105,105" fill="#0B1D35" opacity="0.4"/>
+    <line x1="100" y1="5" x2="100" y2="25" stroke="#0B1D35" stroke-width="2"/>
+    <line x1="100" y1="175" x2="100" y2="195" stroke="#0B1D35" stroke-width="1"/>
+    <line x1="5" y1="100" x2="25" y2="100" stroke="#0B1D35" stroke-width="1"/>
+    <line x1="175" y1="100" x2="195" y2="100" stroke="#0B1D35" stroke-width="1"/>
+    <text x="96" y="3" fill="#0B1D35" font-size="10" font-family="serif" font-weight="bold">N</text>
+  </svg>
+
+  <div class="container">
+    <div class="section-header fade-up">
+      <div class="tag">Live discovery</div>
+      <h2>You've landed.<br>Now ask Jenna.</h2>
+      <p>Real-time discovery tailored to your group's vibe. Jenna surfaces what's happening right now, right nearby — from hidden gems to tonight's hottest events.</p>
+    </div>
+    <div class="explore-tabs fade-up">
+      <button class="etab on" onclick="filterCards(this,'all')">All nearby</button>
+      <button class="etab" onclick="filterCards(this,'food')">Food & Drink</button>
+      <button class="etab" onclick="filterCards(this,'events')">Live Events</button>
+      <button class="etab" onclick="filterCards(this,'culture')">Culture</button>
+      <button class="etab" onclick="filterCards(this,'outdoors')">Outdoors</button>
+      <button class="etab" onclick="filterCards(this,'sports')">Sports</button>
+    </div>
+    <div class="explore-grid fade-up" id="exploreGrid">
+      <div class="ecard" data-cat="food"><div class="ecard-top" style="background:#FFF9E6"><span class="ecard-status status-open">Open now</span>🦪<span class="ecard-match">94% match</span></div><div class="ecard-body"><div class="ecard-name">Hog Island Oyster Co.</div><div class="ecard-detail">Fresh oysters · Waterfront views · 4.8★</div><div class="ecard-footer"><span class="ecard-price">$$</span><span class="ecard-dist">0.3 mi away</span></div></div></div>
+      <div class="ecard" data-cat="events"><div class="ecard-top" style="background:#EEF0FB"><span class="ecard-status status-tonight">Tonight</span>🎸<span class="ecard-match">92% match</span></div><div class="ecard-body"><div class="ecard-name">The Fillmore — Indie Night</div><div class="ecard-detail">Live music · Doors 8pm · Limited tickets</div><div class="ecard-footer"><span class="ecard-price">$35</span><span class="ecard-dist">1.1 mi away</span></div></div></div>
+      <div class="ecard" data-cat="culture"><div class="ecard-top" style="background:#FDE8E0">🖼<span class="ecard-match">89% match</span></div><div class="ecard-body"><div class="ecard-name">de Young Museum</div><div class="ecard-detail">World-class art · Open until 5pm · 4.7★</div><div class="ecard-footer"><span class="ecard-price">$15</span><span class="ecard-dist">1.8 mi away</span></div></div></div>
+      <div class="ecard" data-cat="outdoors"><div class="ecard-top" style="background:#E8F5E9">🌁<span class="ecard-match">85% match</span></div><div class="ecard-body"><div class="ecard-name">Golden Gate Bridge Walk</div><div class="ecard-detail">Iconic landmark · Clear skies today · 2hrs</div><div class="ecard-footer"><span class="ecard-price">Free</span><span class="ecard-dist">2.4 mi away</span></div></div></div>
+      <div class="ecard" data-cat="food"><div class="ecard-top" style="background:#F3E5F5"><span class="ecard-status status-hot">🔥 Hot</span>🍷<span class="ecard-match">91% match</span></div><div class="ecard-body"><div class="ecard-name">Quince Restaurant</div><div class="ecard-detail">Michelin-starred fine dining · 4.9★</div><div class="ecard-footer"><span class="ecard-price">$$$$</span><span class="ecard-dist">0.7 mi away</span></div></div></div>
+      <div class="ecard" data-cat="sports"><div class="ecard-top" style="background:#E3F2FD">⚾<span class="ecard-match">72% match</span></div><div class="ecard-body"><div class="ecard-name">Giants vs. Dodgers</div><div class="ecard-detail">Oracle Park · Tonight 7pm · Tickets avail</div><div class="ecard-footer"><span class="ecard-price">$45+</span><span class="ecard-dist">0.9 mi away</span></div></div></div>
+      <div class="ecard" data-cat="culture"><div class="ecard-top" style="background:#FFF8E1">🏛<span class="ecard-match">88% match</span></div><div class="ecard-body"><div class="ecard-name">Alcatraz Island</div><div class="ecard-detail">Historic landmark · Audio tour · Ferry included</div><div class="ecard-footer"><span class="ecard-price">$42</span><span class="ecard-dist">Ferry: 0.5mi</span></div></div></div>
+      <div class="ecard" data-cat="outdoors"><div class="ecard-top" style="background:#E0F7FA">🌿</div><div class="ecard-body"><div class="ecard-name">Lands End Coastal Trail</div><div class="ecard-detail">3.5mi loop · Moderate · Ocean views</div><div class="ecard-footer"><span class="ecard-price">Free</span><span class="ecard-dist">4.1 mi away</span></div></div></div>
+      <div class="ecard" data-cat="food"><div class="ecard-top" style="background:#FFF3CD"><span class="ecard-status status-open">Open now</span>🍜</div><div class="ecard-body"><div class="ecard-name">China Live</div><div class="ecard-detail">Modern Chinese · Street food stalls · 4.6★</div><div class="ecard-footer"><span class="ecard-price">$$</span><span class="ecard-dist">0.5 mi away</span></div></div></div>
+      <div class="ecard" data-cat="events"><div class="ecard-top" style="background:#FCE4EC"><span class="ecard-status status-tonight">This week</span>🎭<span class="ecard-match">76% match</span></div><div class="ecard-body"><div class="ecard-name">SF Symphony — Pops Night</div><div class="ecard-detail">Davies Symphony Hall · Thu & Fri</div><div class="ecard-footer"><span class="ecard-price">$55+</span><span class="ecard-dist">1.3 mi away</span></div></div></div>
+      <div class="ecard" data-cat="food"><div class="ecard-top" style="background:#E8F5E9"><span class="ecard-status status-open">Open now</span>🍸</div><div class="ecard-body"><div class="ecard-name">Trick Dog Bar</div><div class="ecard-detail">Inventive cocktails · No reservations · 4.7★</div><div class="ecard-footer"><span class="ecard-price">$$</span><span class="ecard-dist">1.9 mi away</span></div></div></div>
+      <div class="ecard" data-cat="culture"><div class="ecard-top" style="background:#E8EAF6">🔭</div><div class="ecard-body"><div class="ecard-name">California Academy of Sciences</div><div class="ecard-detail">Living roof · Aquarium · Planetarium</div><div class="ecard-footer"><span class="ecard-price">$35</span><span class="ecard-dist">2.0 mi away</span></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="section-header fade-up">
+      <div class="tag">Platform features</div>
+      <h2>Everything a group<br>of travelers needs</h2>
+      <p>Built from the ground up for how real people actually plan and experience travel together.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feat fade-up"><div class="feat-icon">✦</div><h3>AI interest matching</h3><p>Jenna weighs each person's preferences against 10,000+ activities to find the plan that makes the most people happiest.</p></div>
+      <div class="feat fade-up"><div class="feat-icon">📍</div><h3>Real-time discovery</h3><p>Live location-aware suggestions once you're at your destination. Concerts tonight, a farmers market two blocks away, current wait times.</p></div>
+      <div class="feat fade-up"><div class="feat-icon">🗳</div><h3>Group voting & veto</h3><p>Anyone can suggest changes, vote on alternatives, or veto an activity. Jenna instantly re-optimizes. No drama, just decisions.</p></div>
+      <div class="feat fade-up"><div class="feat-icon">💰</div><h3>Expense splitting</h3><p>Track shared costs, split bills, and settle up — all inside AskJenna. No more Venmo screenshots three days after the trip.</p><span class="feat-coming">Coming soon</span></div>
+      <div class="feat fade-up"><div class="feat-icon">🎫</div><h3>In-app booking</h3><p>Book restaurants, tours, experiences, and event tickets without leaving the app. Integrated with Viator, OpenTable, Ticketmaster, and more.</p><span class="feat-coming">Coming soon</span></div>
+      <div class="feat fade-up"><div class="feat-icon">🧠</div><h3>Jenna remembers you</h3><p>AskJenna remembers every trip and learns your preferences over time. After three trips, she knows you prefer boutique hotels and always want a beach day.</p><span class="feat-coming">Coming soon</span></div>
+      <div class="feat fade-up"><div class="feat-icon">🌦</div><h3>Weather adaptation</h3><p>Real-time weather integration means Jenna automatically suggests indoor alternatives on rainy days and pushes outdoor plans when the sun's out.</p></div>
+      <div class="feat fade-up"><div class="feat-icon">📱</div><h3>Offline access</h3><p>Your full itinerary, maps, and recommendations available offline. No roaming charges, no spotty signal stress.</p><span class="feat-coming">Coming soon</span></div>
+      <div class="feat fade-up"><div class="feat-icon">🎁</div><h3>Group gifting</h3><p>Friends can pool money to gift a Jenna-planned experience. A dinner, a tour, a surprise activity. Thoughtful, easy, and viral.</p><span class="feat-coming">Coming soon</span></div>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- CTA -->
+<section class="cta-section" id="cta">
+  <!-- Horizon SVG -->
+  <svg class="cta-horizon" viewBox="0 0 1200 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0 60 Q100 20 200 50 Q350 90 500 40 Q650 0 800 50 Q950 90 1100 30 L1200 50 L1200 120 L0 120 Z" fill="white"/>
+  </svg>
+  <div class="tag" style="color:var(--teal3);position:relative">Start your journey</div>
+  <h2>Ready to plan the <em>perfect</em> group trip?</h2>
+  <div class="cta-tagline">Just ask Jenna — she knows exactly where to go.</div>
+  <p>Create your free account and start planning. No credit card, no commitment — just better trips.</p>
+  <div class="signup-form" id="sForm">
+    <input class="signup-input" type="email" id="sEmail" placeholder="your@email.com">
+    <button class="signup-btn" onclick="doSignup()">Create free account →</button>
+  </div>
+  <div class="signup-success" id="sSuccess">
+    🎉 Welcome to AskJenna! Check your inbox to get started.
+  </div>
+  <p style="color:rgba(255,255,255,0.25);font-size:0.75rem;margin-top:1.2rem;position:relative">Free forever · No credit card needed · Unsubscribe anytime</p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-logo">Ask<span>Jenna</span></div>
+      <p class="footer-brand-desc">AI-powered group travel planning that satisfies every traveler — before the trip and while you're there.</p>
+      <div class="footer-tagline">Where should we go? Jenna knows.</div>
+    </div>
+    <div class="footer-col">
+      <h4>Product</h4>
+      <ul>
+        <li><a href="#how">How it works</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#explore">Live discovery</a></li>
+        <li><a href="#cta">Create account</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Explore</h4>
+      <ul>
+        <li><a href="#how">How it works</a></li>
+        <li><a href="#demo">Try the demo</a></li>
+        <li><a href="#explore">Live discovery</a></li>
+        <li><a href="#features">All features</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Contact</a></li>
+        <li><a href="#">Privacy policy</a></li>
+        <li><a href="#">Terms of use</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 AskJenna · askjenna.io · Beta prototype — real product coming soon.</p>
+    <div class="footer-logo" style="font-size:1rem;opacity:0.3">Ask<span>Jenna</span></div>
+  </div>
+</footer>
+
+<script>
+// INTEREST DEMO
+function tog(el){
+  const v=parseInt(el.dataset.v);
+  const nv=(v+1)%3;
+  el.dataset.v=nv;
+  el.classList.remove('on','half');
+  if(nv===2)el.classList.add('on');
+  if(nv===1)el.classList.add('half');
+  recalc();
+}
+function recalc(){
+  const tags=document.querySelectorAll('#intGrid .int-tag');
+  let tot=0,mx=0;
+  tags.forEach(t=>{tot+=parseInt(t.dataset.v);mx+=2});
+  const r=mx>0?tot/mx:0;
+  const base=50+Math.round(r*44);
+  setBar('b1','s1',Math.min(99,base+7));
+  setBar('b2','s2',Math.min(99,base+4));
+  setBar('b3','s3',Math.min(99,base-4));
+  setBar('b4','s4',Math.min(99,base-8));
+  const big=Math.min(99,base);
+  document.getElementById('bigScore').textContent=big+'%';
+  const el=document.getElementById('matchComment');
+  if(big>=85)el.textContent="Excellent match — everyone will love this itinerary";
+  else if(big>=70)el.textContent="Great match — 3 of 4 will love most activities";
+  else if(big>=55)el.textContent="Good start — add more shared interests to improve";
+  else el.textContent="Low match — try selecting more categories";
+}
+function setBar(bid,sid,val){
+  document.getElementById(bid).style.width=val+'%';
+  document.getElementById(sid).textContent=val+'%';
+}
+function setMember(btn,who){
+  document.querySelectorAll('.member-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// EXPLORE FILTER
+function filterCards(btn,cat){
+  document.querySelectorAll('.etab').forEach(t=>t.classList.remove('on'));
+  btn.classList.add('on');
+  document.querySelectorAll('.ecard').forEach(c=>{
+    c.style.display=(cat==='all'||c.dataset.cat===cat)?'':'none';
+  });
+}
+
+// SIGNUP
+function doSignup(){
+  const v=document.getElementById('sEmail').value;
+  if(!v||!v.includes('@')){
+    document.getElementById('sEmail').style.borderColor='rgba(216,90,48,0.6)';
+    return;
+  }
+  document.getElementById('sForm').style.display='none';
+  document.getElementById('sSuccess').style.display='block';
+}
+
+// SCROLL ANIMATIONS
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
+},{threshold:0.1});
+document.querySelectorAll('.fade-up').forEach(el=>obs.observe(el));
+
+// NAV ACTIVE STATES
+const sections=document.querySelectorAll('section[id]');
+const navLinks=document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  sections.forEach(s=>{if(window.scrollY>=s.offsetTop-100)cur=s.id});
+  navLinks.forEach(a=>{
+    a.style.color=a.getAttribute('href')==='#'+cur?'var(--gold)':'rgba(255,255,255,0.6)';
+  });
+});
+</script>
+</body>
+</html>
