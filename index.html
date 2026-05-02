@@ -362,6 +362,7 @@ nav{
 .signup-input:focus{border-color:var(--gold)}
 .signup-btn{background:var(--teal);color:#fff;border:none;padding:0.9rem 1.8rem;border-radius:8px;font-size:0.9rem;font-weight:500;font-family:'DM Sans',sans-serif;transition:all 0.2s;cursor:pointer}
 .signup-btn:hover{background:var(--teal2)}
+.signup-btn:disabled{opacity:0.6;cursor:not-allowed;transform:none}
 .signup-success{display:none;color:var(--teal3);font-size:0.9rem;padding:0.8rem;text-align:center;position:relative}
 
 /* ═══════════════════════
@@ -886,7 +887,7 @@ footer::before{content:'';position:absolute;inset:0;background-image:radial-grad
     <button class="signup-btn" onclick="doSignup()">Create free account →</button>
   </div>
   <div class="signup-success" id="sSuccess">
-    🎉 Welcome to AskJenna! Check your inbox to get started.
+    🎉 You're in! Welcome to AskJenna — we'll be in touch soon.
   </div>
   <p style="color:rgba(255,255,255,0.25);font-size:0.75rem;margin-top:1.2rem;position:relative">Free forever · No credit card needed · Unsubscribe anytime</p>
 </section>
@@ -980,15 +981,63 @@ function filterCards(btn,cat){
   });
 }
 
-// SIGNUP
-function doSignup(){
-  const v=document.getElementById('sEmail').value;
-  if(!v||!v.includes('@')){
-    document.getElementById('sEmail').style.borderColor='rgba(216,90,48,0.6)';
+// SUPABASE CONFIG
+const SUPA_URL = 'https://okzuzlfxvtrhepaehibk.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9renV6bGZ4dnRyaGVwYWVoaWJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3MzI3NTgsImV4cCI6MjA5MzMwODc1OH0.lEIktCZoPLPVFrPpbTzrjFZoyN1aeSY03bNGW7rRcv0';
+
+// SIGNUP — saves to Supabase signups table
+async function doSignup(){
+  const emailEl = document.getElementById('sEmail');
+  const btn = document.querySelector('.signup-btn');
+  const v = emailEl.value.trim();
+
+  // Basic validation
+  if(!v || !v.includes('@')){
+    emailEl.style.borderColor='rgba(216,90,48,0.6)';
+    emailEl.focus();
     return;
   }
-  document.getElementById('sForm').style.display='none';
-  document.getElementById('sSuccess').style.display='block';
+
+  // Loading state
+  btn.textContent = 'Saving...';
+  btn.disabled = true;
+  emailEl.disabled = true;
+
+  try {
+    const res = await fetch(SUPA_URL + '/rest/v1/signups', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPA_KEY,
+        'Authorization': 'Bearer ' + SUPA_KEY,
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({ email: v })
+    });
+
+    if(res.ok || res.status === 409) {
+      // 409 = email already exists, still show success
+      document.getElementById('sForm').style.display='none';
+      document.getElementById('sSuccess').style.display='block';
+    } else {
+      throw new Error('Server error: ' + res.status);
+    }
+  } catch(err) {
+    console.error('Signup error:', err);
+    btn.textContent = 'Create free account →';
+    btn.disabled = false;
+    emailEl.disabled = false;
+    emailEl.style.borderColor='rgba(216,90,48,0.6)';
+    // Show friendly error below input
+    let errEl = document.getElementById('sError');
+    if(!errEl){
+      errEl = document.createElement('p');
+      errEl.id = 'sError';
+      errEl.style.cssText = 'color:rgba(216,90,48,0.8);font-size:0.78rem;margin-top:0.5rem;position:relative';
+      document.getElementById('sForm').appendChild(errEl);
+    }
+    errEl.textContent = 'Something went wrong — please try again.';
+  }
 }
 
 // HERO ANIMATION
