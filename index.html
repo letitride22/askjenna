@@ -71,8 +71,12 @@ nav{
 ═══════════════════════ */
 .hero{
   min-height:100vh;background:var(--navy);
-  display:flex;flex-direction:column;justify-content:center;
-  padding:7rem 2rem 5rem;position:relative;overflow:hidden
+  display:flex;flex-direction:column;justify-content:flex-start;
+  padding:0 0 5rem;position:relative;overflow:hidden
+}
+.hero-content-wrap{
+  flex:1;display:flex;align-items:center;
+  padding:3rem 2rem 2rem;
 }
 /* Layered travel background */
 .hero-bg{position:absolute;inset:0;pointer-events:none;overflow:hidden}
@@ -87,7 +91,7 @@ nav{
 /* Subtle route line */
 .hero-route{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0.04}
 
-.hero-inner{max-width:1000px;margin:0 auto;width:100%;position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+.hero-inner{max-width:1000px;margin:0 auto;width:100%;position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;padding-top:2rem}
 .hero-left{display:flex;flex-direction:column}
 /* Trip animation card */
 .hero-anim{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:1.5rem;backdrop-filter:blur(10px);position:relative;overflow:hidden}
@@ -142,7 +146,7 @@ nav{
 /* ═══════════════════════
    DESTINATION TICKER
 ═══════════════════════ */
-.dest-ticker{background:rgba(255,255,255,0.04);border-top:1px solid rgba(255,255,255,0.06);border-bottom:1px solid rgba(255,255,255,0.06);padding:0.75rem 0;overflow:hidden;position:relative;z-index:1}
+.dest-ticker{background:rgba(255,255,255,0.04);border-top:1px solid rgba(255,255,255,0.06);border-bottom:1px solid rgba(255,255,255,0.06);padding:0.75rem 0;overflow:hidden;position:relative;z-index:1;margin-top:62px}
 .ticker-track{display:flex;gap:2.5rem;animation:ticker 25s linear infinite;white-space:nowrap;width:max-content}
 @keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 .ticker-item{display:flex;align-items:center;gap:0.5rem;color:rgba(255,255,255,0.35);font-size:0.78rem;letter-spacing:0.06em}
@@ -527,6 +531,7 @@ footer::before{content:'';position:absolute;inset:0;background-image:radial-grad
     </div>
   </div>
 
+  <div class="hero-content-wrap">
   <div class="hero-inner container">
     <!-- LEFT: headline + CTA -->
     <div class="hero-left">
@@ -603,6 +608,7 @@ footer::before{content:'';position:absolute;inset:0;background-image:radial-grad
       <button class="anim-restart" onclick="runHeroAnim()">↺ Replay</button>
     </div>
   </div>
+  </div><!-- /hero-content-wrap -->
   <div class="hero-scroll">
     <div class="scroll-line"></div>
     <span>Scroll</span>
