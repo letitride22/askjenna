@@ -446,27 +446,17 @@ footer::before{content:'';position:absolute;inset:0;background-image:radial-grad
 .fade-up{opacity:0;transform:translateY(24px);transition:opacity 0.6s ease,transform 0.6s ease}
 .fade-up.visible{opacity:1;transform:none}
 
-/* PWA INSTALL BANNER */
-.pwa-banner{
-  position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);
-  background:var(--navy);border:1px solid rgba(201,168,76,0.3);
-  border-radius:14px;padding:0.9rem 1.2rem;
-  display:flex;align-items:center;gap:0.9rem;
-  box-shadow:0 8px 32px rgba(0,0,0,0.3);
-  z-index:999;width:calc(100% - 3rem);max-width:380px;
-  animation:slideUp 0.4s ease;
-  display:none;
-}
-.pwa-banner.show{display:flex}
-@keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
-.pwa-banner-icon{width:40px;height:40px;background:var(--gold);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
-.pwa-banner-text{flex:1}
-.pwa-banner-title{font-size:0.88rem;font-weight:500;color:#fff;margin-bottom:0.1rem}
-.pwa-banner-sub{font-size:0.72rem;color:rgba(255,255,255,0.5)}
-.pwa-banner-actions{display:flex;flex-direction:column;gap:0.4rem;flex-shrink:0}
-.pwa-install-btn{background:var(--gold);color:var(--navy);border:none;padding:0.4rem 0.9rem;border-radius:6px;font-size:0.78rem;font-weight:500;cursor:pointer;font-family:"DM Sans",sans-serif;white-space:nowrap}
-.pwa-dismiss-btn{background:transparent;color:rgba(255,255,255,0.4);border:none;font-size:0.72rem;cursor:pointer;font-family:"DM Sans",sans-serif;text-align:center}
-.pwa-dismiss-btn:hover{color:rgba(255,255,255,0.7)}
+/* PWA banner replaced with modal */
+
+
+
+
+
+
+
+
+
+
 </style>
 </head>
 <body>
@@ -495,6 +485,9 @@ footer::before{content:'';position:absolute;inset:0;background-image:radial-grad
     <div class="nav-right">
       <button class="btn-nav-ghost" onclick="document.getElementById('cta').scrollIntoView({behavior:'smooth'})">Sign in</button>
       <button class="btn-nav-cta" onclick="document.getElementById('cta').scrollIntoView({behavior:'smooth'})">Create account →</button>
+      <button class="pwa-install-trigger" style="display:none;align-items:center;gap:0.4rem;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.7);border:1px solid rgba(255,255,255,0.15);padding:0.45rem 0.9rem;border-radius:6px;font-size:0.78rem;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s" onmouseover="this.style.background='rgba(255,255,255,0.15)'" onmouseout="this.style.background='rgba(255,255,255,0.08)'">
+        📱 Install app
+      </button>
     </div>
   </div>
 </nav>
@@ -1181,55 +1174,71 @@ window.addEventListener('scroll',()=>{
 if('serviceWorker' in navigator){
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')
-      .then(reg => console.log('SW registered:', reg.scope))
+      .then(reg => console.log('SW registered'))
       .catch(err => console.log('SW error:', err));
   });
 }
 
-// PWA — Install prompt
+// PWA — Install prompt (Android/Desktop Chrome)
 let deferredPrompt;
 window.addEventListener('beforeinstallprompt', e => {
   e.preventDefault();
   deferredPrompt = e;
-  setTimeout(() => {
-    const dismissed = localStorage.getItem('pwaDismissed');
-    if(!dismissed){
-      const b = document.getElementById('pwaBanner');
-      if(b) b.classList.add('show');
-    }
-  }, 8000);
+  // Show install buttons
+  document.querySelectorAll('.pwa-install-trigger').forEach(el => el.style.display='flex');
 });
 
-const installBtn = document.getElementById('pwaInstallBtn');
-const dismissBtn = document.getElementById('pwaDismissBtn');
-if(installBtn) installBtn.addEventListener('click', async () => {
-  if(!deferredPrompt) return;
-  deferredPrompt.prompt();
-  const result = await deferredPrompt.userChoice;
-  deferredPrompt = null;
-  const b = document.getElementById('pwaBanner');
-  if(b) b.classList.remove('show');
+// Handle install clicks
+document.addEventListener('click', async e => {
+  if(e.target.classList.contains('pwa-install-trigger') || 
+     e.target.closest('.pwa-install-trigger')) {
+    if(deferredPrompt) {
+      deferredPrompt.prompt();
+      const result = await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      document.querySelectorAll('.pwa-install-trigger').forEach(el => el.style.display='none');
+    } else {
+      // iOS or already installed — show instructions
+      document.getElementById('pwaModal').style.display='flex';
+    }
+  }
+  if(e.target.id === 'pwaModalClose' || e.target.id === 'pwaModal') {
+    document.getElementById('pwaModal').style.display='none';
+  }
 });
-if(dismissBtn) dismissBtn.addEventListener('click', () => {
-  const b = document.getElementById('pwaBanner');
-  if(b) b.classList.remove('show');
-  localStorage.setItem('pwaDismissed', 'true');
+
+// Always show install button (handles iOS too)
+window.addEventListener('load', () => {
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+  if(!isStandalone) {
+    document.querySelectorAll('.pwa-install-trigger').forEach(el => el.style.display='flex');
+  }
 });
 
 </script>
 
-<!-- PWA Install Banner -->
-<div class="pwa-banner" id="pwaBanner">
-  <div class="pwa-banner-icon">📍</div>
-  <div class="pwa-banner-text">
-    <div class="pwa-banner-title">Add AskJenna to your phone</div>
-    <div class="pwa-banner-sub">Plan trips from your home screen</div>
-  </div>
-  <div class="pwa-banner-actions">
-    <button class="pwa-install-btn" id="pwaInstallBtn">Install</button>
-    <button class="pwa-dismiss-btn" id="pwaDismissBtn">Not now</button>
+
+<!-- PWA Install Modal -->
+<div id="pwaModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1000;align-items:flex-end;justify-content:center">
+  <div style="background:var(--navy);border:1px solid rgba(201,168,76,0.3);border-radius:20px 20px 0 0;padding:2rem;width:100%;max-width:500px;position:relative">
+    <button id="pwaModalClose" style="position:absolute;top:1rem;right:1rem;background:transparent;border:none;color:rgba(255,255,255,0.5);font-size:1.2rem;cursor:pointer">✕</button>
+    <div style="text-align:center;margin-bottom:1.5rem">
+      <div style="font-size:2rem;margin-bottom:0.5rem">📱</div>
+      <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:#fff;margin-bottom:0.4rem">Install AskJenna</h3>
+      <p style="font-size:0.85rem;color:rgba(255,255,255,0.5)">Add to your home screen for the best experience</p>
+    </div>
+    <div style="background:rgba(255,255,255,0.05);border-radius:12px;padding:1.2rem;margin-bottom:1rem">
+      <p style="font-size:0.82rem;color:rgba(255,255,255,0.7);font-weight:500;margin-bottom:0.5rem">iPhone / iPad (Safari)</p>
+      <p style="font-size:0.8rem;color:rgba(255,255,255,0.5);line-height:1.6">Tap the <strong style="color:var(--gold)">Share button ⬆</strong> at the bottom of Safari, then tap <strong style="color:var(--gold)">"Add to Home Screen"</strong></p>
+    </div>
+    <div style="background:rgba(255,255,255,0.05);border-radius:12px;padding:1.2rem">
+      <p style="font-size:0.82rem;color:rgba(255,255,255,0.7);font-weight:500;margin-bottom:0.5rem">Android (Chrome)</p>
+      <p style="font-size:0.8rem;color:rgba(255,255,255,0.5);line-height:1.6">Tap the <strong style="color:var(--gold)">three dots menu ⋮</strong> in Chrome, then tap <strong style="color:var(--gold)">"Add to Home Screen"</strong></p>
+    </div>
   </div>
 </div>
+
 
 </body>
 </html>
