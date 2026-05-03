@@ -177,15 +177,21 @@ async function loadTrip(tripId){
     const headers = { 'apikey': SUPA_KEY };
     if(authToken) headers['Authorization'] = 'Bearer ' + authToken;
 
-    const res = await fetch(`${SUPA_URL}/rest/v1/trips?id=eq.${tripId}`, { headers });
-    const data = await res.json();
+    const [tripRes, membersRes] = await Promise.all([
+      fetch(`${SUPA_URL}/rest/v1/trips?id=eq.${tripId}`, { headers }),
+      fetch(`${SUPA_URL}/rest/v1/trip_members?trip_id=eq.${tripId}&order=created_at.asc`, { headers })
+    ]);
 
-    if(!data || data.length === 0){
+    const tripDataArr = await tripRes.json();
+    const membersData = await membersRes.json();
+
+    if(!tripDataArr || tripDataArr.length === 0){
       document.getElementById('pageLoading').innerHTML = '<p style="color:var(--muted)">Trip not found.</p>';
       return;
     }
 
-    tripData = data[0];
+    tripData = tripDataArr[0];
+    tripData.members = Array.isArray(membersData) ? membersData : [];
     renderPage();
   } catch(err){
     document.getElementById('pageLoading').innerHTML = '<p style="color:var(--muted)">Could not load trip — please refresh.</p>';
@@ -197,7 +203,7 @@ function renderPage(){
   const t = tripData;
   const inviteUrl = `${window.location.origin}/join.html?code=${t.invite_code}`;
   const isHost = currentUser && t.user_id === currentUser.id;
-  const memberCount = t.member_count || 1;
+  const memberCount = (t.members ? t.members.length + 1 : t.member_count || 1);
 
   const dateStr = t.start_date
     ? new Date(t.start_date).toLocaleDateString('en-US',{month:'short',day:'numeric'}) +
