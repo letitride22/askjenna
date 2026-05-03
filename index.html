@@ -11,6 +11,13 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0B1D35">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AskJenna">
+<meta name="description" content="AI-powered group travel planning. Where should we go? Jenna knows.">
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
 <title>AskJenna — AI-Powered Group Travel Planning</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -438,6 +445,28 @@ footer::before{content:'';position:absolute;inset:0;background-image:radial-grad
 /* ANIMATIONS */
 .fade-up{opacity:0;transform:translateY(24px);transition:opacity 0.6s ease,transform 0.6s ease}
 .fade-up.visible{opacity:1;transform:none}
+
+/* PWA INSTALL BANNER */
+.pwa-banner{
+  position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);
+  background:var(--navy);border:1px solid rgba(201,168,76,0.3);
+  border-radius:14px;padding:0.9rem 1.2rem;
+  display:flex;align-items:center;gap:0.9rem;
+  box-shadow:0 8px 32px rgba(0,0,0,0.3);
+  z-index:999;width:calc(100% - 3rem);max-width:380px;
+  animation:slideUp 0.4s ease;
+  display:none;
+}
+.pwa-banner.show{display:flex}
+@keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+.pwa-banner-icon{width:40px;height:40px;background:var(--gold);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.pwa-banner-text{flex:1}
+.pwa-banner-title{font-size:0.88rem;font-weight:500;color:#fff;margin-bottom:0.1rem}
+.pwa-banner-sub{font-size:0.72rem;color:rgba(255,255,255,0.5)}
+.pwa-banner-actions{display:flex;flex-direction:column;gap:0.4rem;flex-shrink:0}
+.pwa-install-btn{background:var(--gold);color:var(--navy);border:none;padding:0.4rem 0.9rem;border-radius:6px;font-size:0.78rem;font-weight:500;cursor:pointer;font-family:"DM Sans",sans-serif;white-space:nowrap}
+.pwa-dismiss-btn{background:transparent;color:rgba(255,255,255,0.4);border:none;font-size:0.72rem;cursor:pointer;font-family:"DM Sans",sans-serif;text-align:center}
+.pwa-dismiss-btn:hover{color:rgba(255,255,255,0.7)}
 </style>
 </head>
 <body>
@@ -1147,6 +1176,60 @@ window.addEventListener('scroll',()=>{
     a.style.color=a.getAttribute('href')==='#'+cur?'var(--gold)':'rgba(255,255,255,0.6)';
   });
 });
+
+// PWA — Service Worker Registration
+if('serviceWorker' in navigator){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(reg => console.log('SW registered:', reg.scope))
+      .catch(err => console.log('SW error:', err));
+  });
+}
+
+// PWA — Install prompt
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  setTimeout(() => {
+    const dismissed = localStorage.getItem('pwaDismissed');
+    if(!dismissed){
+      const b = document.getElementById('pwaBanner');
+      if(b) b.classList.add('show');
+    }
+  }, 8000);
+});
+
+const installBtn = document.getElementById('pwaInstallBtn');
+const dismissBtn = document.getElementById('pwaDismissBtn');
+if(installBtn) installBtn.addEventListener('click', async () => {
+  if(!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const result = await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  const b = document.getElementById('pwaBanner');
+  if(b) b.classList.remove('show');
+});
+if(dismissBtn) dismissBtn.addEventListener('click', () => {
+  const b = document.getElementById('pwaBanner');
+  if(b) b.classList.remove('show');
+  localStorage.setItem('pwaDismissed', 'true');
+});
+
 </script>
+
+<!-- PWA Install Banner -->
+<div class="pwa-banner" id="pwaBanner">
+  <div class="pwa-banner-icon">📍</div>
+  <div class="pwa-banner-text">
+    <div class="pwa-banner-title">Add AskJenna to your phone</div>
+    <div class="pwa-banner-sub">Plan trips from your home screen</div>
+  </div>
+  <div class="pwa-banner-actions">
+    <button class="pwa-install-btn" id="pwaInstallBtn">Install</button>
+    <button class="pwa-dismiss-btn" id="pwaDismissBtn">Not now</button>
+  </div>
+</div>
+
 </body>
 </html>
