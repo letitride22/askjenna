@@ -496,6 +496,12 @@ footer::before{content:'';position:absolute;inset:0;background-image:radial-grad
   </div>
 </nav>
 
+
+
+<!-- Mobile PWA Install Strip -->
+<div id="mobileInstallStrip" style="display:none;background:linear-gradient(135deg,var(--navy2),var(--navy));border-bottom:1px solid rgba(201,168,76,0.2);padding:0.65rem 1.2rem;align-items:center;justify-content:space-between;gap:0.75rem;">
+  <div style="display:flex;align-items:center;gap:0.7rem">
+    <div style="width:32px;height:32px;background:var(--gold);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0">📍</div>
     <div>
       <div style="font-size:0.78rem;font-weight:500;color:#fff;line-height:1.2">Add the AskJenna app here</div>
       <div style="font-size:0.68rem;color:rgba(255,255,255,0.45);margin-top:0.1rem">Faster, smoother, works offline</div>
@@ -503,7 +509,7 @@ footer::before{content:'';position:absolute;inset:0;background-image:radial-grad
   </div>
   <div style="display:flex;align-items:center;gap:0.5rem;flex-shrink:0">
     <button class="pwa-install-trigger" style="background:var(--gold);color:var(--navy);border:none;padding:0.4rem 0.9rem;border-radius:6px;font-size:0.78rem;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">Install</button>
-    <button onclick="document.getElementById('mobileInstallStrip').style.display='none';localStorage.setItem('stripDismissed','true')" style="background:transparent;border:none;color:rgba(255,255,255,0.35);font-size:1rem;cursor:pointer;padding:0.2rem 0.3rem;line-height:1">✕</button>
+    <button onclick="document.getElementById('mobileInstallStrip').style.display='none';localStorage.setItem('stripDismissed','true')" style="background:transparent;border:none;color:rgba(255,255,255,0.35);font-size:1.1rem;cursor:pointer;padding:0.2rem 0.4rem;line-height:1">✕</button>
   </div>
 </div>
 
@@ -1232,7 +1238,7 @@ window.addEventListener('load', () => {
     if(isMobile && !stripDismissed) {
       // Show mobile strip
       const strip = document.getElementById('mobileInstallStrip');
-      if(strip) strip.style.display='flex';
+      if(strip){ strip.style.display='flex'; }
     } else if(!isMobile) {
       // Show nav button on desktop
       document.querySelectorAll('.pwa-install-trigger:not(#mobileInstallStrip .pwa-install-trigger)').forEach(el => {
