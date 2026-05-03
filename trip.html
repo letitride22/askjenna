@@ -113,6 +113,18 @@ main{max-width:900px;margin:0 auto;padding:2.5rem 2rem 5rem}
 .page-loading{text-align:center;padding:5rem 2rem}
 .page-loading-spinner{width:36px;height:36px;border:3px solid var(--cream2);border-top-color:var(--navy);border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 1rem}
 @keyframes spin{to{transform:rotate(360deg)}}
+
+/* SUGGESTION ENHANCEMENTS */
+.sug-desc{font-size:0.75rem;color:var(--muted);margin-top:0.3rem;line-height:1.5}
+.sug-reason{font-size:0.72rem;color:var(--teal);margin-top:0.2rem;font-style:italic}
+.api-key-section{background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);border-radius:10px;padding:1rem;margin-bottom:1rem}
+.api-key-row{display:flex;gap:0.5rem;align-items:center;margin-top:0.5rem}
+.api-key-input{flex:1;background:var(--cream);border:1px solid var(--border);border-radius:6px;padding:0.6rem 0.8rem;font-size:0.82rem;color:var(--navy);font-family:monospace;outline:none}
+.btn-generate{background:var(--navy);color:#fff;border:none;padding:0.6rem 1.2rem;border-radius:6px;font-size:0.82rem;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;transition:all 0.2s}
+.btn-generate:hover{background:var(--navy2)}
+.btn-generate:disabled{opacity:0.6;cursor:not-allowed}
+.generating{text-align:center;padding:2rem;color:var(--muted)}
+.generating-spinner{width:28px;height:28px;border:3px solid var(--cream2);border-top-color:var(--navy);border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 0.75rem}
 </style>
 </head>
 <body>
@@ -312,16 +324,33 @@ function renderPage(){
 
     <!-- SUGGESTIONS -->
     <div class="suggestions-section">
-      <div class="card-title" style="margin-bottom:1rem">✦ Jenna's suggestions for this group</div>
+      <div class="card-title" style="margin-bottom:0.75rem">✦ Jenna's suggestions for this group</div>
+      
+      <!-- API Key input (shown to host only) -->
+      <div class="api-key-section" id="apiKeySection" style="display:none">
+        <div style="font-size:0.82rem;font-weight:500;color:var(--navy);margin-bottom:0.2rem">🔑 Enter your Claude API key to activate Jenna</div>
+        <div style="font-size:0.75rem;color:var(--muted);margin-bottom:0.5rem">Get a free key at console.anthropic.com — your key is never stored on our servers</div>
+        <div class="api-key-row">
+          <input type="password" class="api-key-input" id="apiKeyInput" placeholder="sk-ant-...">
+          <button class="btn-generate" id="generateBtn" onclick="generateSuggestions()">Ask Jenna ✦</button>
+        </div>
+      </div>
+
+      <!-- Waiting state -->
       <div class="sug-waiting" id="sugWaiting">
         <span>🤔</span>
-        Jenna is waiting for more interests before making suggestions. Add yours above and invite your crew!
+        Add your interests above and invite your crew — then ask Jenna for suggestions!
       </div>
-      <div class="sug-list" id="sugList" style="display:none">
-        <div class="sug-item"><div class="sug-icon" style="background:#FFF3CD">🎵</div><div class="sug-body"><div class="sug-name">Live music night at a local venue</div><div class="sug-meta">Evening · Great for groups · 2–3hrs</div></div><div class="sug-pct pct-high">94%</div></div>
-        <div class="sug-item"><div class="sug-icon" style="background:#E8F5E9">🖼</div><div class="sug-body"><div class="sug-name">Museum day + fine dining lunch</div><div class="sug-meta">Full day · Culture + food combo</div></div><div class="sug-pct pct-high">89%</div></div>
-        <div class="sug-item"><div class="sug-icon" style="background:#FDE8E0">🍜</div><div class="sug-body"><div class="sug-name">Street food market tour</div><div class="sug-meta">2hrs · Casual · Everyone loves this</div></div><div class="sug-pct pct-high">87%</div></div>
+
+      <!-- Generating state -->
+      <div class="generating" id="sugGenerating" style="display:none">
+        <div class="generating-spinner"></div>
+        <div style="font-size:0.88rem;font-weight:500;color:var(--navy);margin-bottom:0.3rem">Jenna is thinking...</div>
+        <div style="font-size:0.78rem;color:var(--muted)">Analyzing your group's interests and finding the perfect activities</div>
       </div>
+
+      <!-- Results -->
+      <div class="sug-list" id="sugList" style="display:none;flex-direction:column;gap:0.75rem"></div>
     </div>
   `;
 }
@@ -343,19 +372,88 @@ async function saveInterests(){
   btn.disabled = true;
   btn.textContent = 'Saving...';
 
-  // Save to localStorage for now (will connect to DB next)
   const interestData = Array.from(selectedInterests).map(i => INTERESTS[i].lbl);
-  localStorage.setItem(`interests_${tripData.id}`, JSON.stringify(interestData));
+
+  try {
+    // Save host interests as a trip member
+    await fetch(`${SUPA_URL}/rest/v1/trip_members`, {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'apikey':SUPA_KEY,
+        'Authorization':'Bearer '+authToken,
+        'Prefer':'return=minimal'
+      },
+      body: JSON.stringify({
+        trip_id: tripData.id,
+        user_id: currentUser.id,
+        name: currentUser.user_metadata?.full_name || 'Host',
+        interests: interestData,
+        is_guest: false
+      })
+    });
+  } catch(err){ console.log('Could not save interests to DB'); }
+
+  localStorage.setItem('interests_' + tripData.id, JSON.stringify(interestData));
 
   setTimeout(() => {
     document.getElementById('interestsSection').style.opacity = '0.6';
     document.getElementById('interestsSaved').style.display = 'block';
     btn.style.display = 'none';
-    // Show suggestions
-    document.getElementById('sugWaiting').style.display = 'none';
-    document.getElementById('sugList').style.display = 'flex';
-    document.getElementById('sugList').style.flexDirection = 'column';
+    // Show API key section for host
+    if(currentUser && tripData.user_id === currentUser.id) {
+      document.getElementById('apiKeySection').style.display = 'block';
+      document.getElementById('sugWaiting').style.display = 'none';
+    }
   }, 800);
+}
+
+// ── GENERATE AI SUGGESTIONS ───────────────────────
+async function generateSuggestions(){
+  const apiKey = document.getElementById('apiKeyInput').value.trim();
+  if(!apiKey || !apiKey.startsWith('sk-ant-')){
+    alert('Please enter a valid Claude API key (starts with sk-ant-)');
+    return;
+  }
+
+  const btn = document.getElementById('generateBtn');
+  btn.disabled = true;
+  btn.textContent = 'Asking Jenna...';
+  document.getElementById('apiKeySection').style.display = 'none';
+  document.getElementById('sugWaiting').style.display = 'none';
+  document.getElementById('sugGenerating').style.display = 'block';
+
+  try {
+    // Load all members including host interests
+    const headers = { 'apikey': SUPA_KEY };
+    if(authToken) headers['Authorization'] = 'Bearer ' + authToken;
+    const membersRes = await fetch(
+      `${SUPA_URL}/rest/v1/trip_members?trip_id=eq.${tripData.id}`,
+      { headers }
+    );
+    const members = await membersRes.json();
+
+    // Call Jenna AI engine
+    const suggestions = await JENNA.getSuggestions(tripData, members || [], apiKey);
+
+    // Render results
+    document.getElementById('sugGenerating').style.display = 'none';
+    document.getElementById('sugList').style.display = 'flex';
+    JENNA.renderSuggestions(suggestions, 'sugList');
+
+    // Save key to session only (not localStorage for security)
+    sessionStorage.setItem('aj_api_key', apiKey);
+
+    // Update match card
+    JENNA.renderMatchCard(members || [], 'matchCardInner');
+
+  } catch(err){
+    document.getElementById('sugGenerating').style.display = 'none';
+    document.getElementById('apiKeySection').style.display = 'block';
+    document.getElementById('generateBtn').disabled = false;
+    document.getElementById('generateBtn').textContent = 'Ask Jenna ✦';
+    alert('Something went wrong: ' + err.message + '\n\nMake sure your API key is correct.');
+  }
 }
 
 // ── INVITE / SHARE ────────────────────────────────
@@ -386,5 +484,6 @@ async function nativeShare(url, name){
   } catch(e){}
 }
 </script>
+<script src="/jenna.js"></script>
 </body>
 </html>
