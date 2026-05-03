@@ -180,9 +180,31 @@ const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsI
 let currentUser = null;
 let authToken = null;
 
+// ── TOKEN REFRESH ────────────────────────────────
+async function refreshToken(){
+  const refreshToken = localStorage.getItem('aj_refresh_token');
+  if(!refreshToken) return null;
+
+  try {
+    const res = await fetch(`${SUPA_URL}/auth/v1/token?grant_type=refresh_token`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPA_KEY },
+      body: JSON.stringify({ refresh_token: refreshToken })
+    });
+    const data = await res.json();
+    if(data.access_token){
+      localStorage.setItem('aj_token', data.access_token);
+      localStorage.setItem('aj_user', JSON.stringify(data.user));
+      if(data.refresh_token) localStorage.setItem('aj_refresh_token', data.refresh_token);
+      return data.access_token;
+    }
+  } catch(err){ console.log('Token refresh failed:', err); }
+  return null;
+}
+
 // ── AUTH CHECK ───────────────────────────────────
 window.addEventListener('load', async () => {
-  const token = localStorage.getItem('aj_token');
+  let token = localStorage.getItem('aj_token');
   const user = localStorage.getItem('aj_user');
 
   if(!token || !user){
@@ -190,8 +212,26 @@ window.addEventListener('load', async () => {
     return;
   }
 
+  // Check if token is expired (JWT exp claim)
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const expiry = payload.exp * 1000;
+    const isExpired = Date.now() > expiry - 60000; // refresh 1 min before expiry
+
+    if(isExpired){
+      console.log('Token expired, refreshing...');
+      const newToken = await refreshToken();
+      if(!newToken){
+        // Refresh failed — send to login
+        window.location.href = '/auth.html';
+        return;
+      }
+      token = newToken;
+    }
+  } catch(err){ console.log('Could not check token expiry'); }
+
   authToken = token;
-  currentUser = JSON.parse(user);
+  currentUser = JSON.parse(localStorage.getItem('aj_user'));
 
   // Set greeting
   const hour = new Date().getHours();
@@ -201,6 +241,12 @@ window.addEventListener('load', async () => {
   // Set name
   const name = currentUser.user_metadata?.full_name?.split(' ')[0] || 'traveler';
   document.getElementById('navUserName').textContent = name;
+
+  // Auto refresh token every 30 minutes
+  setInterval(async () => {
+    const refreshed = await refreshToken();
+    if(refreshed) authToken = refreshed;
+  }, 30 * 60 * 1000);
 
   // Load trips
   await loadTrips();

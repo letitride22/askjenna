@@ -281,9 +281,10 @@ async function signIn(){
     if(data.error_description || data.error){
       showError(data.error_description || data.error || 'Invalid email or password');
     } else if(data.access_token){
-      // Save session
+      // Save session including refresh token
       localStorage.setItem('aj_token', data.access_token);
       localStorage.setItem('aj_user', JSON.stringify(data.user));
+      if(data.refresh_token) localStorage.setItem('aj_refresh_token', data.refresh_token);
       // Redirect to dashboard
       window.location.href = '/dashboard.html';
     }
