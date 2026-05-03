@@ -455,6 +455,10 @@ footer::before{content:'';position:absolute;inset:0;background-image:radial-grad
 @media(min-width:769px){
   #mobileInstallStrip{ display:none !important; }
 }
+/* Show mobile strip on mobile */
+@media(max-width:768px){
+  #mobileInstallStrip{ display:flex !important; }
+}
 
 
 
@@ -503,17 +507,17 @@ footer::before{content:'';position:absolute;inset:0;background-image:radial-grad
 
 
 <!-- Mobile PWA Install Strip -->
-<div id="mobileInstallStrip" style="display:flex;background:linear-gradient(135deg,var(--navy2),var(--navy));border-bottom:1px solid rgba(201,168,76,0.2);padding:0.65rem 1.2rem;align-items:center;justify-content:space-between;gap:0.75rem;">
+<div id="mobileInstallStrip" style="background:#142847;border-bottom:2px solid #C9A84C;padding:0.75rem 1rem;display:flex;align-items:center;justify-content:space-between;gap:0.75rem;">
   <div style="display:flex;align-items:center;gap:0.7rem">
-    <div style="width:32px;height:32px;background:var(--gold);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0">📍</div>
+    <div style="width:34px;height:34px;background:#C9A84C;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">📍</div>
     <div>
-      <div style="font-size:0.78rem;font-weight:500;color:#fff;line-height:1.2">Add the AskJenna app here</div>
-      <div style="font-size:0.68rem;color:rgba(255,255,255,0.45);margin-top:0.1rem">Faster, smoother, works offline</div>
+      <div style="font-size:0.8rem;font-weight:500;color:#ffffff">Add the AskJenna app here</div>
+      <div style="font-size:0.7rem;color:rgba(255,255,255,0.5);margin-top:0.1rem">Faster, smoother, works offline</div>
     </div>
   </div>
-  <div style="display:flex;align-items:center;gap:0.5rem;flex-shrink:0">
-    <button class="pwa-install-trigger" style="background:var(--gold);color:var(--navy);border:none;padding:0.4rem 0.9rem;border-radius:6px;font-size:0.78rem;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">Install</button>
-    <button onclick="document.getElementById('mobileInstallStrip').style.display='none';localStorage.setItem('stripDismissed','true')" style="background:transparent;border:none;color:rgba(255,255,255,0.35);font-size:1.1rem;cursor:pointer;padding:0.2rem 0.4rem;line-height:1">✕</button>
+  <div style="display:flex;align-items:center;gap:0.5rem">
+    <button onclick="installApp()" style="background:#C9A84C;color:#0B1D35;border:none;padding:0.45rem 1rem;border-radius:6px;font-size:0.8rem;font-weight:600;cursor:pointer">Install</button>
+    <button onclick="this.parentElement.parentElement.style.display='none'" style="background:none;border:none;color:rgba(255,255,255,0.4);font-size:1.2rem;cursor:pointer;line-height:1;padding:0 0.2rem">✕</button>
   </div>
 </div>
 
@@ -1213,37 +1217,42 @@ window.addEventListener('beforeinstallprompt', e => {
   document.querySelectorAll('.pwa-install-trigger').forEach(el => el.style.display='flex');
 });
 
-// Handle install clicks
-document.addEventListener('click', async e => {
-  if(e.target.classList.contains('pwa-install-trigger') || 
-     e.target.closest('.pwa-install-trigger')) {
-    if(deferredPrompt) {
-      deferredPrompt.prompt();
-      const result = await deferredPrompt.userChoice;
-      deferredPrompt = null;
-      document.querySelectorAll('.pwa-install-trigger').forEach(el => el.style.display='none');
-    } else {
-      // iOS or already installed — show instructions
-      document.getElementById('pwaModal').style.display='flex';
-    }
+// Install function
+async function installApp(){
+  if(deferredPrompt){
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    const strip = document.getElementById('mobileInstallStrip');
+    if(strip) strip.style.display='none';
+  } else {
+    // iOS — show modal instructions
+    const m = document.getElementById('pwaModal');
+    if(m) m.style.display='flex';
   }
-  if(e.target.id === 'pwaModalClose' || e.target.id === 'pwaModal') {
+}
+
+// Close modal
+document.addEventListener('click', e => {
+  if(e.target.id === 'pwaModalClose' || e.target.id === 'pwaModal'){
     document.getElementById('pwaModal').style.display='none';
   }
 });
 
-// Hide strip if already installed as PWA
-window.addEventListener('load', () => {
-  const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-  if(isStandalone) {
+// Hide strip if already installed
+if(window.matchMedia('(display-mode: standalone)').matches){
+  document.addEventListener('DOMContentLoaded', () => {
     const strip = document.getElementById('mobileInstallStrip');
-    if(strip) strip.style.display = 'none';
-    return;
-  }
-  // Show desktop nav install button
-  if(window.innerWidth > 768) {
+    if(strip) strip.style.display='none';
+  });
+}
+// Show desktop install button when Chrome prompts available  
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  if(window.innerWidth > 768){
     document.querySelectorAll('.pwa-install-trigger').forEach(el => {
-      if(!el.closest('#mobileInstallStrip')) el.style.display = 'flex';
+      if(!el.closest('#mobileInstallStrip')) el.style.display='flex';
     });
   }
 });
