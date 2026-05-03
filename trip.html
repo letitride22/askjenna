@@ -205,6 +205,8 @@ async function loadTrip(tripId){
     tripData = tripDataArr[0];
     tripData.members = Array.isArray(membersData) ? membersData : [];
     renderPage();
+    // Load host's existing interests if any
+    if(currentUser) loadExistingInterests(membersData);
   } catch(err){
     document.getElementById('pageLoading').innerHTML = '<p style="color:var(--muted)">Could not load trip — please refresh.</p>';
   }
@@ -355,6 +357,36 @@ function renderPage(){
   `;
 }
 
+// ── LOAD EXISTING INTERESTS ──────────────────────
+function loadExistingInterests(members){
+  if(!currentUser || !members) return;
+  const myRecord = members.find(m => m.user_id === currentUser.id);
+  if(!myRecord || !myRecord.interests) return;
+
+  // Pre-select existing interests
+  myRecord.interests.forEach(interest => {
+    const idx = INTERESTS.findIndex(i => i.lbl === interest);
+    if(idx !== -1){
+      selectedInterests.add(String(idx));
+      const btn = document.querySelector(`[data-idx="${idx}"]`);
+      if(btn) btn.classList.add('sel');
+    }
+  });
+
+  // Update button to show editing state
+  const saveBtn = document.getElementById('saveIntBtn');
+  if(saveBtn){
+    saveBtn.textContent = '✓ Update my interests';
+    saveBtn.style.background = 'var(--teal)';
+  }
+
+  // Show Ask Jenna button if host already has interests
+  if(tripData.user_id === currentUser.id){
+    document.getElementById('apiKeySection').style.display = 'block';
+    document.getElementById('sugWaiting').style.display = 'none';
+  }
+}
+
 // ── INTERESTS ─────────────────────────────────────
 function toggleInt(el){
   el.classList.toggle('sel');
@@ -375,37 +407,61 @@ async function saveInterests(){
   const interestData = Array.from(selectedInterests).map(i => INTERESTS[i].lbl);
 
   try {
-    // Save host interests as a trip member
-    await fetch(`${SUPA_URL}/rest/v1/trip_members`, {
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'apikey':SUPA_KEY,
-        'Authorization':'Bearer '+authToken,
-        'Prefer':'return=minimal'
-      },
-      body: JSON.stringify({
-        trip_id: tripData.id,
-        user_id: currentUser.id,
-        name: currentUser.user_metadata?.full_name || 'Host',
-        interests: interestData,
-        is_guest: false
-      })
-    });
-  } catch(err){ console.log('Could not save interests to DB'); }
+    // Check if host already has a member record
+    const checkRes = await fetch(
+      `${SUPA_URL}/rest/v1/trip_members?trip_id=eq.${tripData.id}&user_id=eq.${currentUser.id}`,
+      { headers:{ 'apikey':SUPA_KEY, 'Authorization':'Bearer '+authToken } }
+    );
+    const existing = await checkRes.json();
+
+    if(existing && existing.length > 0) {
+      // Update existing record
+      await fetch(
+        `${SUPA_URL}/rest/v1/trip_members?trip_id=eq.${tripData.id}&user_id=eq.${currentUser.id}`,
+        {
+          method:'PATCH',
+          headers:{
+            'Content-Type':'application/json',
+            'apikey':SUPA_KEY,
+            'Authorization':'Bearer '+authToken
+          },
+          body: JSON.stringify({ interests: interestData })
+        }
+      );
+    } else {
+      // Create new record
+      await fetch(`${SUPA_URL}/rest/v1/trip_members`, {
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json',
+          'apikey':SUPA_KEY,
+          'Authorization':'Bearer '+authToken,
+          'Prefer':'return=minimal'
+        },
+        body: JSON.stringify({
+          trip_id: tripData.id,
+          user_id: currentUser.id,
+          name: currentUser.user_metadata?.full_name || 'Host',
+          interests: interestData,
+          is_guest: false
+        })
+      });
+    }
+  } catch(err){ console.log('Could not save interests:', err); }
 
   localStorage.setItem('interests_' + tripData.id, JSON.stringify(interestData));
 
-  setTimeout(() => {
-    document.getElementById('interestsSection').style.opacity = '0.6';
-    document.getElementById('interestsSaved').style.display = 'block';
-    btn.style.display = 'none';
-    // Show API key section for host
-    if(currentUser && tripData.user_id === currentUser.id) {
-      document.getElementById('apiKeySection').style.display = 'block';
-      document.getElementById('sugWaiting').style.display = 'none';
-    }
-  }, 800);
+  document.getElementById('interestsSaved').style.display = 'block';
+  btn.textContent = '✓ Interests saved — update anytime';
+  btn.disabled = false;
+  btn.style.background = 'var(--teal)';
+  btn.onclick = saveInterests;
+
+  // Show Ask Jenna button
+  if(currentUser && tripData.user_id === currentUser.id) {
+    document.getElementById('apiKeySection').style.display = 'block';
+    document.getElementById('sugWaiting').style.display = 'none';
+  }
 }
 
 // ── GENERATE AI SUGGESTIONS ───────────────────────
