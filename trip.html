@@ -279,14 +279,18 @@ function renderPage(){
             const color = colors[i % colors.length];
             const initial = m.name ? m.name.charAt(0).toUpperCase() : '?';
             const hasInterests = m.interests && m.interests.length > 0;
-            const interestPreview = hasInterests ? m.interests.slice(0,3).join(' · ') : 'Joined';
-            return '<div class="member-item">' +
+            const interestPreview = hasInterests ? m.interests.slice(0,3).join(' · ') : 'Joined — no interests yet';
+            const isHost = currentUser && t.user_id === currentUser.id;
+            return '<div class="member-item" id="member-' + m.id + '">' +
               '<div class="member-av" style="background:' + color + '">' + initial + '</div>' +
               '<div class="member-info">' +
                 '<div class="member-name">' + m.name + '</div>' +
                 '<div class="member-status">' + interestPreview + '</div>' +
               '</div>' +
-              '<span class="member-badge ' + (hasInterests ? 'badge-done' : 'badge-pending') + '">' + (hasInterests ? '✓ Ready' : 'Pending') + '</span>' +
+              '<div style="display:flex;align-items:center;gap:0.4rem">' +
+                '<span class="member-badge ' + (hasInterests ? 'badge-done' : 'badge-pending') + '">' + (hasInterests ? '✓ Ready' : 'Pending') + '</span>' +
+                (isHost ? '<button onclick="removeMember(\'' + m.id + '\',\'' + m.name + '\')" style="background:rgba(216,90,48,0.08);border:1px solid rgba(216,90,48,0.2);color:#D85A30;font-size:0.72rem;cursor:pointer;padding:0.2rem 0.6rem;border-radius:4px;font-family:DM Sans,sans-serif">Remove</button>' : '') +
+              '</div>' +
             '</div>';
           }).join('') : '<div style="font-size:0.78rem;color:var(--muted);text-align:center;padding:0.75rem;border-top:1px solid var(--border);margin-top:0.5rem">Waiting for friends to join via the invite link...</div>'}
         </div></div>
@@ -516,6 +520,28 @@ async function generateSuggestions(){
     retryBtn.onclick = generateSuggestions;
     document.getElementById('sugWaiting').appendChild(retryBtn);
     console.error('Jenna error:', err);
+  }
+}
+
+// ── REMOVE MEMBER ────────────────────────────────
+async function removeMember(memberId, memberName){
+  if(!confirm('Remove ' + memberName + ' from this trip?')) return;
+  try {
+    await fetch(`${SUPA_URL}/rest/v1/trip_members?id=eq.${memberId}`, {
+      method: 'DELETE',
+      headers: {
+        'apikey': SUPA_KEY,
+        'Authorization': 'Bearer ' + authToken
+      }
+    });
+    // Remove from UI
+    const el = document.getElementById('member-' + memberId);
+    if(el) el.remove();
+    // Update member count display
+    const params = new URLSearchParams(window.location.search);
+    await loadTrip(params.get('id'));
+  } catch(err){
+    alert('Could not remove member — please try again');
   }
 }
 
