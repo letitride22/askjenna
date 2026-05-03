@@ -326,14 +326,14 @@ function renderPage(){
     <div class="suggestions-section">
       <div class="card-title" style="margin-bottom:0.75rem">✦ Jenna's suggestions for this group</div>
       
-      <!-- API Key input (shown to host only) -->
-      <div class="api-key-section" id="apiKeySection" style="display:none">
-        <div style="font-size:0.82rem;font-weight:500;color:var(--navy);margin-bottom:0.2rem">🔑 Enter your Claude API key to activate Jenna</div>
-        <div style="font-size:0.75rem;color:var(--muted);margin-bottom:0.5rem">Get a free key at console.anthropic.com — your key is never stored on our servers</div>
-        <div class="api-key-row">
-          <input type="password" class="api-key-input" id="apiKeyInput" placeholder="sk-ant-...">
-          <button class="btn-generate" id="generateBtn" onclick="generateSuggestions()">Ask Jenna ✦</button>
+      <!-- Ask Jenna button (shown after interests saved) -->
+      <div class="api-key-section" id="apiKeySection" style="display:none;text-align:center">
+        <div style="font-size:0.88rem;color:var(--muted);margin-bottom:1rem;line-height:1.6">
+          Your interests are saved! Ready for Jenna to find the perfect activities for your group?
         </div>
+        <button class="btn-generate" id="generateBtn" onclick="generateSuggestions()" style="width:100%;padding:0.9rem;font-size:0.95rem">
+          ✦ Ask Jenna for suggestions
+        </button>
       </div>
 
       <!-- Waiting state -->
@@ -410,21 +410,12 @@ async function saveInterests(){
 
 // ── GENERATE AI SUGGESTIONS ───────────────────────
 async function generateSuggestions(){
-  const apiKey = document.getElementById('apiKeyInput').value.trim();
-  if(!apiKey || !apiKey.startsWith('sk-ant-')){
-    alert('Please enter a valid Claude API key (starts with sk-ant-)');
-    return;
-  }
-
-  const btn = document.getElementById('generateBtn');
-  btn.disabled = true;
-  btn.textContent = 'Asking Jenna...';
   document.getElementById('apiKeySection').style.display = 'none';
   document.getElementById('sugWaiting').style.display = 'none';
   document.getElementById('sugGenerating').style.display = 'block';
 
   try {
-    // Load all members including host interests
+    // Load all members
     const headers = { 'apikey': SUPA_KEY };
     if(authToken) headers['Authorization'] = 'Bearer ' + authToken;
     const membersRes = await fetch(
@@ -433,26 +424,42 @@ async function generateSuggestions(){
     );
     const members = await membersRes.json();
 
-    // Call Jenna AI engine
-    const suggestions = await JENNA.getSuggestions(tripData, members || [], apiKey);
+    // Call Supabase Edge Function (API key is secure on server)
+    const res = await fetch(
+      `${SUPA_URL}/functions/v1/ask-jenna`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + authToken,
+          'apikey': SUPA_KEY
+        },
+        body: JSON.stringify({
+          trip: tripData,
+          members: members || []
+        })
+      }
+    );
+
+    const data = await res.json();
+
+    if(data.error) throw new Error(data.error);
 
     // Render results
     document.getElementById('sugGenerating').style.display = 'none';
     document.getElementById('sugList').style.display = 'flex';
-    JENNA.renderSuggestions(suggestions, 'sugList');
-
-    // Save key to session only (not localStorage for security)
-    sessionStorage.setItem('aj_api_key', apiKey);
-
-    // Update match card
-    JENNA.renderMatchCard(members || [], 'matchCardInner');
+    JENNA.renderSuggestions(data.suggestions, 'sugList');
 
   } catch(err){
     document.getElementById('sugGenerating').style.display = 'none';
-    document.getElementById('apiKeySection').style.display = 'block';
-    document.getElementById('generateBtn').disabled = false;
-    document.getElementById('generateBtn').textContent = 'Ask Jenna ✦';
-    alert('Something went wrong: ' + err.message + '\n\nMake sure your API key is correct.');
+    document.getElementById('sugWaiting').style.display = 'block';
+    document.getElementById('sugWaiting').innerHTML = '<span>😕</span>Something went wrong — please try again.';
+    const retryBtn = document.createElement('button');
+    retryBtn.textContent = 'Try again';
+    retryBtn.style.cssText = 'margin-top:0.8rem;background:var(--navy);color:#fff;border:none;padding:0.5rem 1.2rem;border-radius:6px;font-size:0.82rem;cursor:pointer;font-family:DM Sans,sans-serif';
+    retryBtn.onclick = generateSuggestions;
+    document.getElementById('sugWaiting').appendChild(retryBtn);
+    console.error('Jenna error:', err);
   }
 }
 
