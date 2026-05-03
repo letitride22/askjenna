@@ -1231,20 +1231,19 @@ document.addEventListener('click', async e => {
 // Show install UI based on device
 window.addEventListener('load', () => {
   const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-  const stripDismissed = localStorage.getItem('stripDismissed');
+  if(isStandalone) return; // Already installed — hide everything
+
   const isMobile = window.innerWidth <= 768;
-  
-  if(!isStandalone) {
-    if(isMobile && !stripDismissed) {
-      // Show mobile strip
-      const strip = document.getElementById('mobileInstallStrip');
-      if(strip){ strip.style.display='flex'; }
-    } else if(!isMobile) {
-      // Show nav button on desktop
-      document.querySelectorAll('.pwa-install-trigger:not(#mobileInstallStrip .pwa-install-trigger)').forEach(el => {
-        el.style.display='flex';
-      });
-    }
+
+  if(isMobile) {
+    // Always show mobile strip (dismiss is handled by X button)
+    const strip = document.getElementById('mobileInstallStrip');
+    if(strip) strip.style.display = 'flex';
+  } else {
+    // Show nav install button on desktop
+    document.querySelectorAll('.pwa-install-trigger').forEach(el => {
+      if(!el.closest('#mobileInstallStrip')) el.style.display = 'flex';
+    });
   }
 });
 
