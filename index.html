@@ -451,6 +451,10 @@ footer::before{content:'';position:absolute;inset:0;background-image:radial-grad
 @media(max-width:768px){
   .pwa-install-trigger{ display:none !important; }
 }
+/* Hide mobile strip on desktop */
+@media(min-width:769px){
+  #mobileInstallStrip{ display:none !important; }
+}
 
 
 
@@ -499,7 +503,7 @@ footer::before{content:'';position:absolute;inset:0;background-image:radial-grad
 
 
 <!-- Mobile PWA Install Strip -->
-<div id="mobileInstallStrip" style="display:none;background:linear-gradient(135deg,var(--navy2),var(--navy));border-bottom:1px solid rgba(201,168,76,0.2);padding:0.65rem 1.2rem;align-items:center;justify-content:space-between;gap:0.75rem;">
+<div id="mobileInstallStrip" style="display:flex;background:linear-gradient(135deg,var(--navy2),var(--navy));border-bottom:1px solid rgba(201,168,76,0.2);padding:0.65rem 1.2rem;align-items:center;justify-content:space-between;gap:0.75rem;">
   <div style="display:flex;align-items:center;gap:0.7rem">
     <div style="width:32px;height:32px;background:var(--gold);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0">📍</div>
     <div>
@@ -1228,19 +1232,16 @@ document.addEventListener('click', async e => {
   }
 });
 
-// Show install UI based on device
+// Hide strip if already installed as PWA
 window.addEventListener('load', () => {
   const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-  if(isStandalone) return; // Already installed — hide everything
-
-  const isMobile = window.innerWidth <= 768;
-
-  if(isMobile) {
-    // Always show mobile strip (dismiss is handled by X button)
+  if(isStandalone) {
     const strip = document.getElementById('mobileInstallStrip');
-    if(strip) strip.style.display = 'flex';
-  } else {
-    // Show nav install button on desktop
+    if(strip) strip.style.display = 'none';
+    return;
+  }
+  // Show desktop nav install button
+  if(window.innerWidth > 768) {
     document.querySelectorAll('.pwa-install-trigger').forEach(el => {
       if(!el.closest('#mobileInstallStrip')) el.style.display = 'flex';
     });
