@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trip — AskJenna</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0B1D35;--navy2:#142847;--navy3:#1A3358;
+  --gold:#C9A84C;--gold2:#E2BF6E;--cream:#F7F2EA;--cream2:#EEE7D8;
+  --teal:#1A9070;--teal2:#22B589;--teal3:#5ECFAC;
+  --muted:#5C6B82;--border:rgba(11,29,53,0.1);--white:#fff;--red:#D85A30;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--navy);min-height:100vh}
+
+/* NAV */
+nav{background:var(--navy);padding:0 2rem;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,0.2)}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:#fff;text-decoration:none;display:flex;align-items:center;gap:0.5rem}
+.nav-logo-mark{width:30px;height:30px;background:var(--gold);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:0.9rem}
+.nav-logo span{color:var(--gold)}
+.nav-right{display:flex;align-items:center;gap:1rem}
+.nav-back{color:rgba(255,255,255,0.5);font-size:0.82rem;text-decoration:none;display:flex;align-items:center;gap:0.4rem;transition:color 0.2s}
+.nav-back:hover{color:var(--gold)}
+
+/* MAIN */
+main{max-width:900px;margin:0 auto;padding:2.5rem 2rem 5rem}
+
+/* TRIP HEADER */
+.trip-hero{background:var(--navy);border-radius:16px;padding:2rem;margin-bottom:1.5rem;position:relative;overflow:hidden}
+.trip-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at top right,rgba(201,168,67,0.12),transparent 60%);pointer-events:none}
+.trip-hero::after{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,0.03) 1px,transparent 1px);background-size:24px 24px;pointer-events:none}
+.trip-eyebrow{font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.4);margin-bottom:0.5rem;position:relative}
+.trip-name{font-family:'Cormorant Garamond',serif;font-size:2.2rem;color:#fff;font-weight:600;margin-bottom:0.3rem;position:relative}
+.trip-dest{font-size:0.9rem;color:var(--gold);margin-bottom:1.5rem;position:relative;font-style:italic}
+.trip-meta-row{display:flex;gap:1.5rem;flex-wrap:wrap;position:relative}
+.trip-meta-item{display:flex;align-items:center;gap:0.4rem;font-size:0.82rem;color:rgba(255,255,255,0.55)}
+.trip-meta-item strong{color:rgba(255,255,255,0.85);font-weight:500}
+
+/* INVITE CARD */
+.invite-card{background:var(--white);border-radius:14px;border:1px solid var(--border);padding:1.5rem;margin-bottom:1.5rem}
+.invite-title{font-size:0.88rem;font-weight:500;color:var(--navy);margin-bottom:0.4rem;display:flex;align-items:center;gap:0.5rem}
+.invite-sub{font-size:0.8rem;color:var(--muted);margin-bottom:1rem;line-height:1.5}
+.invite-link-row{display:flex;gap:0.5rem;align-items:center}
+.invite-link-box{flex:1;background:var(--cream);border:1px solid var(--border);border-radius:8px;padding:0.7rem 1rem;font-size:0.82rem;color:var(--muted);font-family:monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.btn-copy{background:var(--navy);color:#fff;border:none;padding:0.7rem 1.2rem;border-radius:8px;font-size:0.82rem;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;white-space:nowrap}
+.btn-copy:hover{background:var(--navy2)}
+.btn-copy.copied{background:var(--teal)}
+.invite-share{display:flex;gap:0.5rem;margin-top:0.8rem;flex-wrap:wrap}
+.btn-share{padding:0.5rem 1rem;border-radius:6px;font-size:0.78rem;border:1px solid var(--border);background:var(--cream);color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;display:flex;align-items:center;gap:0.4rem}
+.btn-share:hover{border-color:var(--navy);color:var(--navy)}
+
+/* TWO COL */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+@media(max-width:640px){.two-col{grid-template-columns:1fr}}
+
+/* MEMBERS */
+.card{background:var(--white);border-radius:14px;border:1px solid var(--border);padding:1.5rem;margin-bottom:1.5rem}
+.card-title{font-size:0.88rem;font-weight:500;color:var(--navy);margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between}
+.member-list{display:flex;flex-direction:column;gap:0.6rem}
+.member-item{display:flex;align-items:center;gap:0.75rem;padding:0.6rem;border-radius:8px;background:var(--cream);transition:background 0.2s}
+.member-av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:500;flex-shrink:0;color:#fff}
+.member-info{flex:1}
+.member-name{font-size:0.85rem;font-weight:500;color:var(--navy)}
+.member-status{font-size:0.72rem;color:var(--muted);margin-top:0.1rem}
+.member-badge{font-size:0.68rem;padding:0.2rem 0.5rem;border-radius:10px;font-weight:500}
+.badge-done{background:rgba(26,144,112,0.1);color:var(--teal)}
+.badge-pending{background:rgba(201,168,76,0.1);color:#8a6a20}
+.badge-host{background:rgba(11,29,53,0.08);color:var(--navy)}
+
+/* MATCH SCORE */
+.match-card{background:var(--navy);border-radius:14px;padding:1.5rem;margin-bottom:1.5rem;text-align:center;position:relative;overflow:hidden}
+.match-card::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,0.03) 1px,transparent 1px);background-size:20px 20px}
+.match-waiting{color:rgba(255,255,255,0.4);font-size:0.88rem;position:relative}
+.match-waiting span{display:block;font-size:2rem;margin-bottom:0.5rem}
+.match-score-big{font-family:'Cormorant Garamond',serif;font-size:3.5rem;color:var(--gold);font-weight:600;line-height:1;position:relative}
+.match-score-label{font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.4);margin-top:0.4rem;position:relative}
+.match-score-sub{font-size:0.82rem;color:rgba(255,255,255,0.55);margin-top:0.5rem;position:relative}
+
+/* INTERESTS */
+.interests-section{background:var(--white);border-radius:14px;border:1px solid var(--border);padding:1.5rem;margin-bottom:1.5rem}
+.interests-intro{font-size:0.85rem;color:var(--muted);margin-bottom:1.2rem;line-height:1.6;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:8px;padding:0.8rem 1rem}
+.interests-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:0.5rem;margin-bottom:1.2rem}
+.int-btn{padding:0.6rem 0.4rem;border-radius:8px;border:1px solid var(--border);font-size:0.72rem;text-align:center;cursor:pointer;transition:all 0.2s;color:var(--muted);background:var(--cream);display:flex;flex-direction:column;align-items:center;gap:0.25rem;user-select:none}
+.int-btn .ico{font-size:1.1rem}
+.int-btn:hover{border-color:var(--gold);background:rgba(201,168,76,0.05)}
+.int-btn.sel{background:var(--navy);border-color:var(--navy);color:#fff}
+.int-btn.sel .lbl{color:rgba(255,255,255,0.75)}
+.int-btn .lbl{font-size:0.65rem;line-height:1.2}
+.btn-save-interests{width:100%;background:var(--navy);color:#fff;border:none;padding:0.85rem;border-radius:8px;font-size:0.9rem;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;margin-top:0.5rem}
+.btn-save-interests:hover{background:var(--navy2)}
+.btn-save-interests:disabled{opacity:0.6;cursor:not-allowed}
+.interests-saved{text-align:center;padding:1rem;color:var(--teal);font-size:0.88rem;display:none}
+.interests-saved span{display:block;font-size:1.5rem;margin-bottom:0.4rem}
+
+/* SUGGESTIONS */
+.suggestions-section{background:var(--white);border-radius:14px;border:1px solid var(--border);padding:1.5rem;margin-bottom:1.5rem}
+.sug-waiting{text-align:center;padding:2rem;color:var(--muted);font-size:0.85rem}
+.sug-waiting span{display:block;font-size:2rem;margin-bottom:0.5rem}
+.sug-list{display:flex;flex-direction:column;gap:0.75rem}
+.sug-item{display:flex;align-items:center;gap:0.9rem;padding:0.9rem;background:var(--cream);border-radius:10px;border:1px solid var(--border);cursor:pointer;transition:all 0.2s}
+.sug-item:hover{border-color:var(--gold);background:rgba(201,168,76,0.04)}
+.sug-icon{width:42px;height:42px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.sug-body{flex:1}
+.sug-name{font-size:0.88rem;font-weight:500;color:var(--navy)}
+.sug-meta{font-size:0.75rem;color:var(--muted);margin-top:0.15rem}
+.sug-pct{font-size:0.75rem;font-weight:500;padding:0.2rem 0.6rem;border-radius:12px;flex-shrink:0}
+.pct-high{background:rgba(26,144,112,0.1);color:var(--teal)}
+.pct-med{background:rgba(201,168,76,0.1);color:#8a6a20}
+
+/* LOADING */
+.page-loading{text-align:center;padding:5rem 2rem}
+.page-loading-spinner{width:36px;height:36px;border:3px solid var(--cream2);border-top-color:var(--navy);border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 1rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="/">
+    <div class="nav-logo-mark">📍</div>
+    Ask<span>Jenna</span>
+  </a>
+  <div class="nav-right">
+    <a class="nav-back" href="/dashboard.html">← My Trips</a>
+  </div>
+</nav>
+
+<main id="mainContent">
+  <div class="page-loading" id="pageLoading">
+    <div class="page-loading-spinner"></div>
+    <p style="color:var(--muted);font-size:0.9rem">Loading your trip...</p>
+  </div>
+</main>
+
+<script>
+const SUPA_URL = 'https://okzuzlfxvtrhepaehibk.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9renV6bGZ4dnRyaGVwYWVoaWJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3MzI3NTgsImV4cCI6MjA5MzMwODc1OH0.lEIktCZoPLPVFrPpbTzrjFZoyN1aeSY03bNGW7rRcv0';
+
+const INTERESTS = [
+  {ico:'🍷',lbl:'Fine dining'},{ico:'🍜',lbl:'Street food'},{ico:'🍸',lbl:'Cocktail bars'},
+  {ico:'☕',lbl:'Coffee shops'},{ico:'🎵',lbl:'Live music'},{ico:'🎭',lbl:'Theater'},
+  {ico:'🖼',lbl:'Museums'},{ico:'🏛',lbl:'History'},{ico:'🎨',lbl:'Art galleries'},
+  {ico:'🏔',lbl:'Hiking'},{ico:'🌊',lbl:'Beaches'},{ico:'🚴',lbl:'Cycling'},
+  {ico:'🧘',lbl:'Wellness'},{ico:'🛍',lbl:'Shopping'},{ico:'🌃',lbl:'Nightlife'},
+  {ico:'⚽',lbl:'Sports'},{ico:'🎸',lbl:'Concerts'},{ico:'📸',lbl:'Photography'},
+  {ico:'🏖',lbl:'Water sports'},{ico:'🎲',lbl:'Games & fun'},{ico:'🌿',lbl:'Nature'},
+  {ico:'🏟',lbl:'Sporting events'},{ico:'🎪',lbl:'Festivals'},{ico:'🚢',lbl:'Day trips'},
+];
+
+let currentUser = null;
+let authToken = null;
+let tripData = null;
+let selectedInterests = new Set();
+
+// ── INIT ─────────────────────────────────────────
+window.addEventListener('load', async () => {
+  const token = localStorage.getItem('aj_token');
+  const user = localStorage.getItem('aj_user');
+  const params = new URLSearchParams(window.location.search);
+  const tripId = params.get('id');
+
+  if(!tripId){ window.location.href='/dashboard.html'; return; }
+
+  if(token && user){
+    authToken = token;
+    currentUser = JSON.parse(user);
+  }
+
+  await loadTrip(tripId);
+});
+
+// ── LOAD TRIP ─────────────────────────────────────
+async function loadTrip(tripId){
+  try {
+    const headers = { 'apikey': SUPA_KEY };
+    if(authToken) headers['Authorization'] = 'Bearer ' + authToken;
+
+    const res = await fetch(`${SUPA_URL}/rest/v1/trips?id=eq.${tripId}`, { headers });
+    const data = await res.json();
+
+    if(!data || data.length === 0){
+      document.getElementById('pageLoading').innerHTML = '<p style="color:var(--muted)">Trip not found.</p>';
+      return;
+    }
+
+    tripData = data[0];
+    renderPage();
+  } catch(err){
+    document.getElementById('pageLoading').innerHTML = '<p style="color:var(--muted)">Could not load trip — please refresh.</p>';
+  }
+}
+
+// ── RENDER PAGE ───────────────────────────────────
+function renderPage(){
+  const t = tripData;
+  const inviteUrl = `${window.location.origin}/join.html?code=${t.invite_code}`;
+  const isHost = currentUser && t.user_id === currentUser.id;
+  const memberCount = t.member_count || 1;
+
+  const dateStr = t.start_date
+    ? new Date(t.start_date).toLocaleDateString('en-US',{month:'short',day:'numeric'}) +
+      (t.end_date ? ' – ' + new Date(t.end_date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '')
+    : 'Dates TBD';
+
+  document.title = `${t.name} — AskJenna`;
+
+  document.getElementById('mainContent').innerHTML = `
+    <!-- TRIP HEADER -->
+    <div class="trip-hero">
+      <div class="trip-eyebrow">✦ Your group trip</div>
+      <div class="trip-name">${t.name}</div>
+      <div class="trip-dest">📍 ${t.destination || 'Destination TBD'}</div>
+      <div class="trip-meta-row">
+        <div class="trip-meta-item">📅 <strong>${dateStr}</strong></div>
+        <div class="trip-meta-item">👥 <strong>${memberCount} traveler${memberCount>1?'s':''}</strong></div>
+        ${t.budget ? `<div class="trip-meta-item">💰 <strong>${{budget:'Budget',moderate:'Moderate',comfortable:'Comfortable',luxury:'Luxury'}[t.budget]||t.budget}</strong></div>` : ''}
+      </div>
+    </div>
+
+    <!-- INVITE CARD -->
+    <div class="invite-card">
+      <div class="invite-title">🔗 Invite your travel crew</div>
+      <div class="invite-sub">Share this link with everyone joining the trip. They'll add their interests and Jenna will find the perfect itinerary for the whole group.</div>
+      <div class="invite-link-row">
+        <div class="invite-link-box" id="inviteUrl">${inviteUrl}</div>
+        <button class="btn-copy" id="copyBtn" onclick="copyInvite('${inviteUrl}')">Copy link</button>
+      </div>
+      <div class="invite-share">
+        <button class="btn-share" onclick="shareWhatsApp('${inviteUrl}','${t.name}')">💬 WhatsApp</button>
+        <button class="btn-share" onclick="shareText('${inviteUrl}','${t.name}')">📱 Text</button>
+        <button class="btn-share" onclick="shareEmail('${inviteUrl}','${t.name}')">📧 Email</button>
+        ${navigator.share ? `<button class="btn-share" onclick="nativeShare('${inviteUrl}','${t.name}')">⬆ Share</button>` : ''}
+      </div>
+    </div>
+
+    <div class="two-col">
+      <!-- MEMBERS -->
+      <div class="card">
+        <div class="card-title">
+          <span>👥 Travelers (${memberCount})</span>
+        </div>
+        <div class="member-list" id="memberList">
+          <div class="member-item">
+            <div class="member-av" style="background:var(--navy)">
+              ${currentUser ? currentUser.user_metadata?.full_name?.charAt(0).toUpperCase() || '?' : '?'}
+            </div>
+            <div class="member-info">
+              <div class="member-name">${currentUser ? (currentUser.user_metadata?.full_name || 'You') : 'Trip host'}</div>
+              <div class="member-status">Trip organizer</div>
+            </div>
+            <span class="member-badge badge-host">Host</span>
+          </div>
+          ${memberCount > 1 ? `<div style="font-size:0.78rem;color:var(--muted);text-align:center;padding:0.5rem">+ ${memberCount-1} more traveler${memberCount-1>1?'s':''} joined</div>` : ''}
+          <div style="font-size:0.78rem;color:var(--muted);text-align:center;padding:0.5rem;border-top:1px solid var(--border);margin-top:0.3rem">
+            Waiting for friends to join via invite link...
+          </div>
+        </div>
+      </div>
+
+      <!-- MATCH SCORE -->
+      <div class="match-card">
+        ${memberCount < 2
+          ? `<div class="match-waiting"><span>⏳</span>Waiting for your crew to join and add their interests...</div>`
+          : `<div class="match-score-big">84%</div><div class="match-score-label">Group compatibility</div><div class="match-score-sub">Great match — most activities will satisfy everyone</div>`
+        }
+      </div>
+    </div>
+
+    <!-- YOUR INTERESTS -->
+    <div class="interests-section" id="interestsSection">
+      <div class="card-title" style="margin-bottom:0.5rem">🎯 Your interests</div>
+      <div class="interests-intro">
+        Select everything you'd love to do on this trip. Be generous — the more you pick, the better Jenna can match the whole group. Nobody else sees your individual answers.
+      </div>
+      <div class="interests-grid" id="interestsGrid">
+        ${INTERESTS.map((int,i) => `
+          <div class="int-btn" data-idx="${i}" onclick="toggleInt(this)">
+            <span class="ico">${int.ico}</span>
+            <span class="lbl">${int.lbl}</span>
+          </div>
+        `).join('')}
+      </div>
+      <button class="btn-save-interests" id="saveIntBtn" onclick="saveInterests()">
+        ✦ Save my interests & get suggestions
+      </button>
+      <div class="interests-saved" id="interestsSaved">
+        <span>✓</span>
+        Interests saved! Jenna is working on your group itinerary...
+      </div>
+    </div>
+
+    <!-- SUGGESTIONS -->
+    <div class="suggestions-section">
+      <div class="card-title" style="margin-bottom:1rem">✦ Jenna's suggestions for this group</div>
+      <div class="sug-waiting" id="sugWaiting">
+        <span>🤔</span>
+        Jenna is waiting for more interests before making suggestions. Add yours above and invite your crew!
+      </div>
+      <div class="sug-list" id="sugList" style="display:none">
+        <div class="sug-item"><div class="sug-icon" style="background:#FFF3CD">🎵</div><div class="sug-body"><div class="sug-name">Live music night at a local venue</div><div class="sug-meta">Evening · Great for groups · 2–3hrs</div></div><div class="sug-pct pct-high">94%</div></div>
+        <div class="sug-item"><div class="sug-icon" style="background:#E8F5E9">🖼</div><div class="sug-body"><div class="sug-name">Museum day + fine dining lunch</div><div class="sug-meta">Full day · Culture + food combo</div></div><div class="sug-pct pct-high">89%</div></div>
+        <div class="sug-item"><div class="sug-icon" style="background:#FDE8E0">🍜</div><div class="sug-body"><div class="sug-name">Street food market tour</div><div class="sug-meta">2hrs · Casual · Everyone loves this</div></div><div class="sug-pct pct-high">87%</div></div>
+      </div>
+    </div>
+  `;
+}
+
+// ── INTERESTS ─────────────────────────────────────
+function toggleInt(el){
+  el.classList.toggle('sel');
+  const idx = el.dataset.idx;
+  if(el.classList.contains('sel')) selectedInterests.add(idx);
+  else selectedInterests.delete(idx);
+}
+
+async function saveInterests(){
+  if(selectedInterests.size === 0){
+    alert('Please select at least a few interests first!');
+    return;
+  }
+  const btn = document.getElementById('saveIntBtn');
+  btn.disabled = true;
+  btn.textContent = 'Saving...';
+
+  // Save to localStorage for now (will connect to DB next)
+  const interestData = Array.from(selectedInterests).map(i => INTERESTS[i].lbl);
+  localStorage.setItem(`interests_${tripData.id}`, JSON.stringify(interestData));
+
+  setTimeout(() => {
+    document.getElementById('interestsSection').style.opacity = '0.6';
+    document.getElementById('interestsSaved').style.display = 'block';
+    btn.style.display = 'none';
+    // Show suggestions
+    document.getElementById('sugWaiting').style.display = 'none';
+    document.getElementById('sugList').style.display = 'flex';
+    document.getElementById('sugList').style.flexDirection = 'column';
+  }, 800);
+}
+
+// ── INVITE / SHARE ────────────────────────────────
+function copyInvite(url){
+  navigator.clipboard.writeText(url).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent='Copy link'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+function shareWhatsApp(url, name){
+  window.open(`https://wa.me/?text=${encodeURIComponent(`Join me on "${name}" — add your travel interests here: ${url}`)}`);
+}
+
+function shareText(url, name){
+  window.open(`sms:?body=${encodeURIComponent(`Join me on "${name}" — add your travel interests here: ${url}`)}`);
+}
+
+function shareEmail(url, name){
+  window.open(`mailto:?subject=${encodeURIComponent(`Join my trip: ${name}`)}&body=${encodeURIComponent(`Hey! I'm planning "${name}" and I want to make sure everyone gets to do what they love.\n\nClick this link to add your interests and let Jenna plan the perfect itinerary for our group:\n\n${url}\n\nSee you there! 🌍`)}`);
+}
+
+async function nativeShare(url, name){
+  try {
+    await navigator.share({ title:`Join ${name}`, text:`Add your travel interests for ${name}`, url });
+  } catch(e){}
+}
+</script>
+</body>
+</html>
