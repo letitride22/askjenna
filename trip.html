@@ -247,22 +247,35 @@ function renderPage(){
         <div class="card-title">
           <span>👥 Travelers (${memberCount})</span>
         </div>
-        <div class="member-list" id="memberList">
+                  <div class="member-list" id="memberList">
+          <!-- Host -->
           <div class="member-item">
             <div class="member-av" style="background:var(--navy)">
-              ${currentUser ? currentUser.user_metadata?.full_name?.charAt(0).toUpperCase() || '?' : '?'}
+              ${currentUser ? currentUser.user_metadata?.full_name?.charAt(0).toUpperCase() || 'H' : 'H'}
             </div>
             <div class="member-info">
-              <div class="member-name">${currentUser ? (currentUser.user_metadata?.full_name || 'You') : 'Trip host'}</div>
+              <div class="member-name">${currentUser ? (currentUser.user_metadata?.full_name || 'Trip Host') : 'Trip Host'}</div>
               <div class="member-status">Trip organizer</div>
             </div>
             <span class="member-badge badge-host">Host</span>
           </div>
-          ${memberCount > 1 ? `<div style="font-size:0.78rem;color:var(--muted);text-align:center;padding:0.5rem">+ ${memberCount-1} more traveler${memberCount-1>1?'s':''} joined</div>` : ''}
-          <div style="font-size:0.78rem;color:var(--muted);text-align:center;padding:0.5rem;border-top:1px solid var(--border);margin-top:0.3rem">
-            Waiting for friends to join via invite link...
-          </div>
-        </div>
+          <!-- Real members from database -->
+          ${(t.members && t.members.length > 0) ? t.members.map((m, i) => {
+            const colors = ['#1A9070','#534AB7','#D85A30','#C9A84C','#2196F3'];
+            const color = colors[i % colors.length];
+            const initial = m.name ? m.name.charAt(0).toUpperCase() : '?';
+            const hasInterests = m.interests && m.interests.length > 0;
+            const interestPreview = hasInterests ? m.interests.slice(0,3).join(' · ') : 'Joined';
+            return '<div class="member-item">' +
+              '<div class="member-av" style="background:' + color + '">' + initial + '</div>' +
+              '<div class="member-info">' +
+                '<div class="member-name">' + m.name + '</div>' +
+                '<div class="member-status">' + interestPreview + '</div>' +
+              '</div>' +
+              '<span class="member-badge ' + (hasInterests ? 'badge-done' : 'badge-pending') + '">' + (hasInterests ? '✓ Ready' : 'Pending') + '</span>' +
+            '</div>';
+          }).join('') : '<div style="font-size:0.78rem;color:var(--muted);text-align:center;padding:0.75rem;border-top:1px solid var(--border);margin-top:0.5rem">Waiting for friends to join via the invite link...</div>'}
+        </div></div>
       </div>
 
       <!-- MATCH SCORE -->
