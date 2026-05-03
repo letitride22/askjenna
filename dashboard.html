@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Trips — AskJenna</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0B1D35;--navy2:#142847;--navy3:#1A3358;
+  --gold:#C9A84C;--gold2:#E2BF6E;--cream:#F7F2EA;--cream2:#EEE7D8;
+  --teal:#1A9070;--teal2:#22B589;--teal3:#5ECFAC;
+  --muted:#5C6B82;--border:rgba(11,29,53,0.1);--white:#fff;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--navy);min-height:100vh}
+
+/* NAV */
+nav{background:var(--navy);padding:0 2rem;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,0.2)}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:#fff;text-decoration:none;display:flex;align-items:center;gap:0.5rem}
+.nav-logo-mark{width:30px;height:30px;background:var(--gold);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:0.9rem}
+.nav-logo span{color:var(--gold)}
+.nav-right{display:flex;align-items:center;gap:1rem}
+.nav-user{font-size:0.82rem;color:rgba(255,255,255,0.5)}
+.nav-user strong{color:rgba(255,255,255,0.85);font-weight:500}
+.btn-signout{background:transparent;color:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.12);padding:0.35rem 0.8rem;border-radius:6px;font-size:0.78rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s}
+.btn-signout:hover{color:rgba(255,255,255,0.7);border-color:rgba(255,255,255,0.3)}
+
+/* MAIN */
+main{max-width:900px;margin:0 auto;padding:2.5rem 2rem 4rem}
+
+/* HEADER */
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:2.5rem;flex-wrap:wrap;gap:1rem}
+.page-title-area{}
+.page-greeting{font-size:0.82rem;color:var(--muted);margin-bottom:0.3rem}
+.page-title{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:600;color:var(--navy)}
+.btn-new-trip{background:var(--navy);color:#fff;border:none;padding:0.75rem 1.5rem;border-radius:8px;font-size:0.88rem;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;display:flex;align-items:center;gap:0.5rem;transition:all 0.2s;text-decoration:none}
+.btn-new-trip:hover{background:var(--navy2);transform:translateY(-1px)}
+
+/* EMPTY STATE */
+.empty-state{background:var(--white);border:2px dashed var(--border);border-radius:16px;padding:4rem 2rem;text-align:center}
+.empty-icon{font-size:3rem;margin-bottom:1rem;display:block}
+.empty-title{font-family:'Cormorant Garamond',serif;font-size:1.6rem;color:var(--navy);margin-bottom:0.5rem}
+.empty-sub{font-size:0.88rem;color:var(--muted);line-height:1.7;max-width:320px;margin:0 auto 1.5rem}
+.btn-start{background:var(--gold);color:var(--navy);border:none;padding:0.85rem 2rem;border-radius:8px;font-size:0.9rem;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;text-decoration:none;display:inline-block}
+.btn-start:hover{background:var(--gold2);transform:translateY(-2px)}
+
+/* TRIPS GRID */
+.trips-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem}
+.trip-card{background:var(--white);border-radius:14px;border:1px solid var(--border);padding:1.5rem;cursor:pointer;transition:all 0.2s;text-decoration:none;display:block}
+.trip-card:hover{border-color:var(--gold);transform:translateY(-3px);box-shadow:0 8px 24px rgba(11,29,53,0.08)}
+.trip-card-emoji{font-size:1.8rem;margin-bottom:0.8rem;display:block}
+.trip-card-name{font-size:1rem;font-weight:500;color:var(--navy);margin-bottom:0.3rem}
+.trip-card-dest{font-size:0.82rem;color:var(--muted);margin-bottom:0.8rem}
+.trip-card-meta{display:flex;align-items:center;justify-content:space-between}
+.trip-card-members{font-size:0.75rem;color:var(--muted);display:flex;align-items:center;gap:0.3rem}
+.trip-card-status{font-size:0.72rem;padding:0.2rem 0.55rem;border-radius:10px;font-weight:500}
+.status-planning{background:rgba(201,168,76,0.12);color:#8a6a20}
+.status-active{background:rgba(26,144,112,0.12);color:var(--teal)}
+
+/* LOADING */
+.loading{text-align:center;padding:4rem 2rem;color:var(--muted);font-size:0.9rem}
+.loading-spinner{width:32px;height:32px;border:3px solid var(--cream2);border-top-color:var(--navy);border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 1rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* MODAL OVERLAY */
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;align-items:center;justify-content:center;padding:1rem}
+.modal.show{display:flex}
+.modal-card{background:var(--white);border-radius:16px;padding:2rem;width:100%;max-width:460px;position:relative;max-height:90vh;overflow-y:auto}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:1.6rem;color:var(--navy);margin-bottom:0.4rem}
+.modal-sub{font-size:0.85rem;color:var(--muted);margin-bottom:1.8rem;line-height:1.6}
+.modal-close{position:absolute;top:1rem;right:1rem;background:transparent;border:none;font-size:1.2rem;color:var(--muted);cursor:pointer;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:6px;transition:background 0.2s}
+.modal-close:hover{background:var(--cream)}
+.form-group{margin-bottom:1.1rem}
+label{display:block;font-size:0.78rem;color:var(--muted);margin-bottom:0.4rem;font-weight:500;text-transform:uppercase;letter-spacing:0.04em}
+input,select,textarea{width:100%;background:var(--cream);border:1px solid var(--border);border-radius:8px;padding:0.75rem 1rem;color:var(--navy);font-size:0.9rem;font-family:'DM Sans',sans-serif;outline:none;transition:border-color 0.2s}
+input:focus,select:focus,textarea:focus{border-color:var(--navy)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:0.8rem}
+.btn-create{width:100%;background:var(--navy);color:#fff;border:none;padding:0.9rem;border-radius:8px;font-size:0.9rem;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;margin-top:0.5rem;transition:all 0.2s}
+.btn-create:hover{background:var(--navy2)}
+.btn-create:disabled{opacity:0.6;cursor:not-allowed}
+
+/* RESPONSIVE */
+@media(max-width:600px){
+  .form-row{grid-template-columns:1fr}
+  .page-header{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="/">
+    <div class="nav-logo-mark">📍</div>
+    Ask<span>Jenna</span>
+  </a>
+  <div class="nav-right">
+    <span class="nav-user">Hi, <strong id="navUserName">traveler</strong></span>
+    <button class="btn-signout" onclick="signOut()">Sign out</button>
+  </div>
+</nav>
+
+<main>
+  <div class="page-header">
+    <div class="page-title-area">
+      <div class="page-greeting" id="pageGreeting">Good morning</div>
+      <h1 class="page-title">My Trips</h1>
+    </div>
+    <button class="btn-new-trip" onclick="openCreateModal()">
+      ✦ Plan a new trip
+    </button>
+  </div>
+
+  <!-- LOADING STATE -->
+  <div class="loading" id="loadingState">
+    <div class="loading-spinner"></div>
+    Loading your trips...
+  </div>
+
+  <!-- EMPTY STATE -->
+  <div class="empty-state" id="emptyState" style="display:none">
+    <span class="empty-icon">✈️</span>
+    <div class="empty-title">No trips yet</div>
+    <p class="empty-sub">Start planning your first group trip. Invite your crew, share your interests, and let Jenna do the rest.</p>
+    <button class="btn-start" onclick="openCreateModal()">Plan your first trip →</button>
+  </div>
+
+  <!-- TRIPS GRID -->
+  <div class="trips-grid" id="tripsGrid" style="display:none"></div>
+</main>
+
+<!-- CREATE TRIP MODAL -->
+<div class="modal" id="createModal" onclick="if(event.target===this)closeCreateModal()">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeCreateModal()">✕</button>
+    <div class="modal-title">Plan a new trip</div>
+    <p class="modal-sub">Fill in the basics and Jenna will help you figure out the rest.</p>
+
+    <div class="form-group">
+      <label>Trip name</label>
+      <input type="text" id="tripName" placeholder="e.g. Girls trip to Barcelona 🇪🇸">
+    </div>
+    <div class="form-group">
+      <label>Destination</label>
+      <input type="text" id="tripDest" placeholder="e.g. Barcelona, Spain">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Start date</label>
+        <input type="date" id="tripStart">
+      </div>
+      <div class="form-group">
+        <label>End date</label>
+        <input type="date" id="tripEnd">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Budget per person</label>
+      <select id="tripBudget">
+        <option value="">Select a range</option>
+        <option value="budget">$ Budget (under $500)</option>
+        <option value="moderate">$$ Moderate ($500–$1,500)</option>
+        <option value="comfortable">$$$ Comfortable ($1,500–$3,000)</option>
+        <option value="luxury">$$$$ Luxury ($3,000+)</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Notes (optional)</label>
+      <textarea id="tripNotes" rows="2" placeholder="Any special requirements, ideas, or vibes..."></textarea>
+    </div>
+    <div id="createError" style="color:#D85A30;font-size:0.82rem;margin-bottom:0.8rem;display:none"></div>
+    <button class="btn-create" id="createBtn" onclick="createTrip()">Create trip & get invite link →</button>
+  </div>
+</div>
+
+<script>
+const SUPA_URL = 'https://okzuzlfxvtrhepaehibk.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9renV6bGZ4dnRyaGVwYWVoaWJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3MzI3NTgsImV4cCI6MjA5MzMwODc1OH0.lEIktCZoPLPVFrPpbTzrjFZoyN1aeSY03bNGW7rRcv0';
+
+let currentUser = null;
+let authToken = null;
+
+// ── AUTH CHECK ───────────────────────────────────
+window.addEventListener('load', async () => {
+  const token = localStorage.getItem('aj_token');
+  const user = localStorage.getItem('aj_user');
+
+  if(!token || !user){
+    window.location.href = '/auth.html';
+    return;
+  }
+
+  authToken = token;
+  currentUser = JSON.parse(user);
+
+  // Set greeting
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
+  document.getElementById('pageGreeting').textContent = greeting;
+
+  // Set name
+  const name = currentUser.user_metadata?.full_name?.split(' ')[0] || 'traveler';
+  document.getElementById('navUserName').textContent = name;
+
+  // Load trips
+  await loadTrips();
+});
+
+// ── LOAD TRIPS ───────────────────────────────────
+async function loadTrips(){
+  try {
+    const res = await fetch(`${SUPA_URL}/rest/v1/trips?user_id=eq.${currentUser.id}&order=created_at.desc`, {
+      headers:{
+        'apikey': SUPA_KEY,
+        'Authorization': 'Bearer ' + authToken
+      }
+    });
+    const trips = await res.json();
+
+    document.getElementById('loadingState').style.display = 'none';
+
+    if(!trips || trips.length === 0){
+      document.getElementById('emptyState').style.display = 'block';
+    } else {
+      renderTrips(trips);
+    }
+  } catch(err){
+    document.getElementById('loadingState').innerHTML = '<p>Could not load trips — please refresh.</p>';
+  }
+}
+
+// ── RENDER TRIPS ─────────────────────────────────
+function renderTrips(trips){
+  const grid = document.getElementById('tripsGrid');
+  grid.style.display = 'grid';
+  const emojis = ['🌍','✈️','🏖','🗺','🌴','🏔','🎭','🍜','🌉','🏛'];
+  grid.innerHTML = trips.map((t,i) => `
+    <a class="trip-card" href="/trip.html?id=${t.id}">
+      <span class="trip-card-emoji">${emojis[i % emojis.length]}</span>
+      <div class="trip-card-name">${t.name}</div>
+      <div class="trip-card-dest">📍 ${t.destination || 'Destination TBD'}</div>
+      <div class="trip-card-meta">
+        <span class="trip-card-members">👥 ${t.member_count || 1} traveler${(t.member_count||1)>1?'s':''}</span>
+        <span class="trip-card-status status-planning">Planning</span>
+      </div>
+    </a>
+  `).join('');
+}
+
+// ── CREATE TRIP ──────────────────────────────────
+function openCreateModal(){ document.getElementById('createModal').classList.add('show'); }
+function closeCreateModal(){ document.getElementById('createModal').classList.remove('show'); }
+
+async function createTrip(){
+  const name = document.getElementById('tripName').value.trim();
+  const dest = document.getElementById('tripDest').value.trim();
+  const start = document.getElementById('tripStart').value;
+  const end = document.getElementById('tripEnd').value;
+  const budget = document.getElementById('tripBudget').value;
+  const notes = document.getElementById('tripNotes').value.trim();
+  const errEl = document.getElementById('createError');
+
+  if(!name){ errEl.textContent='Please give your trip a name'; errEl.style.display='block'; return; }
+  if(!dest){ errEl.textContent='Please enter a destination'; errEl.style.display='block'; return; }
+  errEl.style.display='none';
+
+  const btn = document.getElementById('createBtn');
+  btn.disabled = true;
+  btn.textContent = 'Creating...';
+
+  try {
+    const tripId = 'trip_' + Math.random().toString(36).substr(2,9);
+    const res = await fetch(`${SUPA_URL}/rest/v1/trips`, {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'apikey': SUPA_KEY,
+        'Authorization': 'Bearer ' + authToken,
+        'Prefer': 'return=representation'
+      },
+      body: JSON.stringify({
+        user_id: currentUser.id,
+        name, destination: dest,
+        start_date: start || null,
+        end_date: end || null,
+        budget, notes,
+        invite_code: tripId,
+        member_count: 1
+      })
+    });
+
+    const data = await res.json();
+
+    if(data.error || (Array.isArray(data) && data[0]?.code)){
+      errEl.textContent = 'Could not create trip — please try again';
+      errEl.style.display = 'block';
+    } else {
+      const trip = Array.isArray(data) ? data[0] : data;
+      closeCreateModal();
+      // Redirect to trip page
+      window.location.href = `/trip.html?id=${trip.id || tripId}`;
+    }
+  } catch(err){
+    errEl.textContent = 'Network error — please try again';
+    errEl.style.display = 'block';
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Create trip & get invite link →';
+}
+
+// ── SIGN OUT ─────────────────────────────────────
+function signOut(){
+  localStorage.removeItem('aj_token');
+  localStorage.removeItem('aj_user');
+  window.location.href = '/';
+}
+</script>
+</body>
+</html>
