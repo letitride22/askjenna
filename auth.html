@@ -169,8 +169,8 @@ input.error{border-color:rgba(216,90,48,0.6)}
     <!-- SUCCESS STATE (shown after signup) -->
     <div class="success-state" id="successState">
       <div class="check">✓</div>
-      <h3>Check your email!</h3>
-      <p>We sent a confirmation link to <strong id="confirmedEmail" style="color:var(--gold)"></strong>. Click it to activate your account and start planning trips.</p>
+      <h3>You're all set!</h3>
+      <p>Your account has been created. <a href="/auth.html" style="color:var(--gold)">Sign in here</a> to start planning your first trip.</p>
     </div>
 
     <div class="auth-note">
@@ -247,10 +247,24 @@ async function signUp(){
         headers:{'Content-Type':'application/json','apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Prefer':'return=minimal'},
         body: JSON.stringify({ email })
       });
-      // Show success
-      document.getElementById('signupForm').style.display='none';
-      document.getElementById('successState').style.display='block';
-      document.getElementById('confirmedEmail').textContent=email;
+      // No email confirmation needed — sign them in directly
+      const signinRes = await fetch(`${SUPA_URL}/auth/v1/token?grant_type=password`, {
+        method:'POST',
+        headers:{'Content-Type':'application/json','apikey':SUPA_KEY},
+        body: JSON.stringify({ email, password })
+      });
+      const signinData = await signinRes.json();
+      if(signinData.access_token){
+        localStorage.setItem('aj_token', signinData.access_token);
+        localStorage.setItem('aj_user', JSON.stringify(signinData.user));
+        if(signinData.refresh_token) localStorage.setItem('aj_refresh_token', signinData.refresh_token);
+        window.location.href = '/dashboard.html';
+      } else {
+        // Fallback — show success and ask them to sign in
+        document.getElementById('signupForm').style.display='none';
+        document.getElementById('successState').style.display='block';
+        document.getElementById('confirmedEmail').textContent=email;
+      }
     }
   } catch(err){
     showError('Network error — please try again');
