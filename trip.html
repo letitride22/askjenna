@@ -99,8 +99,24 @@ main{max-width:900px;margin:0 auto;padding:2.5rem 2rem 5rem}
 .sug-waiting{text-align:center;padding:2rem;color:var(--muted);font-size:0.85rem}
 .sug-waiting span{display:block;font-size:2rem;margin-bottom:0.5rem}
 .sug-list{display:flex;flex-direction:column;gap:0.75rem}
-.sug-item{display:flex;align-items:center;gap:0.9rem;padding:0.9rem;background:var(--cream);border-radius:10px;border:1px solid var(--border);cursor:pointer;transition:all 0.2s}
+.sug-item{display:flex;align-items:center;gap:0.9rem;padding:0.9rem;background:var(--cream);border-radius:10px;border:1px solid var(--border);transition:all 0.2s}
 .sug-item:hover{border-color:var(--gold);background:rgba(201,168,76,0.04)}
+.sug-item.voted-up{background:rgba(26,144,112,0.06);border-color:rgba(26,144,112,0.3)}
+.sug-item.voted-down{background:rgba(216,90,48,0.04);border-color:rgba(216,90,48,0.15);opacity:0.6}
+.vote-btns{display:flex;flex-direction:column;gap:0.3rem;flex-shrink:0}
+.vote-btn{width:32px;height:32px;border-radius:6px;border:1px solid var(--border);background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.9rem;transition:all 0.2s;position:relative}
+.vote-btn:hover{transform:scale(1.1)}
+.vote-btn.up:hover{background:rgba(26,144,112,0.1);border-color:var(--teal)}
+.vote-btn.down:hover{background:rgba(216,90,48,0.1);border-color:var(--red)}
+.vote-btn.active-up{background:var(--teal);border-color:var(--teal)}
+.vote-btn.active-down{background:var(--red);border-color:var(--red)}
+.vote-btn.active-up span,.vote-btn.active-down span{filter:brightness(10)}
+.vote-count{font-size:0.65rem;color:var(--muted);text-align:center;margin-top:0.1rem}
+.vote-summary{display:flex;align-items:center;gap:0.4rem;margin-top:0.4rem;flex-wrap:wrap}
+.vote-pip{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.notify-btn{width:100%;background:var(--teal);color:#fff;border:none;padding:0.85rem;border-radius:8px;font-size:0.88rem;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;margin-top:1rem;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:0.5rem}
+.notify-btn:hover{background:var(--teal2)}
+.notify-btn:disabled{opacity:0.6;cursor:not-allowed}
 .sug-icon{width:42px;height:42px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
 .sug-body{flex:1}
 .sug-name{font-size:0.88rem;font-weight:500;color:var(--navy)}
@@ -207,6 +223,18 @@ async function loadTrip(tripId){
     renderPage();
     // Load host's existing interests if any
     if(currentUser) loadExistingInterests(membersData);
+    // Restore suggestions if already generated this session
+    const cachedSugs = sessionStorage.getItem('suggestions_'+tripData.id);
+    if(cachedSugs){
+      try {
+        const sugs = JSON.parse(cachedSugs);
+        document.getElementById('sugWaiting').style.display = 'none';
+        document.getElementById('sugGenerating').style.display = 'none';
+        document.getElementById('sugList').style.display = 'flex';
+        document.getElementById('apiKeySection').style.display = 'none';
+        renderVotableSuggestions(sugs);
+      } catch(e){}
+    }
   } catch(err){
     document.getElementById('pageLoading').innerHTML = '<p style="color:var(--muted)">Could not load trip — please refresh.</p>';
   }
@@ -508,7 +536,9 @@ async function generateSuggestions(){
     // Render results
     document.getElementById('sugGenerating').style.display = 'none';
     document.getElementById('sugList').style.display = 'flex';
-    JENNA.renderSuggestions(data.suggestions, 'sugList');
+    renderVotableSuggestions(data.suggestions);
+    // Store suggestions for re-render
+    sessionStorage.setItem('suggestions_'+tripData.id, JSON.stringify(data.suggestions));
 
   } catch(err){
     document.getElementById('sugGenerating').style.display = 'none';
@@ -542,6 +572,133 @@ async function removeMember(memberId, memberName){
     await loadTrip(params.get('id'));
   } catch(err){
     alert('Could not remove member — please try again');
+  }
+}
+
+// ── VOTING ───────────────────────────────────────
+function getVotes(tripId){
+  try{ return JSON.parse(localStorage.getItem('votes_'+tripId)||'{}'); }
+  catch{ return {}; }
+}
+function saveVotes(tripId, votes){
+  localStorage.setItem('votes_'+tripId, JSON.stringify(votes));
+}
+
+function vote(suggestionIdx, direction){
+  const votes = getVotes(tripData.id);
+  const current = votes[suggestionIdx];
+
+  // Toggle off if same vote
+  if(current === direction){
+    delete votes[suggestionIdx];
+  } else {
+    votes[suggestionIdx] = direction;
+  }
+  saveVotes(tripData.id, votes);
+  updateVoteUI(suggestionIdx, votes[suggestionIdx]);
+}
+
+function updateVoteUI(idx, direction){
+  const item = document.getElementById('sug-item-'+idx);
+  if(!item) return;
+
+  const upBtn = item.querySelector('.vote-btn.up');
+  const downBtn = item.querySelector('.vote-btn.down');
+
+  item.classList.remove('voted-up','voted-down');
+  if(upBtn) upBtn.classList.remove('active-up');
+  if(downBtn) downBtn.classList.remove('active-down');
+
+  if(direction === 'up'){
+    item.classList.add('voted-up');
+    if(upBtn) upBtn.classList.add('active-up');
+  } else if(direction === 'down'){
+    item.classList.add('voted-down');
+    if(downBtn) downBtn.classList.add('active-down');
+  }
+}
+
+function renderVotableSuggestions(suggestions){
+  const container = document.getElementById('sugList');
+  if(!container) return;
+
+  const votes = getVotes(tripData.id);
+  const categoryColors = {
+    'Food & Drink':'#FFF3CD','Culture':'#E8F5E9','Outdoors':'#E0F7FA',
+    'Nightlife':'#EEF0FB','Shopping':'#FDE8E0','Entertainment':'#F3E5F5'
+  };
+
+  container.innerHTML = suggestions.map((s,i) => {
+    const color = categoryColors[s.category] || '#F5F0E8';
+    const scoreClass = s.matchScore >= 80 ? 'pct-high' : 'pct-med';
+    const currentVote = votes[i];
+
+    return `<div class="sug-item ${currentVote==='up'?'voted-up':currentVote==='down'?'voted-down':''}" id="sug-item-${i}">
+      <div class="sug-icon" style="background:${color}">${s.emoji}</div>
+      <div class="sug-body" style="flex:1;min-width:0">
+        <div class="sug-name">${s.name}</div>
+        <div class="sug-meta">${s.category} · ${s.duration} · ${s.price}</div>
+        <div class="sug-desc">${s.description}</div>
+        <div class="sug-reason">✦ ${s.matchReason}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:0.3rem;flex-shrink:0">
+        <div class="sug-pct ${scoreClass}">${s.matchScore}%</div>
+        <div class="vote-btns">
+          <button class="vote-btn up ${currentVote==='up'?'active-up':''}" onclick="vote(${i},'up')" title="Love it">
+            <span>👍</span>
+          </button>
+          <button class="vote-btn down ${currentVote==='down'?'active-down':''}" onclick="vote(${i},'down')" title="Not for me">
+            <span>👎</span>
+          </button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Add notify group button if host
+  if(currentUser && tripData.user_id === currentUser.id){
+    container.insertAdjacentHTML('afterend', `
+      <div id="notifySection" style="margin-top:1rem">
+        <button class="notify-btn" id="notifyBtn" onclick="notifyGroup()">
+          🔔 Notify everyone — suggestions are ready to vote on!
+        </button>
+        <p style="font-size:0.75rem;color:var(--muted);text-align:center;margin-top:0.5rem">
+          Sends an email to all group members with a link to vote
+        </p>
+      </div>
+    `);
+  }
+}
+
+// ── NOTIFY GROUP ──────────────────────────────────
+async function notifyGroup(){
+  const btn = document.getElementById('notifyBtn');
+  if(!btn) return;
+  btn.disabled = true;
+  btn.textContent = '📨 Sending notifications...';
+
+  try {
+    const res = await fetch(`${SUPA_URL}/functions/v1/notify-group`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + authToken,
+        'apikey': SUPA_KEY
+      },
+      body: JSON.stringify({ trip_id: tripData.id })
+    });
+    const data = await res.json();
+    if(data.success || !data.error){
+      btn.textContent = '✓ Everyone notified!';
+      btn.style.background = 'var(--teal)';
+    } else {
+      throw new Error(data.error);
+    }
+  } catch(err){
+    btn.disabled = false;
+    btn.textContent = '🔔 Notify everyone — suggestions are ready!';
+    console.error('Notify error:', err);
+    alert('Could not send notifications — please try again');
   }
 }
 

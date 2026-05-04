@@ -235,6 +235,19 @@ async function submitJoin(){
       body: JSON.stringify({ member_count: (tripData.member_count||1) + 1 })
     });
 
+    // Notify host silently
+    fetch(`${SUPA_URL}/functions/v1/notify-host`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPA_KEY
+      },
+      body: JSON.stringify({
+        trip_id: tripData.id,
+        member_name: name
+      })
+    }).catch(() => {}); // Silent fail — don't block the UI
+
     // Show success
     document.getElementById('joinView').style.display = 'none';
     document.getElementById('successView').style.display = 'block';
