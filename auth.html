@@ -236,35 +236,44 @@ async function signUp(){
       headers:{'Content-Type':'application/json','apikey':SUPA_KEY},
       body: JSON.stringify({ email, password, data:{ full_name: name } })
     });
-    const data = await res.json();
 
-    if(data.error){ 
-      showError(data.error.message || data.msg || 'Something went wrong');
-    } else {
-      // Also save to signups table
-      await fetch(`${SUPA_URL}/rest/v1/signups`, {
+    const data = await res.json();
+    console.log('Signup response:', res.status, data);
+
+    // Check for errors
+    if(!res.ok || data.error){
+      const errMsg = data.error?.message || data.msg || data.error_description || 'Something went wrong — please try again';
+      showError(errMsg);
+      setLoading('suBtn','suSpinner','suBtnText',false,'Create my free account');
+      return;
+    }
+
+    // Account created — now sign in
+    await new Promise(resolve => setTimeout(resolve, 1200));
+
+    const signinRes = await fetch(`${SUPA_URL}/auth/v1/token?grant_type=password`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json','apikey':SUPA_KEY},
+      body: JSON.stringify({ email, password })
+    });
+    const signinData = await signinRes.json();
+    console.log('Signin response:', signinRes.status, signinData);
+
+    if(signinData.access_token){
+      // Save to signups table silently
+      fetch(`${SUPA_URL}/rest/v1/signups`, {
         method:'POST',
         headers:{'Content-Type':'application/json','apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Prefer':'return=minimal'},
         body: JSON.stringify({ email })
-      });
-      // No email confirmation needed — sign them in directly
-      const signinRes = await fetch(`${SUPA_URL}/auth/v1/token?grant_type=password`, {
-        method:'POST',
-        headers:{'Content-Type':'application/json','apikey':SUPA_KEY},
-        body: JSON.stringify({ email, password })
-      });
-      const signinData = await signinRes.json();
-      if(signinData.access_token){
-        localStorage.setItem('aj_token', signinData.access_token);
-        localStorage.setItem('aj_user', JSON.stringify(signinData.user));
-        if(signinData.refresh_token) localStorage.setItem('aj_refresh_token', signinData.refresh_token);
-        window.location.href = '/dashboard.html';
-      } else {
-        // Fallback — show success and ask them to sign in
-        document.getElementById('signupForm').style.display='none';
-        document.getElementById('successState').style.display='block';
-        document.getElementById('confirmedEmail').textContent=email;
-      }
+      }).catch(()=>{});
+      localStorage.setItem('aj_token', signinData.access_token);
+      localStorage.setItem('aj_user', JSON.stringify(signinData.user));
+      if(signinData.refresh_token) localStorage.setItem('aj_refresh_token', signinData.refresh_token);
+      window.location.href = '/dashboard.html';
+    } else {
+      // Signed up but auto-signin failed — show success with sign in link
+      document.getElementById('signupForm').style.display='none';
+      document.getElementById('successState').style.display='block';
     }
   } catch(err){
     showError('Network error — please try again');
