@@ -182,14 +182,14 @@ let authToken = null;
 
 // ── TOKEN REFRESH ────────────────────────────────
 async function refreshToken(){
-  const refreshToken = localStorage.getItem('aj_refresh_token');
-  if(!refreshToken) return null;
+  const storedRefresh = localStorage.getItem('aj_refresh_token');
+  if(!storedRefresh) return null;
 
   try {
     const res = await fetch(`${SUPA_URL}/auth/v1/token?grant_type=refresh_token`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'apikey': SUPA_KEY },
-      body: JSON.stringify({ refresh_token: refreshToken })
+      body: JSON.stringify({ refresh_token: storedRefresh })
     });
     const data = await res.json();
     if(data.access_token){
@@ -216,19 +216,24 @@ window.addEventListener('load', async () => {
   try {
     const payload = JSON.parse(atob(token.split('.')[1]));
     const expiry = payload.exp * 1000;
-    const isExpired = Date.now() > expiry - 60000; // refresh 1 min before expiry
+    const isExpired = Date.now() > expiry - 60000;
 
     if(isExpired){
-      console.log('Token expired, refreshing...');
       const newToken = await refreshToken();
       if(!newToken){
-        // Refresh failed — send to login
-        window.location.href = '/auth.html';
+        // Clear everything and redirect once — no loop
+        localStorage.removeItem('aj_token');
+        localStorage.removeItem('aj_user');
+        localStorage.removeItem('aj_refresh_token');
+        window.location.replace('/auth.html');
         return;
       }
       token = newToken;
     }
-  } catch(err){ console.log('Could not check token expiry'); }
+  } catch(err){ 
+    // If we can't parse the token just try to use it anyway
+    console.log('Token check skipped:', err); 
+  }
 
   authToken = token;
   currentUser = JSON.parse(localStorage.getItem('aj_user'));
@@ -239,14 +244,14 @@ window.addEventListener('load', async () => {
   document.getElementById('pageGreeting').textContent = greeting;
 
   // Set name
-  const name = currentUser.user_metadata?.full_name?.split(' ')[0] || 'traveler';
+  const name = currentUser?.user_metadata?.full_name?.split(' ')[0] || 'traveler';
   document.getElementById('navUserName').textContent = name;
 
-  // Auto refresh token every 30 minutes
+  // Auto refresh token every 45 minutes
   setInterval(async () => {
     const refreshed = await refreshToken();
     if(refreshed) authToken = refreshed;
-  }, 30 * 60 * 1000);
+  }, 45 * 60 * 1000);
 
   // Load trips
   await loadTrips();
