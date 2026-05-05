@@ -666,7 +666,7 @@ function renderVotableSuggestions(suggestions){
     let photoEl;
     if(s.photoUrl) {
       const proxyUrl = 'https://images.weserv.nl/?url=' + encodeURIComponent(s.photoUrl.replace('https://',''));
-      photoEl = '<img class="place-photo" src="' + proxyUrl + '" alt="' + (s.realName||s.name) + '" onerror="this.style.display='none'">';
+      photoEl = '<img class="place-photo" src="' + proxyUrl + '" alt="' + (s.realName||s.name) + '" onerror="this.style.display=\"none\"">';
     } else {
       photoEl = '<div class="place-photo-placeholder">' + s.emoji + '</div>';
     }
