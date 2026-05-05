@@ -133,6 +133,18 @@ main{max-width:900px;margin:0 auto;padding:2.5rem 2rem 5rem}
 /* SUGGESTION ENHANCEMENTS */
 .sug-desc{font-size:0.75rem;color:var(--muted);margin-top:0.3rem;line-height:1.5}
 .sug-reason{font-size:0.72rem;color:var(--teal);margin-top:0.2rem;font-style:italic}
+.place-photo{width:48px;height:48px;border-radius:8px;object-fit:cover;flex-shrink:0}
+.place-photo-placeholder{width:48px;height:48px;border-radius:8px;background:var(--cream2);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.place-links{display:flex;gap:0.4rem;margin-top:0.5rem;flex-wrap:wrap}
+.place-link{font-size:0.7rem;padding:0.2rem 0.55rem;border-radius:10px;text-decoration:none;border:1px solid var(--border);color:var(--muted);transition:all 0.2s;background:var(--white)}
+.place-link:hover{border-color:var(--navy);color:var(--navy)}
+.place-link.gmaps{background:rgba(26,144,112,0.06);border-color:rgba(26,144,112,0.2);color:var(--teal)}
+.place-link.gmaps:hover{background:rgba(26,144,112,0.12)}
+.place-rating{display:flex;align-items:center;gap:0.25rem;font-size:0.72rem;color:var(--muted);margin-top:0.2rem}
+.place-rating .stars{color:#F59E0B}
+.open-badge{font-size:0.65rem;padding:0.15rem 0.45rem;border-radius:8px;font-weight:500}
+.open-now{background:rgba(26,144,112,0.1);color:var(--teal)}
+.closed-now{background:rgba(216,90,48,0.08);color:var(--red)}
 .api-key-section{background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);border-radius:10px;padding:1rem;margin-bottom:1rem}
 .api-key-row{display:flex;gap:0.5rem;align-items:center;margin-top:0.5rem}
 .api-key-input{flex:1;background:var(--cream);border:1px solid var(--border);border-radius:6px;padding:0.6rem 0.8rem;font-size:0.82rem;color:var(--navy);font-family:monospace;outline:none}
@@ -533,12 +545,33 @@ async function generateSuggestions(){
 
     if(data.error) throw new Error(data.error);
 
+    // Enrich with Google Places data
+    let finalSuggestions = data.suggestions;
+    try {
+      const placesRes = await fetch(`${SUPA_URL}/functions/v1/find-places`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + authToken,
+          'apikey': SUPA_KEY
+        },
+        body: JSON.stringify({
+          suggestions: data.suggestions,
+          destination: tripData.destination || ''
+        })
+      });
+      const placesData = await placesRes.json();
+      if(placesData.suggestions) finalSuggestions = placesData.suggestions;
+    } catch(err){
+      console.log('Places enrichment failed, using AI suggestions:', err);
+    }
+
     // Render results
     document.getElementById('sugGenerating').style.display = 'none';
     document.getElementById('sugList').style.display = 'flex';
-    renderVotableSuggestions(data.suggestions);
+    renderVotableSuggestions(finalSuggestions);
     // Store suggestions for re-render
-    sessionStorage.setItem('suggestions_'+tripData.id, JSON.stringify(data.suggestions));
+    sessionStorage.setItem('suggestions_'+tripData.id, JSON.stringify(finalSuggestions));
 
   } catch(err){
     document.getElementById('sugGenerating').style.display = 'none';
@@ -633,13 +666,35 @@ function renderVotableSuggestions(suggestions){
     const scoreClass = s.matchScore >= 80 ? 'pct-high' : 'pct-med';
     const currentVote = votes[i];
 
+    // Build photo element
+    const photoEl = s.photoUrl
+      ? `<img class="place-photo" src="${s.photoUrl}" alt="${s.realName||s.name}" onerror="this.style.display='none'">`
+      : `<div class="place-photo-placeholder">${s.emoji}</div>`;
+
+    // Build rating
+    const ratingEl = s.rating
+      ? `<div class="place-rating"><span class="stars">★</span>${s.rating} <span>(${s.totalRatings?.toLocaleString()||''})</span>${s.openNow===true?'<span class="open-badge open-now">Open now</span>':s.openNow===false?'<span class="open-badge closed-now">Closed</span>':''}</div>`
+      : '';
+
+    // Build links
+    const linksEl = s.found ? `<div class="place-links">
+      ${s.googleMapsUrl?`<a class="place-link gmaps" href="${s.googleMapsUrl}" target="_blank">📍 Google Maps</a>`:''}
+      ${s.website?`<a class="place-link" href="${s.website}" target="_blank">🌐 Website</a>`:''}
+      ${s.phone?`<a class="place-link" href="tel:${s.phone}">📞 Call</a>`:''}
+    </div>` : '';
+
+    const displayName = s.realName || s.name;
+    const displayAddress = s.address ? `<div style="font-size:0.7rem;color:var(--light);margin-top:0.1rem">${s.address.split(',').slice(0,2).join(',')}</div>` : '';
+
     return `<div class="sug-item ${currentVote==='up'?'voted-up':currentVote==='down'?'voted-down':''}" id="sug-item-${i}">
-      <div class="sug-icon" style="background:${color}">${s.emoji}</div>
+      ${photoEl}
       <div class="sug-body" style="flex:1;min-width:0">
-        <div class="sug-name">${s.name}</div>
+        <div class="sug-name">${displayName}</div>
+        ${displayAddress}
         <div class="sug-meta">${s.category} · ${s.duration} · ${s.price}</div>
-        <div class="sug-desc">${s.description}</div>
+        ${ratingEl}
         <div class="sug-reason">✦ ${s.matchReason}</div>
+        ${linksEl}
       </div>
       <div style="display:flex;flex-direction:column;align-items:center;gap:0.3rem;flex-shrink:0">
         <div class="sug-pct ${scoreClass}">${s.matchScore}%</div>
