@@ -664,7 +664,7 @@ function renderVotableSuggestions(suggestions){
 
     // Build photo element
     const photoEl = s.photoUrl
-      ? `<img class="place-photo" src="${s.photoUrl}" alt="${s.realName||s.name}" onerror="this.style.display='none'">`
+      ? `<img class="place-photo" src="${s.photoUrl}" alt="${s.realName||s.name}" crossorigin="anonymous" referrerpolicy="no-referrer" onerror="this.parentElement.innerHTML='<div class=place-photo-placeholder>${s.emoji}</div>'">`
       : `<div class="place-photo-placeholder">${s.emoji}</div>`;
 
     // Build rating
