@@ -235,18 +235,7 @@ async function loadTrip(tripId){
     renderPage();
     // Load host's existing interests if any
     if(currentUser) loadExistingInterests(membersData);
-    // Restore suggestions if already generated this session
-    const cachedSugs = sessionStorage.getItem('suggestions_'+tripData.id);
-    if(cachedSugs){
-      try {
-        const sugs = JSON.parse(cachedSugs);
-        document.getElementById('sugWaiting').style.display = 'none';
-        document.getElementById('sugGenerating').style.display = 'none';
-        document.getElementById('sugList').style.display = 'flex';
-        document.getElementById('apiKeySection').style.display = 'none';
-        renderVotableSuggestions(sugs);
-      } catch(e){}
-    }
+// Cache restore disabled — always fetch fresh suggestions
   } catch(err){
     document.getElementById('pageLoading').innerHTML = '<p style="color:var(--muted)">Could not load trip — please refresh.</p>';
   }
@@ -565,6 +554,13 @@ async function generateSuggestions(){
     } catch(err){
       console.log('Places enrichment failed, using AI suggestions:', err);
     }
+    console.log('Final suggestions:', JSON.stringify(finalSuggestions.map(s => ({
+      name: s.realName || s.name,
+      found: s.found,
+      hasPhoto: !!s.photoUrl,
+      rating: s.rating,
+      address: s.address
+    }))));
 
     // Render results
     document.getElementById('sugGenerating').style.display = 'none';
