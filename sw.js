@@ -1,21 +1,31 @@
-// AskJenna Service Worker v1
-const CACHE_NAME = 'askjenna-v3';
-const ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.json'
+// AskJenna Service Worker v4
+const CACHE_NAME = 'askjenna-v4';
+
+// Only cache static assets, never HTML pages
+const STATIC_ASSETS = [
+  '/manifest.json',
+  '/icon-192.png',
+  '/icon-512.png'
 ];
 
-// Install — cache core assets
+// Never cache these
+const NEVER_CACHE = [
+  '/trip.html',
+  '/dashboard.html',
+  '/auth.html',
+  '/join.html',
+  '/index.html',
+  '/'
+];
+
 self.addEventListener('install', e => {
   e.waitUntil(
     caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(ASSETS))
+      .then(cache => cache.addAll(STATIC_ASSETS))
       .then(() => self.skipWaiting())
   );
 });
 
-// Activate — clean up old caches
 self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys().then(keys =>
@@ -27,15 +37,21 @@ self.addEventListener('activate', e => {
   );
 });
 
-// Fetch — network first, fall back to cache
 self.addEventListener('fetch', e => {
-  // Only handle GET requests
   if (e.request.method !== 'GET') return;
   
+  const url = new URL(e.request.url);
+  
+  // Never cache HTML pages — always fetch fresh
+  if (NEVER_CACHE.some(path => url.pathname === path || url.pathname.startsWith(path + '?'))) {
+    e.respondWith(fetch(e.request));
+    return;
+  }
+  
+  // Network first for everything else
   e.respondWith(
     fetch(e.request)
       .then(res => {
-        // Cache successful responses
         if (res && res.status === 200) {
           const clone = res.clone();
           caches.open(CACHE_NAME).then(c => c.put(e.request, clone));
