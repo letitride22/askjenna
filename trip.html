@@ -662,48 +662,56 @@ function renderVotableSuggestions(suggestions){
     const scoreClass = s.matchScore >= 80 ? 'pct-high' : 'pct-med';
     const currentVote = votes[i];
 
-    // Build photo element
-    const photoEl = s.photoUrl
-      ? `<img class="place-photo" src="${s.photoUrl}" alt="${s.realName||s.name}" crossorigin="anonymous" referrerpolicy="no-referrer" onerror="this.parentElement.innerHTML='<div class=place-photo-placeholder>${s.emoji}</div>'">`
-      : `<div class="place-photo-placeholder">${s.emoji}</div>`;
+    // Build photo element - use corsproxy for Google photos
+    let photoEl;
+    if(s.photoUrl) {
+      const proxyUrl = 'https://images.weserv.nl/?url=' + encodeURIComponent(s.photoUrl.replace('https://',''));
+      photoEl = '<img class="place-photo" src="' + proxyUrl + '" alt="' + (s.realName||s.name) + '" onerror="this.style.display='none'">';
+    } else {
+      photoEl = '<div class="place-photo-placeholder">' + s.emoji + '</div>';
+    }
 
     // Build rating
-    const ratingEl = s.rating
-      ? `<div class="place-rating"><span class="stars">★</span>${s.rating} <span>(${s.totalRatings?.toLocaleString()||''})</span>${s.openNow===true?'<span class="open-badge open-now">Open now</span>':s.openNow===false?'<span class="open-badge closed-now">Closed</span>':''}</div>`
-      : '';
+    let ratingEl = '';
+    if(s.rating) {
+      const openBadge = s.openNow===true ? '<span class="open-badge open-now">Open now</span>' : s.openNow===false ? '<span class="open-badge closed-now">Closed</span>' : '';
+      ratingEl = '<div class="place-rating"><span class="stars">★</span>' + s.rating + ' <span>(' + (s.totalRatings ? s.totalRatings.toLocaleString() : '') + ')</span>' + openBadge + '</div>';
+    }
 
     // Build links
-    const linksEl = s.found ? `<div class="place-links">
-      ${s.googleMapsUrl?`<a class="place-link gmaps" href="${s.googleMapsUrl}" target="_blank">📍 Google Maps</a>`:''}
-      ${s.website?`<a class="place-link" href="${s.website}" target="_blank">🌐 Website</a>`:''}
-      ${s.phone?`<a class="place-link" href="tel:${s.phone}">📞 Call</a>`:''}
-    </div>` : '';
+    let linksEl = '';
+    if(s.found) {
+      linksEl = '<div class="place-links">';
+      if(s.googleMapsUrl) linksEl += '<a class="place-link gmaps" href="' + s.googleMapsUrl + '" target="_blank">📍 Maps</a>';
+      if(s.website) linksEl += '<a class="place-link" href="' + s.website + '" target="_blank">🌐 Website</a>';
+      if(s.phone) linksEl += '<a class="place-link" href="tel:' + s.phone + '">📞 Call</a>';
+      linksEl += '</div>';
+    }
 
     const displayName = s.realName || s.name;
-    const displayAddress = s.address ? `<div style="font-size:0.7rem;color:var(--light);margin-top:0.1rem">${s.address.split(',').slice(0,2).join(',')}</div>` : '';
+    const displayAddress = s.address ? '<div style="font-size:0.7rem;color:var(--muted);margin-top:0.1rem">' + s.address.split(',').slice(0,2).join(',') + '</div>' : '';
+    const voteUpClass = currentVote==='up' ? 'active-up' : '';
+    const voteDownClass = currentVote==='down' ? 'active-down' : '';
+    const itemClass = currentVote==='up' ? 'voted-up' : currentVote==='down' ? 'voted-down' : '';
 
-    return `<div class="sug-item ${currentVote==='up'?'voted-up':currentVote==='down'?'voted-down':''}" id="sug-item-${i}">
-      ${photoEl}
-      <div class="sug-body" style="flex:1;min-width:0">
-        <div class="sug-name">${displayName}</div>
-        ${displayAddress}
-        <div class="sug-meta">${s.category} · ${s.duration} · ${s.price}</div>
-        ${ratingEl}
-        <div class="sug-reason">✦ ${s.matchReason}</div>
-        ${linksEl}
-      </div>
-      <div style="display:flex;flex-direction:column;align-items:center;gap:0.3rem;flex-shrink:0">
-        <div class="sug-pct ${scoreClass}">${s.matchScore}%</div>
-        <div class="vote-btns">
-          <button class="vote-btn up ${currentVote==='up'?'active-up':''}" onclick="vote(${i},'up')" title="Love it">
-            <span>👍</span>
-          </button>
-          <button class="vote-btn down ${currentVote==='down'?'active-down':''}" onclick="vote(${i},'down')" title="Not for me">
-            <span>👎</span>
-          </button>
-        </div>
-      </div>
-    </div>`;
+    return '<div class="sug-item ' + itemClass + '" id="sug-item-' + i + '">' +
+      photoEl +
+      '<div class="sug-body" style="flex:1;min-width:0">' +
+        '<div class="sug-name">' + displayName + '</div>' +
+        displayAddress +
+        '<div class="sug-meta">' + s.category + ' · ' + s.duration + ' · ' + s.price + '</div>' +
+        ratingEl +
+        '<div class="sug-reason">✦ ' + s.matchReason + '</div>' +
+        linksEl +
+      '</div>' +
+      '<div style="display:flex;flex-direction:column;align-items:center;gap:0.3rem;flex-shrink:0">' +
+        '<div class="sug-pct ' + scoreClass + '">' + s.matchScore + '%</div>' +
+        '<div class="vote-btns">' +
+          '<button class="vote-btn up ' + voteUpClass + '" onclick="vote(' + i + ','up')" title="Love it"><span>👍</span></button>' +
+          '<button class="vote-btn down ' + voteDownClass + '" onclick="vote(' + i + ','down')" title="Not for me"><span>👎</span></button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
   }).join('');
 
   // Add notify group button if host
