@@ -650,6 +650,7 @@ function updateVoteUI(idx, direction){
 function renderVotableSuggestions(suggestions){
   const container = document.getElementById('sugList');
   if(!container) return;
+  container.innerHTML = '';
 
   const votes = getVotes(tripData.id);
   const categoryColors = {
@@ -657,138 +658,137 @@ function renderVotableSuggestions(suggestions){
     'Nightlife':'#EEF0FB','Shopping':'#FDE8E0','Entertainment':'#F3E5F5'
   };
 
-  container.innerHTML = suggestions.map((s,i) => {
+  suggestions.forEach(function(s, i) {
     const color = categoryColors[s.category] || '#F5F0E8';
     const scoreClass = s.matchScore >= 80 ? 'pct-high' : 'pct-med';
     const currentVote = votes[i];
 
-    // Build photo element - use corsproxy for Google photos
-    let photoEl;
+    // Create item div
+    const item = document.createElement('div');
+    item.className = 'sug-item' + (currentVote==='up' ? ' voted-up' : currentVote==='down' ? ' voted-down' : '');
+    item.id = 'sug-item-' + i;
+
+    // Photo
     if(s.photoUrl) {
       const proxyUrl = 'https://images.weserv.nl/?url=' + encodeURIComponent(s.photoUrl.replace('https://',''));
-      photoEl = '<img class="place-photo" src="' + proxyUrl + '" alt="' + (s.realName||s.name) + '">';
+      const img = document.createElement('img');
+      img.className = 'place-photo';
+      img.src = proxyUrl;
+      img.alt = s.realName || s.name;
+      item.appendChild(img);
     } else {
-      photoEl = '<div class="place-photo-placeholder">' + s.emoji + '</div>';
+      const ph = document.createElement('div');
+      ph.className = 'place-photo-placeholder';
+      ph.textContent = s.emoji;
+      item.appendChild(ph);
     }
 
-    // Build rating
-    let ratingEl = '';
+    // Body
+    const body = document.createElement('div');
+    body.className = 'sug-body';
+    body.style.cssText = 'flex:1;min-width:0';
+
+    const nameEl = document.createElement('div');
+    nameEl.className = 'sug-name';
+    nameEl.textContent = s.realName || s.name;
+    body.appendChild(nameEl);
+
+    if(s.address) {
+      const addrEl = document.createElement('div');
+      addrEl.style.cssText = 'font-size:0.7rem;color:var(--muted);margin-top:0.1rem';
+      addrEl.textContent = s.address.split(',').slice(0,2).join(',');
+      body.appendChild(addrEl);
+    }
+
+    const metaEl = document.createElement('div');
+    metaEl.className = 'sug-meta';
+    metaEl.textContent = s.category + ' · ' + s.duration + ' · ' + s.price;
+    body.appendChild(metaEl);
+
     if(s.rating) {
-      const openBadge = s.openNow===true ? '<span class="open-badge open-now">Open now</span>' : s.openNow===false ? '<span class="open-badge closed-now">Closed</span>' : '';
-      ratingEl = '<div class="place-rating"><span class="stars">★</span>' + s.rating + ' <span>(' + (s.totalRatings ? s.totalRatings.toLocaleString() : '') + ')</span>' + openBadge + '</div>';
+      const ratingEl = document.createElement('div');
+      ratingEl.className = 'place-rating';
+      ratingEl.innerHTML = '<span class="stars">★</span>' + s.rating +
+        (s.totalRatings ? ' <span>(' + s.totalRatings.toLocaleString() + ')</span>' : '') +
+        (s.openNow===true ? '<span class="open-badge open-now">Open now</span>' : s.openNow===false ? '<span class="open-badge closed-now">Closed</span>' : '');
+      body.appendChild(ratingEl);
     }
 
-    // Build links
-    let linksEl = '';
+    const reasonEl = document.createElement('div');
+    reasonEl.className = 'sug-reason';
+    reasonEl.textContent = '✦ ' + s.matchReason;
+    body.appendChild(reasonEl);
+
     if(s.found) {
-      linksEl = '<div class="place-links">';
-      if(s.googleMapsUrl) linksEl += '<a class="place-link gmaps" href="' + s.googleMapsUrl + '" target="_blank">📍 Maps</a>';
-      if(s.website) linksEl += '<a class="place-link" href="' + s.website + '" target="_blank">🌐 Website</a>';
-      if(s.phone) linksEl += '<a class="place-link" href="tel:' + s.phone + '">📞 Call</a>';
-      linksEl += '</div>';
+      const linksEl = document.createElement('div');
+      linksEl.className = 'place-links';
+      if(s.googleMapsUrl) {
+        const a = document.createElement('a');
+        a.className = 'place-link gmaps';
+        a.href = s.googleMapsUrl;
+        a.target = '_blank';
+        a.textContent = '📍 Maps';
+        linksEl.appendChild(a);
+      }
+      if(s.website) {
+        const a = document.createElement('a');
+        a.className = 'place-link';
+        a.href = s.website;
+        a.target = '_blank';
+        a.textContent = '🌐 Website';
+        linksEl.appendChild(a);
+      }
+      if(s.phone) {
+        const a = document.createElement('a');
+        a.className = 'place-link';
+        a.href = 'tel:' + s.phone;
+        a.textContent = '📞 Call';
+        linksEl.appendChild(a);
+      }
+      body.appendChild(linksEl);
     }
 
-    const displayName = s.realName || s.name;
-    const displayAddress = s.address ? '<div style="font-size:0.7rem;color:var(--muted);margin-top:0.1rem">' + s.address.split(',').slice(0,2).join(',') + '</div>' : '';
-    const voteUpClass = currentVote==='up' ? 'active-up' : '';
-    const voteDownClass = currentVote==='down' ? 'active-down' : '';
-    const itemClass = currentVote==='up' ? 'voted-up' : currentVote==='down' ? 'voted-down' : '';
+    item.appendChild(body);
 
-    return '<div class="sug-item ' + itemClass + '" id="sug-item-' + i + '">' +
-      photoEl +
-      '<div class="sug-body" style="flex:1;min-width:0">' +
-        '<div class="sug-name">' + displayName + '</div>' +
-        displayAddress +
-        '<div class="sug-meta">' + s.category + ' · ' + s.duration + ' · ' + s.price + '</div>' +
-        ratingEl +
-        '<div class="sug-reason">✦ ' + s.matchReason + '</div>' +
-        linksEl +
-      '</div>' +
-      '<div style="display:flex;flex-direction:column;align-items:center;gap:0.3rem;flex-shrink:0">' +
-        '<div class="sug-pct ' + scoreClass + '">' + s.matchScore + '%</div>' +
-        '<div class="vote-btns">' +
-          '<button class="vote-btn up ' + voteUpClass + '" onclick="vote(' + i + ',\'up\')" title="Love it"><span>👍</span></button>' +
-          '<button class="vote-btn down ' + voteDownClass + '" onclick="vote(' + i + ',\'down\')" title="Not for me"><span>👎</span></button>' +
-        '</div>' +
-      '</div>' +
-    '</div>';
-  }).join('');
+    // Vote buttons
+    const voteCol = document.createElement('div');
+    voteCol.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:0.3rem;flex-shrink:0';
+
+    const pct = document.createElement('div');
+    pct.className = 'sug-pct ' + scoreClass;
+    pct.textContent = s.matchScore + '%';
+    voteCol.appendChild(pct);
+
+    const voteBtns = document.createElement('div');
+    voteBtns.className = 'vote-btns';
+
+    const upBtn = document.createElement('button');
+    upBtn.className = 'vote-btn up' + (currentVote==='up' ? ' active-up' : '');
+    upBtn.title = 'Love it';
+    upBtn.innerHTML = '<span>👍</span>';
+    upBtn.onclick = function(){ vote(i, 'up'); };
+    voteBtns.appendChild(upBtn);
+
+    const downBtn = document.createElement('button');
+    downBtn.className = 'vote-btn down' + (currentVote==='down' ? ' active-down' : '');
+    downBtn.title = 'Not for me';
+    downBtn.innerHTML = '<span>👎</span>';
+    downBtn.onclick = function(){ vote(i, 'down'); };
+    voteBtns.appendChild(downBtn);
+
+    voteCol.appendChild(voteBtns);
+    item.appendChild(voteCol);
+    container.appendChild(item);
+  });
 
   // Add notify group button if host
   if(currentUser && tripData.user_id === currentUser.id){
-    container.insertAdjacentHTML('afterend', `
-      <div id="notifySection" style="margin-top:1rem">
-        <button class="notify-btn" id="notifyBtn" onclick="notifyGroup()">
-          🔔 Notify everyone — suggestions are ready to vote on!
-        </button>
-        <p style="font-size:0.75rem;color:var(--muted);text-align:center;margin-top:0.5rem">
-          Sends an email to all group members with a link to vote
-        </p>
-      </div>
-    `);
+    const notifySection = document.createElement('div');
+    notifySection.id = 'notifySection';
+    notifySection.style.marginTop = '1rem';
+    notifySection.innerHTML = '<button class="notify-btn" id="notifyBtn" onclick="notifyGroup()">🔔 Notify everyone — suggestions are ready to vote on!</button><p style="font-size:0.75rem;color:var(--muted);text-align:center;margin-top:0.5rem">Sends an email to all group members with a link to vote</p>';
+    container.after(notifySection);
   }
 }
 
-// ── NOTIFY GROUP ──────────────────────────────────
-async function notifyGroup(){
-  const btn = document.getElementById('notifyBtn');
-  if(!btn) return;
-  btn.disabled = true;
-  btn.textContent = '📨 Sending notifications...';
 
-  try {
-    const res = await fetch(`${SUPA_URL}/functions/v1/notify-group`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + authToken,
-        'apikey': SUPA_KEY
-      },
-      body: JSON.stringify({ trip_id: tripData.id })
-    });
-    const data = await res.json();
-    if(data.success || !data.error){
-      btn.textContent = '✓ Everyone notified!';
-      btn.style.background = 'var(--teal)';
-    } else {
-      throw new Error(data.error);
-    }
-  } catch(err){
-    btn.disabled = false;
-    btn.textContent = '🔔 Notify everyone — suggestions are ready!';
-    console.error('Notify error:', err);
-    alert('Could not send notifications — please try again');
-  }
-}
-
-// ── INVITE / SHARE ────────────────────────────────
-function copyInvite(url){
-  navigator.clipboard.writeText(url).then(() => {
-    const btn = document.getElementById('copyBtn');
-    btn.textContent = 'Copied!';
-    btn.classList.add('copied');
-    setTimeout(() => { btn.textContent='Copy link'; btn.classList.remove('copied'); }, 2000);
-  });
-}
-
-function shareWhatsApp(url, name){
-  window.open(`https://wa.me/?text=${encodeURIComponent(`Join me on "${name}" — add your travel interests here: ${url}`)}`);
-}
-
-function shareText(url, name){
-  window.open(`sms:?body=${encodeURIComponent(`Join me on "${name}" — add your travel interests here: ${url}`)}`);
-}
-
-function shareEmail(url, name){
-  window.open(`mailto:?subject=${encodeURIComponent(`Join my trip: ${name}`)}&body=${encodeURIComponent(`Hey! I'm planning "${name}" and I want to make sure everyone gets to do what they love.\n\nClick this link to add your interests and let Jenna plan the perfect itinerary for our group:\n\n${url}\n\nSee you there! 🌍`)}`);
-}
-
-async function nativeShare(url, name){
-  try {
-    await navigator.share({ title:`Join ${name}`, text:`Add your travel interests for ${name}`, url });
-  } catch(e){}
-}
-</script>
-<script src="/jenna.js"></script>
-</body>
-</html>
