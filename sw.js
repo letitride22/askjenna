@@ -1,5 +1,5 @@
 // AskJenna Service Worker v1
-const CACHE_NAME = 'askjenna-v1';
+const CACHE_NAME = 'askjenna-v3';
 const ASSETS = [
   '/',
   '/index.html',
