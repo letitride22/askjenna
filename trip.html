@@ -138,6 +138,30 @@ main{max-width:900px;margin:0 auto;padding:2.5rem 2rem 5rem}
 .btn-generate:disabled{opacity:0.6;cursor:not-allowed}
 .generating{text-align:center;padding:2rem;color:var(--muted)}
 .generating-spinner{width:28px;height:28px;border:3px solid var(--cream2);border-top-color:var(--navy);border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 0.75rem}
+/* TABS */
+.sug-tabs{display:flex;gap:6px;margin-bottom:1.25rem;flex-wrap:wrap}
+.sug-tab{padding:5px 14px;border-radius:20px;border:1px solid var(--border);font-size:0.78rem;cursor:pointer;background:var(--white);color:var(--muted);font-family:'DM Sans',sans-serif;transition:all 0.2s;white-space:nowrap}
+.sug-tab:hover{border-color:var(--navy);color:var(--navy)}
+.sug-tab.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.sug-tab .tab-count{font-size:0.7rem;opacity:0.65;margin-left:3px}
+/* SECTION HEADERS */
+.sug-section{margin-bottom:1.25rem}
+.sug-section-label{font-size:0.68rem;font-weight:500;text-transform:uppercase;letter-spacing:0.09em;color:var(--muted);margin-bottom:0.6rem;display:flex;align-items:center;gap:8px}
+.sug-section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+/* RESERVE BUTTON */
+.place-link.reserve{background:rgba(26,144,112,0.08);border-color:rgba(26,144,112,0.25);color:var(--teal);font-weight:500}
+.place-link.reserve:hover{background:rgba(26,144,112,0.15)}
+/* EVENT CARDS */
+.event-cards{display:flex;flex-direction:column;gap:6px;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
+.event-card{display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--white);border-radius:8px;border:1px solid var(--border);text-decoration:none;transition:all 0.2s}
+.event-card:hover{border-color:var(--gold);background:rgba(201,168,76,0.03)}
+.event-thumb{width:44px;height:44px;border-radius:6px;object-fit:cover;flex-shrink:0;background:var(--cream2)}
+.event-thumb-placeholder{width:44px;height:44px;border-radius:6px;flex-shrink:0;background:var(--navy3);display:flex;align-items:center;justify-content:center;font-size:1.1rem}
+.event-info{flex:1;min-width:0}
+.event-name{font-size:0.8rem;font-weight:500;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.event-meta{font-size:0.7rem;color:var(--muted);margin-top:2px;display:flex;gap:6px;flex-wrap:wrap}
+.event-price{font-size:0.72rem;font-weight:500;color:var(--teal);white-space:nowrap;flex-shrink:0}
+.event-ticket-btn{font-size:0.7rem;padding:3px 8px;border-radius:5px;background:var(--navy);color:#fff;white-space:nowrap;flex-shrink:0}
 /* AUTH ERROR */
 .auth-error{background:rgba(216,90,48,0.08);border:1px solid rgba(216,90,48,0.2);border-radius:12px;padding:1.5rem;text-align:center;margin:2rem 0}
 .auth-error p{color:var(--red);font-size:0.88rem;margin-bottom:1rem}
@@ -680,7 +704,12 @@ async function generateSuggestions() {
           'Authorization': 'Bearer ' + authToken,
           'apikey': SUPA_KEY
         },
-        body: JSON.stringify({ suggestions: data.suggestions, destination: tripData.destination || '' })
+        body: JSON.stringify({
+          suggestions: data.suggestions,
+          destination: tripData.destination || '',
+          startDate: tripData.start_date || null,
+          endDate: tripData.end_date || null,
+        })
       });
       const placesData = await placesRes.json();
       if (placesData.suggestions) finalSuggestions = placesData.suggestions;
@@ -771,6 +800,36 @@ function updateVoteUI(idx, direction) {
   }
 }
 
+// ── HELPERS ───────────────────────────────────────────────────
+// Detect if a URL belongs to a known reservation platform
+function getReservationInfo(website) {
+  if (!website) return null;
+  const w = website.toLowerCase();
+  if (w.includes('opentable.com'))  return { label: '🍽 Reserve', url: website };
+  if (w.includes('resy.com'))       return { label: '🍽 Reserve', url: website };
+  if (w.includes('sevenrooms.com')) return { label: '🍽 Reserve', url: website };
+  if (w.includes('tock.com'))       return { label: '🍽 Reserve', url: website };
+  if (w.includes('exploretock.com'))return { label: '🍽 Reserve', url: website };
+  if (w.includes('yelp.com'))       return { label: '🍽 Reserve', url: website };
+  return null;
+}
+
+// Map categories to tab groups
+function getTabGroup(category) {
+  const cat = (category || '').toLowerCase();
+  if (cat === 'food & drink' || cat === 'nightlife') return 'eat';
+  if (cat === 'outdoors' || cat === 'culture' || cat === 'shopping') return 'do';
+  if (cat === 'entertainment') return 'events';
+  return 'do';
+}
+
+// Tab group metadata
+const TAB_GROUPS = {
+  eat:    { label: 'Eat & drink', icon: '🍽' },
+  do:     { label: 'Things to do', icon: '🗺' },
+  events: { label: 'Events', icon: '🎟' },
+};
+
 // ── RENDER VOTABLE SUGGESTIONS ────────────────────────────────
 function renderVotableSuggestions(suggestions) {
   const container = document.getElementById('sugList');
@@ -783,7 +842,80 @@ function renderVotableSuggestions(suggestions) {
     'Nightlife':'#EEF0FB','Shopping':'#FDE8E0','Entertainment':'#F3E5F5'
   };
 
-  suggestions.forEach(function(s, i) {
+  // Group suggestions by tab
+  const groups = { eat: [], do: [], events: [] };
+  suggestions.forEach((s, i) => {
+    groups[getTabGroup(s.category)].push({ s, i });
+  });
+
+  // ── Build tabs ──────────────────────────────────────────────
+  const tabBar = document.createElement('div');
+  tabBar.className = 'sug-tabs';
+
+  // All tab
+  const allTab = document.createElement('button');
+  allTab.className = 'sug-tab active';
+  allTab.dataset.tab = 'all';
+  allTab.innerHTML = 'All suggestions <span class="tab-count">' + suggestions.length + '</span>';
+  tabBar.appendChild(allTab);
+
+  // Category tabs (only for groups that have items)
+  Object.entries(TAB_GROUPS).forEach(([key, meta]) => {
+    if (groups[key].length === 0) return;
+    const btn = document.createElement('button');
+    btn.className = 'sug-tab';
+    btn.dataset.tab = key;
+    btn.innerHTML = meta.label + ' <span class="tab-count">' + groups[key].length + '</span>';
+    tabBar.appendChild(btn);
+  });
+
+  container.appendChild(tabBar);
+
+  // ── Content area ───────────────────────────────────────────
+  const content = document.createElement('div');
+  content.id = 'sugContent';
+  container.appendChild(content);
+
+  // Tab click handler
+  tabBar.addEventListener('click', function(e) {
+    const btn = e.target.closest('.sug-tab');
+    if (!btn) return;
+    tabBar.querySelectorAll('.sug-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderTab(btn.dataset.tab);
+  });
+
+  // ── Render a tab's content ──────────────────────────────────
+  function renderTab(tab) {
+    content.innerHTML = '';
+
+    if (tab === 'all') {
+      // Grouped sections
+      Object.entries(TAB_GROUPS).forEach(([key, meta]) => {
+        if (groups[key].length === 0) return;
+        const section = document.createElement('div');
+        section.className = 'sug-section';
+        const label = document.createElement('div');
+        label.className = 'sug-section-label';
+        label.textContent = meta.label;
+        section.appendChild(label);
+        const list = document.createElement('div');
+        list.style.cssText = 'display:flex;flex-direction:column;gap:0.75rem';
+        groups[key].forEach(({ s, i }) => list.appendChild(buildCard(s, i)));
+        section.appendChild(list);
+        content.appendChild(section);
+      });
+    } else {
+      // Single category flat list
+      const list = document.createElement('div');
+      list.style.cssText = 'display:flex;flex-direction:column;gap:0.75rem';
+      groups[tab].forEach(({ s, i }) => list.appendChild(buildCard(s, i)));
+      content.appendChild(list);
+    }
+  }
+
+  // ── Build a single card ────────────────────────────────────
+  function buildCard(s, i) {
     const color = categoryColors[s.category] || '#F5F0E8';
     const scoreClass = s.matchScore >= 80 ? 'pct-high' : 'pct-med';
     const currentVote = votes[i];
@@ -792,7 +924,7 @@ function renderVotableSuggestions(suggestions) {
     item.className = 'sug-item' + (currentVote === 'up' ? ' voted-up' : currentVote === 'down' ? ' voted-down' : '');
     item.id = 'sug-item-' + i;
 
-    // FIX: emoji fallback + sug-icon class for correct sizing
+    // Photo / placeholder
     if (s.photoUrl) {
       const img = document.createElement('img');
       img.className = 'place-photo';
@@ -841,7 +973,8 @@ function renderVotableSuggestions(suggestions) {
       ratingEl.className = 'place-rating';
       ratingEl.innerHTML = '<span class="stars">★</span>' + s.rating +
         (s.totalRatings ? ' <span>(' + Number(s.totalRatings).toLocaleString() + ')</span>' : '') +
-        (s.openNow === true ? '<span class="open-badge open-now">Open now</span>' : s.openNow === false ? '<span class="open-badge closed-now">Closed</span>' : '');
+        (s.openNow === true  ? '<span class="open-badge open-now">Open now</span>' :
+         s.openNow === false ? '<span class="open-badge closed-now">Closed</span>' : '');
       body.appendChild(ratingEl);
     }
 
@@ -855,24 +988,31 @@ function renderVotableSuggestions(suggestions) {
     if (s.found) {
       const linksEl = document.createElement('div');
       linksEl.className = 'place-links';
+
       if (s.googleMapsUrl) {
         const a = document.createElement('a');
         a.className = 'place-link gmaps';
-        a.href = s.googleMapsUrl;
-        a.target = '_blank';
-        a.rel = 'noopener';
+        a.href = s.googleMapsUrl; a.target = '_blank'; a.rel = 'noopener';
         a.textContent = '📍 Maps';
         linksEl.appendChild(a);
       }
-      if (s.website) {
+
+      // Smart reserve detection — replaces generic Website link for booking platforms
+      const reserveInfo = getReservationInfo(s.website);
+      if (reserveInfo) {
+        const a = document.createElement('a');
+        a.className = 'place-link reserve';
+        a.href = reserveInfo.url; a.target = '_blank'; a.rel = 'noopener';
+        a.textContent = reserveInfo.label;
+        linksEl.appendChild(a);
+      } else if (s.website) {
         const a = document.createElement('a');
         a.className = 'place-link';
-        a.href = s.website;
-        a.target = '_blank';
-        a.rel = 'noopener';
+        a.href = s.website; a.target = '_blank'; a.rel = 'noopener';
         a.textContent = '🌐 Website';
         linksEl.appendChild(a);
       }
+
       if (s.phone) {
         const a = document.createElement('a');
         a.className = 'place-link';
@@ -880,7 +1020,69 @@ function renderVotableSuggestions(suggestions) {
         a.textContent = '📞 Call';
         linksEl.appendChild(a);
       }
+
       body.appendChild(linksEl);
+    }
+
+    // Event cards (Ticketmaster) — shown for Entertainment/Nightlife
+    if (s.events && s.events.length > 0) {
+      const eventsWrap = document.createElement('div');
+      eventsWrap.className = 'event-cards';
+      s.events.forEach(function(ev) {
+        const card = document.createElement('a');
+        card.className = 'event-card';
+        card.href = ev.url || '#';
+        card.target = '_blank';
+        card.rel = 'noopener';
+
+        if (ev.imageUrl) {
+          const img = document.createElement('img');
+          img.className = 'event-thumb';
+          img.src = ev.imageUrl;
+          img.alt = ev.name;
+          img.onerror = function() { this.style.display='none'; };
+          card.appendChild(img);
+        } else {
+          const ph = document.createElement('div');
+          ph.className = 'event-thumb-placeholder';
+          ph.textContent = '🎟';
+          card.appendChild(ph);
+        }
+
+        const info = document.createElement('div');
+        info.className = 'event-info';
+
+        const nameEl = document.createElement('div');
+        nameEl.className = 'event-name';
+        nameEl.textContent = ev.name;
+        info.appendChild(nameEl);
+
+        const meta = document.createElement('div');
+        meta.className = 'event-meta';
+        const parts = [];
+        if (ev.date) parts.push(ev.date);
+        if (ev.time) parts.push(ev.time);
+        if (ev.venue) parts.push(ev.venue);
+        meta.textContent = parts.join(' · ');
+        info.appendChild(meta);
+
+        card.appendChild(info);
+
+        if (ev.price) {
+          const price = document.createElement('div');
+          price.className = 'event-price';
+          price.textContent = ev.price;
+          card.appendChild(price);
+        }
+
+        const ticketBtn = document.createElement('div');
+        ticketBtn.className = 'event-ticket-btn';
+        ticketBtn.textContent = 'Tickets';
+        card.appendChild(ticketBtn);
+
+        eventsWrap.appendChild(card);
+      });
+      body.appendChild(eventsWrap);
     }
 
     item.appendChild(body);
@@ -913,25 +1115,25 @@ function renderVotableSuggestions(suggestions) {
 
     voteCol.appendChild(voteBtns);
     item.appendChild(voteCol);
-    container.appendChild(item);
-  });
+    return item;
+  }
 
-  // Notify section for host
+  // Render the All tab by default
+  renderTab('all');
+
+  // Notify section for host (appended after content)
   if (currentUser && tripData.user_id === currentUser.id) {
     const notifySection = document.createElement('div');
     notifySection.id = 'notifySection';
     notifySection.style.marginTop = '1rem';
-
     const notifyBtn = document.createElement('button');
     notifyBtn.className = 'notify-btn';
     notifyBtn.id = 'notifyBtn';
     notifyBtn.textContent = '🔔 Notify everyone — suggestions are ready to vote on!';
     notifyBtn.addEventListener('click', notifyGroup);
-
     const notifyNote = document.createElement('p');
     notifyNote.style.cssText = 'font-size:0.75rem;color:var(--muted);text-align:center;margin-top:0.5rem';
     notifyNote.textContent = 'Sends an email to all group members with a link to vote';
-
     notifySection.appendChild(notifyBtn);
     notifySection.appendChild(notifyNote);
     container.after(notifySection);
