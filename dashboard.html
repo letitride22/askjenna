@@ -8,13 +8,12 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --navy:#0B1D35;--navy2:#142847;--navy3:#1A3358;
-  --gold:#C9A84C;--gold2:#E2BF6E;--cream:#F7F2EA;--cream2:#EEE7D8;
-  --teal:#1A9070;--teal2:#22B589;--teal3:#5ECFAC;
-  --muted:#5C6B82;--border:rgba(11,29,53,0.1);--white:#fff;
+--navy:#0B1D35;--navy2:#142847;--navy3:#1A3358;
+--gold:#C9A84C;--gold2:#E2BF6E;--cream:#F7F2EA;--cream2:#EEE7D8;
+--teal:#1A9070;--teal2:#22B589;--teal3:#5ECFAC;
+--muted:#5C6B82;--border:rgba(11,29,53,0.1);--white:#fff;
 }
 body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--navy);min-height:100vh}
-
 /* NAV */
 nav{background:var(--navy);padding:0 2rem;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,0.2)}
 .nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:#fff;text-decoration:none;display:flex;align-items:center;gap:0.5rem}
@@ -25,10 +24,8 @@ nav{background:var(--navy);padding:0 2rem;height:62px;display:flex;align-items:c
 .nav-user strong{color:rgba(255,255,255,0.85);font-weight:500}
 .btn-signout{background:transparent;color:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.12);padding:0.35rem 0.8rem;border-radius:6px;font-size:0.78rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s}
 .btn-signout:hover{color:rgba(255,255,255,0.7);border-color:rgba(255,255,255,0.3)}
-
 /* MAIN */
 main{max-width:900px;margin:0 auto;padding:2.5rem 2rem 4rem}
-
 /* HEADER */
 .page-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:2.5rem;flex-wrap:wrap;gap:1rem}
 .page-title-area{}
@@ -36,7 +33,6 @@ main{max-width:900px;margin:0 auto;padding:2.5rem 2rem 4rem}
 .page-title{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:600;color:var(--navy)}
 .btn-new-trip{background:var(--navy);color:#fff;border:none;padding:0.75rem 1.5rem;border-radius:8px;font-size:0.88rem;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;display:flex;align-items:center;gap:0.5rem;transition:all 0.2s;text-decoration:none}
 .btn-new-trip:hover{background:var(--navy2);transform:translateY(-1px)}
-
 /* EMPTY STATE */
 .empty-state{background:var(--white);border:2px dashed var(--border);border-radius:16px;padding:4rem 2rem;text-align:center}
 .empty-icon{font-size:3rem;margin-bottom:1rem;display:block}
@@ -44,7 +40,6 @@ main{max-width:900px;margin:0 auto;padding:2.5rem 2rem 4rem}
 .empty-sub{font-size:0.88rem;color:var(--muted);line-height:1.7;max-width:320px;margin:0 auto 1.5rem}
 .btn-start{background:var(--gold);color:var(--navy);border:none;padding:0.85rem 2rem;border-radius:8px;font-size:0.9rem;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;text-decoration:none;display:inline-block}
 .btn-start:hover{background:var(--gold2);transform:translateY(-2px)}
-
 /* TRIPS GRID */
 .trips-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem}
 .trip-card{background:var(--white);border-radius:14px;border:1px solid var(--border);padding:1.5rem;cursor:pointer;transition:all 0.2s;text-decoration:none;display:block}
@@ -57,12 +52,10 @@ main{max-width:900px;margin:0 auto;padding:2.5rem 2rem 4rem}
 .trip-card-status{font-size:0.72rem;padding:0.2rem 0.55rem;border-radius:10px;font-weight:500}
 .status-planning{background:rgba(201,168,76,0.12);color:#8a6a20}
 .status-active{background:rgba(26,144,112,0.12);color:var(--teal)}
-
 /* LOADING */
 .loading{text-align:center;padding:4rem 2rem;color:var(--muted);font-size:0.9rem}
 .loading-spinner{width:32px;height:32px;border:3px solid var(--cream2);border-top-color:var(--navy);border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 1rem}
 @keyframes spin{to{transform:rotate(360deg)}}
-
 /* MODAL OVERLAY */
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;align-items:center;justify-content:center;padding:1rem}
 .modal.show{display:flex}
@@ -79,16 +72,14 @@ input:focus,select:focus,textarea:focus{border-color:var(--navy)}
 .btn-create{width:100%;background:var(--navy);color:#fff;border:none;padding:0.9rem;border-radius:8px;font-size:0.9rem;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;margin-top:0.5rem;transition:all 0.2s}
 .btn-create:hover{background:var(--navy2)}
 .btn-create:disabled{opacity:0.6;cursor:not-allowed}
-
 /* RESPONSIVE */
 @media(max-width:600px){
-  .form-row{grid-template-columns:1fr}
-  .page-header{flex-direction:column}
+.form-row{grid-template-columns:1fr}
+.page-header{flex-direction:column}
 }
 </style>
 </head>
 <body>
-
 <nav>
   <a class="nav-logo" href="/">
     <div class="nav-logo-mark">📍</div>
@@ -135,7 +126,6 @@ input:focus,select:focus,textarea:focus{border-color:var(--navy)}
     <button class="modal-close" onclick="closeCreateModal()">✕</button>
     <div class="modal-title">Plan a new trip</div>
     <p class="modal-sub">Fill in the basics and Jenna will help you figure out the rest.</p>
-
     <div class="form-group">
       <label>Trip name</label>
       <input type="text" id="tripName" placeholder="e.g. Girls trip to Barcelona 🇪🇸">
@@ -184,7 +174,6 @@ let authToken = null;
 async function refreshToken(){
   const storedRefresh = localStorage.getItem('aj_refresh_token');
   if(!storedRefresh) return null;
-
   try {
     const res = await fetch(`${SUPA_URL}/auth/v1/token?grant_type=refresh_token`, {
       method: 'POST',
@@ -206,7 +195,6 @@ async function refreshToken(){
 window.addEventListener('load', async () => {
   let token = localStorage.getItem('aj_token');
   const user = localStorage.getItem('aj_user');
-
   if(!token || !user){
     window.location.href = '/auth.html';
     return;
@@ -214,14 +202,14 @@ window.addEventListener('load', async () => {
 
   // Check if token is expired (JWT exp claim)
   try {
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    const expiry = payload.exp * 1000;
-    const isExpired = Date.now() > expiry - 60000;
-
+    // Fix base64url padding before atob
+    let b64 = token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');
+    while(b64.length % 4) b64 += '=';
+    const payload = JSON.parse(atob(b64));
+    const isExpired = Date.now() > (payload.exp * 1000) - 60000;
     if(isExpired){
       const newToken = await refreshToken();
       if(!newToken){
-        // Clear everything and redirect once — no loop
         localStorage.removeItem('aj_token');
         localStorage.removeItem('aj_user');
         localStorage.removeItem('aj_refresh_token');
@@ -230,9 +218,8 @@ window.addEventListener('load', async () => {
       }
       token = newToken;
     }
-  } catch(err){ 
-    // If we can't parse the token just try to use it anyway
-    console.log('Token check skipped:', err); 
+  } catch(err){
+    console.log('Token check skipped:', err);
   }
 
   authToken = token;
@@ -253,7 +240,6 @@ window.addEventListener('load', async () => {
     if(refreshed) authToken = refreshed;
   }, 45 * 60 * 1000);
 
-  // Load trips
   await loadTrips();
 });
 
@@ -267,9 +253,7 @@ async function loadTrips(){
       }
     });
     const trips = await res.json();
-
     document.getElementById('loadingState').style.display = 'none';
-
     if(!trips || trips.length === 0){
       document.getElementById('emptyState').style.display = 'block';
     } else {
@@ -320,7 +304,9 @@ async function createTrip(){
   btn.textContent = 'Creating...';
 
   try {
-    const tripId = 'trip_' + Math.random().toString(36).substr(2,9);
+    // FIX: Use crypto.randomUUID() for a proper UUID invite_code
+    const inviteCode = crypto.randomUUID();
+
     const res = await fetch(`${SUPA_URL}/rest/v1/trips`, {
       method:'POST',
       headers:{
@@ -335,35 +321,64 @@ async function createTrip(){
         start_date: start || null,
         end_date: end || null,
         budget, notes,
-        invite_code: tripId,
+        invite_code: inviteCode,
         member_count: 1
       })
     });
 
-    const data = await res.json();
-
-    if(data.error || (Array.isArray(data) && data[0]?.code)){
+    // FIX: Check HTTP status explicitly before parsing
+    if(!res.ok){
+      const errBody = await res.text();
+      console.error('Create trip HTTP error:', res.status, errBody);
       errEl.textContent = 'Could not create trip — please try again';
       errEl.style.display = 'block';
-    } else {
-      const trip = Array.isArray(data) ? data[0] : data;
-      closeCreateModal();
-      // Redirect to trip page
-      window.location.href = `/trip.html?id=${trip.id || tripId}`;
+      btn.disabled = false;
+      btn.textContent = 'Create trip & get invite link →';
+      return;
     }
+
+    const data = await res.json();
+    let trip = Array.isArray(data) ? data[0] : data;
+
+    // FIX: If Supabase didn't return the row's id (e.g. RLS blocks the select-after-insert),
+    // do a follow-up GET by invite_code to get the real UUID.
+    if(!trip || !trip.id){
+      console.warn('trip.id missing from POST response, fetching by invite_code...');
+      const fetchRes = await fetch(
+        `${SUPA_URL}/rest/v1/trips?invite_code=eq.${inviteCode}&user_id=eq.${currentUser.id}`,
+        { headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + authToken } }
+      );
+      const fetchData = await fetchRes.json();
+      trip = Array.isArray(fetchData) && fetchData[0] ? fetchData[0] : null;
+    }
+
+    if(!trip || !trip.id){
+      // Trip was created but we still can't get its id — send to dashboard to click in
+      errEl.textContent = 'Trip created! Find it in your trips list below.';
+      errEl.style.display = 'block';
+      errEl.style.color = 'var(--teal)';
+      closeCreateModal();
+      await loadTrips();
+      return;
+    }
+
+    closeCreateModal();
+    window.location.href = `/trip.html?id=${trip.id}`;
+
   } catch(err){
+    console.error('createTrip error:', err);
     errEl.textContent = 'Network error — please try again';
     errEl.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Create trip & get invite link →';
   }
-
-  btn.disabled = false;
-  btn.textContent = 'Create trip & get invite link →';
 }
 
 // ── SIGN OUT ─────────────────────────────────────
 function signOut(){
   localStorage.removeItem('aj_token');
   localStorage.removeItem('aj_user');
+  localStorage.removeItem('aj_refresh_token');
   window.location.href = '/';
 }
 </script>
