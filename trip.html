@@ -817,9 +817,9 @@ function getReservationInfo(website) {
 // Map categories to tab groups
 function getTabGroup(category) {
   const cat = (category || '').toLowerCase();
-  if (cat === 'food & drink' || cat === 'nightlife') return 'eat';
+  if (cat === 'food & drink') return 'eat';
   if (cat === 'outdoors' || cat === 'culture' || cat === 'shopping') return 'do';
-  if (cat === 'entertainment') return 'events';
+  if (cat === 'entertainment' || cat === 'nightlife') return 'events';
   return 'do';
 }
 
@@ -827,7 +827,7 @@ function getTabGroup(category) {
 const TAB_GROUPS = {
   eat:    { label: 'Eat & drink', icon: '🍽' },
   do:     { label: 'Things to do', icon: '🗺' },
-  events: { label: 'Events', icon: '🎟' },
+  events: { label: 'Nightlife & events', icon: '🎟' },
 };
 
 // ── RENDER VOTABLE SUGGESTIONS ────────────────────────────────
