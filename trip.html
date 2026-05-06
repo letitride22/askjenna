@@ -730,6 +730,9 @@ async function generateSuggestions() {
     renderVotableSuggestions(finalSuggestions);
     sessionStorage.setItem('suggestions_' + tripData.id, JSON.stringify(finalSuggestions));
 
+    // Save to DB so the share page can read them without auth
+    saveSuggestionsToTrip(finalSuggestions);
+
   } catch(err) {
     document.getElementById('sugGenerating').style.display = 'none';
     document.getElementById('sugWaiting').style.display = 'block';
@@ -1137,6 +1140,26 @@ function renderVotableSuggestions(suggestions) {
     notifySection.appendChild(notifyBtn);
     notifySection.appendChild(notifyNote);
     container.after(notifySection);
+  }
+}
+
+// ── SAVE SUGGESTIONS TO TRIP ─────────────────────────────────
+// Persists suggestions to trips.suggestions so share page works without auth
+async function saveSuggestionsToTrip(suggestions) {
+  if (!authToken || !tripData?.id) return;
+  try {
+    await fetch(`${SUPA_URL}/rest/v1/trips?id=eq.${tripData.id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPA_KEY,
+        'Authorization': 'Bearer ' + authToken,
+        'Prefer': 'return=minimal',
+      },
+      body: JSON.stringify({ suggestions }),
+    });
+  } catch(err) {
+    console.log('Could not save suggestions to trip:', err);
   }
 }
 

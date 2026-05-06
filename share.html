@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Group Trip — AskJenna</title>
+
+<!-- SEO / Social meta tags — updated dynamically once trip loads -->
+<meta name="description" content="See what Jenna planned for this group trip — restaurants, activities, events and more.">
+<meta property="og:site_name" content="AskJenna">
+<meta property="og:type" content="website">
+<meta id="ogTitle" property="og:title" content="Group Trip — AskJenna">
+<meta id="ogDesc" property="og:description" content="AI-powered group trip planning. See the full itinerary Jenna built for this crew.">
+<meta id="ogImage" property="og:image" content="https://askjenna.io/icon-512.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta id="twTitle" name="twitter:title" content="Group Trip — AskJenna">
+<meta id="twImage" name="twitter:image" content="https://askjenna.io/icon-512.png">
+
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0B1D35;--navy2:#142847;--navy3:#1A3358;
+  --gold:#C9A84C;--gold2:#E2BF6E;--cream:#F7F2EA;--cream2:#EEE7D8;
+  --teal:#1A9070;--teal2:#22B589;
+  --muted:#5C6B82;--border:rgba(11,29,53,0.1);--white:#fff;--red:#D85A30;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--navy);min-height:100vh;padding-bottom:90px}
+
+/* NAV */
+nav{background:var(--navy);padding:0 2rem;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,0.2)}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:#fff;text-decoration:none;display:flex;align-items:center;gap:0.5rem}
+.nav-logo-mark{width:28px;height:28px;background:var(--gold);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:0.85rem}
+.nav-logo span{color:var(--gold)}
+.nav-cta{background:var(--gold);color:var(--navy);border:none;padding:0.4rem 1rem;border-radius:6px;font-size:0.8rem;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;white-space:nowrap}
+
+/* MAIN */
+main{max-width:860px;margin:0 auto;padding:0 1.25rem 2rem}
+
+/* HERO */
+.hero{position:relative;border-radius:0 0 20px 20px;overflow:hidden;margin-bottom:1.5rem;min-height:220px;background:var(--navy)}
+.hero-bg{position:absolute;inset:0;background-size:cover;background-position:center;filter:brightness(0.45)}
+.hero-content{position:relative;padding:2rem 1.75rem 1.75rem;z-index:1}
+.hero-badge{display:inline-flex;align-items:center;gap:0.4rem;background:rgba(201,168,76,0.2);border:1px solid rgba(201,168,76,0.3);border-radius:20px;padding:0.3rem 0.75rem;font-size:0.72rem;color:var(--gold);margin-bottom:0.75rem;backdrop-filter:blur(4px)}
+.hero-title{font-family:'Cormorant Garamond',serif;font-size:2.4rem;color:#fff;font-weight:600;line-height:1.1;margin-bottom:0.4rem}
+.hero-dest{font-size:0.9rem;color:rgba(255,255,255,0.65);margin-bottom:1.25rem;display:flex;align-items:center;gap:0.4rem}
+.hero-meta{display:flex;gap:1.25rem;flex-wrap:wrap}
+.hero-meta-item{font-size:0.8rem;color:rgba(255,255,255,0.6);display:flex;align-items:center;gap:0.35rem}
+.hero-meta-item strong{color:rgba(255,255,255,0.9);font-weight:500}
+
+/* SOCIAL PROOF */
+.social-row{display:flex;align-items:center;gap:0.75rem;padding:0.9rem 1rem;background:var(--white);border-radius:12px;border:1px solid var(--border);margin-bottom:1.25rem}
+.avatar-stack{display:flex}
+.avatar{width:30px;height:30px;border-radius:50%;border:2px solid var(--white);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:500;color:#fff;margin-left:-8px;flex-shrink:0}
+.avatar:first-child{margin-left:0}
+.social-text{font-size:0.82rem;color:var(--muted)}
+.social-text strong{color:var(--navy);font-weight:500}
+.jenna-badge{margin-left:auto;display:flex;align-items:center;gap:0.35rem;font-size:0.72rem;color:var(--muted);white-space:nowrap}
+.jenna-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);flex-shrink:0}
+
+/* SUGGESTIONS */
+.sug-section-wrap{background:var(--white);border-radius:14px;border:1px solid var(--border);padding:1.25rem;margin-bottom:1.25rem}
+.sug-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.sug-title{font-size:0.9rem;font-weight:500;color:var(--navy)}
+.sug-subtitle{font-size:0.75rem;color:var(--muted)}
+.sug-tabs{display:flex;gap:6px;margin-bottom:1.1rem;flex-wrap:wrap}
+.sug-tab{padding:5px 14px;border-radius:20px;border:1px solid var(--border);font-size:0.78rem;cursor:pointer;background:var(--white);color:var(--muted);font-family:'DM Sans',sans-serif;transition:all 0.2s;white-space:nowrap}
+.sug-tab:hover{border-color:var(--navy);color:var(--navy)}
+.sug-tab.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.sug-tab .tab-count{font-size:0.7rem;opacity:0.65;margin-left:3px}
+.sug-section{margin-bottom:1.1rem}
+.sug-section-label{font-size:0.68rem;font-weight:500;text-transform:uppercase;letter-spacing:0.09em;color:var(--muted);margin-bottom:0.6rem;display:flex;align-items:center;gap:8px}
+.sug-section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* CARDS */
+.sug-list{display:flex;flex-direction:column;gap:0.65rem}
+.sug-item{display:flex;align-items:flex-start;gap:0.85rem;padding:0.85rem;background:var(--cream);border-radius:10px;border:1px solid var(--border);transition:all 0.2s}
+.sug-item:hover{border-color:rgba(201,168,76,0.4);background:rgba(201,168,76,0.03)}
+.place-photo{width:52px;height:52px;border-radius:8px;object-fit:cover;flex-shrink:0}
+.place-photo-placeholder{width:52px;height:52px;border-radius:8px;background:var(--cream2);display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+.sug-body{flex:1;min-width:0}
+.sug-name{font-size:0.88rem;font-weight:500;color:var(--navy);margin-bottom:1px}
+.sug-addr{font-size:0.7rem;color:var(--muted);margin-top:1px}
+.sug-meta{font-size:0.75rem;color:var(--muted);margin-top:0.15rem}
+.sug-reason{font-size:0.72rem;color:var(--teal);margin-top:0.2rem;font-style:italic}
+.place-rating{display:flex;align-items:center;gap:0.25rem;font-size:0.72rem;color:var(--muted);margin-top:0.2rem;flex-wrap:wrap}
+.place-rating .stars{color:#F59E0B}
+.open-badge{font-size:0.65rem;padding:0.15rem 0.45rem;border-radius:8px;font-weight:500}
+.open-now{background:rgba(26,144,112,0.1);color:var(--teal)}
+.closed-now{background:rgba(216,90,48,0.08);color:var(--red)}
+.place-links{display:flex;gap:0.4rem;margin-top:0.5rem;flex-wrap:wrap}
+.place-link{font-size:0.7rem;padding:0.2rem 0.55rem;border-radius:10px;text-decoration:none;border:1px solid var(--border);color:var(--muted);transition:all 0.2s;background:var(--white)}
+.place-link:hover{border-color:var(--navy);color:var(--navy)}
+.place-link.gmaps{background:rgba(26,144,112,0.06);border-color:rgba(26,144,112,0.2);color:var(--teal)}
+.place-link.reserve{background:rgba(26,144,112,0.08);border-color:rgba(26,144,112,0.25);color:var(--teal);font-weight:500}
+.sug-pct{font-size:0.72rem;font-weight:500;padding:0.2rem 0.5rem;border-radius:10px;flex-shrink:0;margin-top:2px}
+.pct-high{background:rgba(26,144,112,0.1);color:var(--teal)}
+.pct-med{background:rgba(201,168,76,0.1);color:#8a6a20}
+
+/* EVENT CARDS */
+.event-cards{display:flex;flex-direction:column;gap:6px;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
+.event-card{display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--white);border-radius:8px;border:1px solid var(--border);text-decoration:none;transition:all 0.2s}
+.event-card:hover{border-color:var(--gold);background:rgba(201,168,76,0.03)}
+.event-thumb{width:40px;height:40px;border-radius:6px;object-fit:cover;flex-shrink:0;background:var(--cream2)}
+.event-thumb-placeholder{width:40px;height:40px;border-radius:6px;flex-shrink:0;background:var(--navy3);display:flex;align-items:center;justify-content:center;font-size:1rem}
+.event-info{flex:1;min-width:0}
+.event-name{font-size:0.78rem;font-weight:500;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.event-meta{font-size:0.68rem;color:var(--muted);margin-top:2px}
+.event-price{font-size:0.7rem;font-weight:500;color:var(--teal);white-space:nowrap;flex-shrink:0}
+.event-ticket-btn{font-size:0.68rem;padding:3px 8px;border-radius:5px;background:var(--navy);color:#fff;white-space:nowrap;flex-shrink:0}
+
+/* LOADING / ERROR */
+.loading{text-align:center;padding:4rem 2rem}
+.loading-spinner{width:32px;height:32px;border:3px solid var(--cream2);border-top-color:var(--navy);border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 1rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.error-state{text-align:center;padding:3rem 2rem;color:var(--muted)}
+.error-state h2{font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--navy);margin-bottom:0.5rem}
+
+/* STICKY CTA */
+.sticky-cta{position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--navy);padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;box-shadow:0 -4px 24px rgba(0,0,0,0.25)}
+.sticky-cta-text{color:rgba(255,255,255,0.75);font-size:0.82rem;line-height:1.4}
+.sticky-cta-text strong{color:#fff;display:block;font-size:0.9rem;margin-bottom:1px}
+.sticky-cta-btn{background:var(--gold);color:var(--navy);border:none;padding:0.7rem 1.4rem;border-radius:8px;font-size:0.88rem;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;text-decoration:none;display:inline-block;flex-shrink:0;transition:all 0.2s}
+.sticky-cta-btn:hover{background:var(--gold2)}
+
+/* NO SUGGESTIONS YET */
+.no-sug{text-align:center;padding:2.5rem 1rem;color:var(--muted);font-size:0.85rem}
+.no-sug span{display:block;font-size:2rem;margin-bottom:0.5rem}
+
+@media(max-width:500px){
+  .hero-title{font-size:1.8rem}
+  .sticky-cta-text{display:none}
+  .sticky-cta{justify-content:center}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="/">
+    <div class="nav-logo-mark">📍</div>
+    Ask<span>Jenna</span>
+  </a>
+  <a class="nav-cta" href="/auth.html">Plan your trip free →</a>
+</nav>
+
+<div id="pageContent">
+  <div class="loading" id="loadingState">
+    <div class="loading-spinner"></div>
+    <p style="color:var(--muted);font-size:0.88rem">Loading trip...</p>
+  </div>
+</div>
+
+<!-- Sticky CTA — always visible -->
+<div class="sticky-cta">
+  <div class="sticky-cta-text">
+    <strong>Plan your group trip with Jenna</strong>
+    Free · Takes 2 minutes · No credit card
+  </div>
+  <a class="sticky-cta-btn" href="/auth.html">Start planning →</a>
+</div>
+
+<script>
+const SUPA_URL = 'https://okzuzlfxvtrhepaehibk.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9renV6bGZ4dnRyaGVwYWVoaWJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3MzI3NTgsImV4cCI6MjA5MzMwODc1OH0.lEIktCZoPLPVFrPpbTzrjFZoyN1aeSY03bNGW7rRcv0';
+
+const TAB_GROUPS = {
+  eat:    'Eat & drink',
+  do:     'Things to do',
+  events: 'Nightlife & events',
+};
+const AVATAR_COLORS = ['#1A9070','#534AB7','#D85A30','#C9A84C','#2196F3','#E91E8C'];
+
+function getTabGroup(category) {
+  const cat = (category || '').toLowerCase();
+  if (cat === 'food & drink') return 'eat';
+  if (cat === 'outdoors' || cat === 'culture' || cat === 'shopping') return 'do';
+  if (cat === 'entertainment' || cat === 'nightlife') return 'events';
+  return 'do';
+}
+
+function getReservationInfo(website) {
+  if (!website) return null;
+  const w = website.toLowerCase();
+  if (w.includes('opentable.com') || w.includes('resy.com') ||
+      w.includes('sevenrooms.com') || w.includes('tock.com') ||
+      w.includes('exploretock.com') || w.includes('yelp.com')) {
+    return website;
+  }
+  return null;
+}
+
+// ── INIT ──────────────────────────────────────────────────────
+window.addEventListener('load', async () => {
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get('code');
+  if (!code) { showError('No trip code found.'); return; }
+
+  try {
+    // Load trip by invite_code (anon read — no auth needed)
+    const [tripRes, membersRes] = await Promise.all([
+      fetch(`${SUPA_URL}/rest/v1/trips?invite_code=eq.${code}&select=*`, {
+        headers: { 'apikey': SUPA_KEY }
+      }),
+      fetch(`${SUPA_URL}/rest/v1/trip_members?select=id&`, {
+        headers: { 'apikey': SUPA_KEY }
+      }),
+    ]);
+
+    const trips = await tripRes.json();
+    if (!Array.isArray(trips) || trips.length === 0) {
+      showError('This trip link isn\'t valid or has been removed.');
+      return;
+    }
+
+    const trip = trips[0];
+
+    // Fetch member count separately using trip id
+    const memRes = await fetch(
+      `${SUPA_URL}/rest/v1/trip_members?trip_id=eq.${trip.id}&select=id`,
+      { headers: { 'apikey': SUPA_KEY } }
+    );
+    const members = await memRes.json();
+    const memberCount = (Array.isArray(members) ? members.length : 0) + 1; // +1 for host
+
+    renderPage(trip, memberCount);
+
+  } catch(err) {
+    console.error('Share page error:', err);
+    showError('Could not load this trip — please try again.');
+  }
+});
+
+// ── RENDER PAGE ───────────────────────────────────────────────
+function renderPage(trip, memberCount) {
+  const suggestions = trip.suggestions || [];
+  const hasPhoto = suggestions.find(s => s.photoUrl)?.photoUrl;
+
+  // Update meta tags for social sharing
+  const title = `${trip.name} — AskJenna`;
+  const desc = `See what Jenna planned for this group trip to ${trip.destination} — restaurants, activities, events and more.`;
+  document.title = title;
+  document.getElementById('ogTitle').content = title;
+  document.getElementById('ogDesc').content = desc;
+  document.getElementById('twTitle').content = title;
+  if (hasPhoto) {
+    document.getElementById('ogImage').content = hasPhoto;
+    document.getElementById('twImage').content = hasPhoto;
+  }
+
+  // Date string
+  const dateStr = trip.start_date
+    ? new Date(trip.start_date).toLocaleDateString('en-US', {month:'short', day:'numeric'}) +
+      (trip.end_date ? ' – ' + new Date(trip.end_date).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}) : '')
+    : null;
+
+  const budgetLabels = {budget:'Budget',moderate:'Moderate',comfortable:'Comfortable',luxury:'Luxury'};
+
+  document.getElementById('pageContent').innerHTML = `
+    <!-- HERO -->
+    <div class="hero" id="heroSection">
+      ${hasPhoto ? `<div class="hero-bg" style="background-image:url('${hasPhoto}')"></div>` : ''}
+      <div class="hero-content">
+        <div class="hero-badge">✦ Group trip planned by Jenna</div>
+        <div class="hero-title">${esc(trip.name)}</div>
+        <div class="hero-dest">📍 ${esc(trip.destination || 'Destination TBD')}</div>
+        <div class="hero-meta">
+          ${dateStr ? `<div class="hero-meta-item">📅 <strong>${dateStr}</strong></div>` : ''}
+          <div class="hero-meta-item">👥 <strong>${memberCount} traveler${memberCount !== 1 ? 's' : ''}</strong></div>
+          ${trip.budget ? `<div class="hero-meta-item">💰 <strong>${budgetLabels[trip.budget] || trip.budget}</strong></div>` : ''}
+        </div>
+      </div>
+    </div>
+
+    <main>
+      <!-- SOCIAL PROOF ROW -->
+      <div class="social-row">
+        <div class="avatar-stack" id="avatarStack"></div>
+        <div class="social-text">
+          <strong>${memberCount} traveler${memberCount !== 1 ? 's' : ''}</strong> planning this trip together
+        </div>
+        <div class="jenna-badge">
+          <div class="jenna-badge-dot"></div>
+          AI-powered
+        </div>
+      </div>
+
+      <!-- SUGGESTIONS -->
+      <div class="sug-section-wrap">
+        <div class="sug-header">
+          <div>
+            <div class="sug-title">✦ Jenna's suggestions</div>
+            <div class="sug-subtitle">Personalized for this group's interests</div>
+          </div>
+        </div>
+        ${suggestions.length > 0 ? `
+          <div class="sug-tabs" id="sugTabs"></div>
+          <div id="sugContent"></div>
+        ` : `
+          <div class="no-sug">
+            <span>🤔</span>
+            Suggestions haven't been generated for this trip yet.
+          </div>
+        `}
+      </div>
+
+      <!-- JOIN CTA CARD -->
+      <div style="background:var(--navy);border-radius:14px;padding:1.75rem;text-align:center;position:relative;overflow:hidden;margin-bottom:1rem">
+        <div style="position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,0.03) 1px,transparent 1px);background-size:20px 20px"></div>
+        <div style="position:relative">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:1.6rem;color:#fff;margin-bottom:0.4rem">Plan your own group trip</div>
+          <div style="font-size:0.85rem;color:rgba(255,255,255,0.55);margin-bottom:1.25rem;line-height:1.6">Tell Jenna where you're going, invite your crew, and get a personalized itinerary built around everyone's interests.</div>
+          <a href="/auth.html" style="display:inline-block;background:var(--gold);color:var(--navy);padding:0.75rem 2rem;border-radius:8px;font-size:0.9rem;font-weight:500;text-decoration:none;transition:all 0.2s">Start planning free →</a>
+          <div style="font-size:0.72rem;color:rgba(255,255,255,0.3);margin-top:0.75rem">No credit card · Takes 2 minutes</div>
+        </div>
+      </div>
+    </main>
+  `;
+
+  // Build avatar stack
+  const avatarStack = document.getElementById('avatarStack');
+  if (avatarStack) {
+    const count = Math.min(memberCount, 5);
+    for (let i = 0; i < count; i++) {
+      const av = document.createElement('div');
+      av.className = 'avatar';
+      av.style.background = AVATAR_COLORS[i % AVATAR_COLORS.length];
+      av.textContent = String.fromCharCode(65 + i); // A, B, C...
+      avatarStack.appendChild(av);
+    }
+    if (memberCount > 5) {
+      const more = document.createElement('div');
+      more.className = 'avatar';
+      more.style.background = '#5C6B82';
+      more.textContent = '+' + (memberCount - 5);
+      avatarStack.appendChild(more);
+    }
+  }
+
+  // Render tabs and suggestions if we have them
+  if (suggestions.length > 0) {
+    renderSuggestions(suggestions);
+  }
+}
+
+// ── RENDER SUGGESTIONS WITH TABS ─────────────────────────────
+function renderSuggestions(suggestions) {
+  const tabBar  = document.getElementById('sugTabs');
+  const content = document.getElementById('sugContent');
+  if (!tabBar || !content) return;
+
+  // Group by tab
+  const groups = { eat: [], do: [], events: [] };
+  suggestions.forEach((s, i) => {
+    groups[getTabGroup(s.category)].push({ s, i });
+  });
+
+  // Build tabs
+  const allTab = document.createElement('button');
+  allTab.className = 'sug-tab active';
+  allTab.dataset.tab = 'all';
+  allTab.innerHTML = 'All <span class="tab-count">' + suggestions.length + '</span>';
+  tabBar.appendChild(allTab);
+
+  Object.entries(TAB_GROUPS).forEach(([key, label]) => {
+    if (groups[key].length === 0) return;
+    const btn = document.createElement('button');
+    btn.className = 'sug-tab';
+    btn.dataset.tab = key;
+    btn.innerHTML = label + ' <span class="tab-count">' + groups[key].length + '</span>';
+    tabBar.appendChild(btn);
+  });
+
+  tabBar.addEventListener('click', e => {
+    const btn = e.target.closest('.sug-tab');
+    if (!btn) return;
+    tabBar.querySelectorAll('.sug-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderTab(btn.dataset.tab);
+  });
+
+  function renderTab(tab) {
+    content.innerHTML = '';
+    if (tab === 'all') {
+      Object.entries(TAB_GROUPS).forEach(([key, label]) => {
+        if (groups[key].length === 0) return;
+        const sec = document.createElement('div');
+        sec.className = 'sug-section';
+        const lbl = document.createElement('div');
+        lbl.className = 'sug-section-label';
+        lbl.textContent = label;
+        sec.appendChild(lbl);
+        const list = document.createElement('div');
+        list.className = 'sug-list';
+        groups[key].forEach(({ s, i }) => list.appendChild(buildCard(s)));
+        sec.appendChild(list);
+        content.appendChild(sec);
+      });
+    } else {
+      const list = document.createElement('div');
+      list.className = 'sug-list';
+      groups[tab].forEach(({ s }) => list.appendChild(buildCard(s)));
+      content.appendChild(list);
+    }
+  }
+
+  renderTab('all');
+}
+
+// ── BUILD CARD (read-only, no voting) ─────────────────────────
+function buildCard(s) {
+  const categoryColors = {
+    'Food & Drink':'#FFF3CD','Culture':'#E8F5E9','Outdoors':'#E0F7FA',
+    'Nightlife':'#EEF0FB','Shopping':'#FDE8E0','Entertainment':'#F3E5F5'
+  };
+  const color = categoryColors[s.category] || '#F5F0E8';
+  const scoreClass = (s.matchScore || 0) >= 80 ? 'pct-high' : 'pct-med';
+
+  const item = document.createElement('div');
+  item.className = 'sug-item';
+
+  // Photo
+  if (s.photoUrl) {
+    const img = document.createElement('img');
+    img.className = 'place-photo';
+    img.src = s.photoUrl;
+    img.alt = s.realName || s.name;
+    img.onerror = function() {
+      const ph = document.createElement('div');
+      ph.className = 'place-photo-placeholder';
+      ph.style.background = color;
+      ph.textContent = s.emoji || '📍';
+      img.replaceWith(ph);
+    };
+    item.appendChild(img);
+  } else {
+    const ph = document.createElement('div');
+    ph.className = 'place-photo-placeholder';
+    ph.style.background = color;
+    ph.textContent = s.emoji || '📍';
+    item.appendChild(ph);
+  }
+
+  // Body
+  const body = document.createElement('div');
+  body.className = 'sug-body';
+
+  const nameEl = document.createElement('div');
+  nameEl.className = 'sug-name';
+  nameEl.textContent = s.realName || s.name;
+  body.appendChild(nameEl);
+
+  if (s.address) {
+    const addr = document.createElement('div');
+    addr.className = 'sug-addr';
+    addr.textContent = s.address.split(',').slice(0,2).join(',');
+    body.appendChild(addr);
+  }
+
+  const meta = document.createElement('div');
+  meta.className = 'sug-meta';
+  meta.textContent = (s.category||'') + ' · ' + (s.duration||'') + ' · ' + (s.price||'');
+  body.appendChild(meta);
+
+  if (s.rating) {
+    const rating = document.createElement('div');
+    rating.className = 'place-rating';
+    rating.innerHTML = '<span class="stars">★</span>' + s.rating +
+      (s.totalRatings ? ' <span>(' + Number(s.totalRatings).toLocaleString() + ')</span>' : '') +
+      (s.openNow === true  ? '<span class="open-badge open-now">Open now</span>' :
+       s.openNow === false ? '<span class="open-badge closed-now">Closed</span>' : '');
+    body.appendChild(rating);
+  }
+
+  if (s.matchReason) {
+    const reason = document.createElement('div');
+    reason.className = 'sug-reason';
+    reason.textContent = '✦ ' + s.matchReason;
+    body.appendChild(reason);
+  }
+
+  if (s.found) {
+    const links = document.createElement('div');
+    links.className = 'place-links';
+    if (s.googleMapsUrl) {
+      const a = document.createElement('a');
+      a.className = 'place-link gmaps';
+      a.href = s.googleMapsUrl; a.target = '_blank'; a.rel = 'noopener';
+      a.textContent = '📍 Maps';
+      links.appendChild(a);
+    }
+    const reserveUrl = getReservationInfo(s.website);
+    if (reserveUrl) {
+      const a = document.createElement('a');
+      a.className = 'place-link reserve';
+      a.href = reserveUrl; a.target = '_blank'; a.rel = 'noopener';
+      a.textContent = '🍽 Reserve';
+      links.appendChild(a);
+    } else if (s.website) {
+      const a = document.createElement('a');
+      a.className = 'place-link';
+      a.href = s.website; a.target = '_blank'; a.rel = 'noopener';
+      a.textContent = '🌐 Website';
+      links.appendChild(a);
+    }
+    if (s.phone) {
+      const a = document.createElement('a');
+      a.className = 'place-link';
+      a.href = 'tel:' + s.phone;
+      a.textContent = '📞 Call';
+      links.appendChild(a);
+    }
+    body.appendChild(links);
+  }
+
+  // Event cards
+  if (s.events && s.events.length > 0) {
+    const evWrap = document.createElement('div');
+    evWrap.className = 'event-cards';
+    s.events.forEach(ev => {
+      const card = document.createElement('a');
+      card.className = 'event-card';
+      card.href = ev.url || '#'; card.target = '_blank'; card.rel = 'noopener';
+      if (ev.imageUrl) {
+        const img = document.createElement('img');
+        img.className = 'event-thumb'; img.src = ev.imageUrl; img.alt = ev.name;
+        img.onerror = function(){ this.style.display='none'; };
+        card.appendChild(img);
+      } else {
+        const ph = document.createElement('div');
+        ph.className = 'event-thumb-placeholder'; ph.textContent = '🎟';
+        card.appendChild(ph);
+      }
+      const info = document.createElement('div');
+      info.className = 'event-info';
+      const en = document.createElement('div');
+      en.className = 'event-name'; en.textContent = ev.name;
+      info.appendChild(en);
+      const em = document.createElement('div');
+      em.className = 'event-meta';
+      em.textContent = [ev.date, ev.time, ev.venue].filter(Boolean).join(' · ');
+      info.appendChild(em);
+      card.appendChild(info);
+      if (ev.price) {
+        const ep = document.createElement('div');
+        ep.className = 'event-price'; ep.textContent = ev.price;
+        card.appendChild(ep);
+      }
+      const tb = document.createElement('div');
+      tb.className = 'event-ticket-btn'; tb.textContent = 'Tickets';
+      card.appendChild(tb);
+      evWrap.appendChild(card);
+    });
+    body.appendChild(evWrap);
+  }
+
+  item.appendChild(body);
+
+  // Match % badge (no vote buttons — read only)
+  const pct = document.createElement('div');
+  pct.className = 'sug-pct ' + scoreClass;
+  pct.textContent = (s.matchScore || 0) + '%';
+  item.appendChild(pct);
+
+  return item;
+}
+
+// ── HELPERS ───────────────────────────────────────────────────
+function esc(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function showError(msg) {
+  document.getElementById('pageContent').innerHTML = `
+    <div class="error-state">
+      <h2>Hmm, something's off</h2>
+      <p>${msg}</p>
+      <a href="/auth.html" style="display:inline-block;margin-top:1.5rem;background:var(--navy);color:#fff;padding:0.6rem 1.4rem;border-radius:8px;font-size:0.85rem;text-decoration:none">Plan your own trip →</a>
+    </div>`;
+}
+</script>
+</body>
+</html>
