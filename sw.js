@@ -1,5 +1,5 @@
 // AskJenna Service Worker v4
-const CACHE_NAME = 'askjenna-v4';
+const CACHE_NAME = 'askjenna-v5';
 
 // Only cache static assets, never HTML pages
 const STATIC_ASSETS = [
