@@ -15,7 +15,7 @@ const NEVER_CACHE = [
   '/auth.html',
   '/join.html',
   '/index.html',
-  '/'
+  '/share.html',
 ];
 
 self.addEventListener('install', e => {
