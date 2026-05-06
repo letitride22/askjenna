@@ -794,13 +794,11 @@ function renderVotableSuggestions(suggestions) {
 
     // FIX: emoji fallback + sug-icon class for correct sizing
     if (s.photoUrl) {
-      const proxyUrl = 'https://images.weserv.nl/?url=' + encodeURIComponent(s.photoUrl.replace('https://', ''));
       const img = document.createElement('img');
       img.className = 'place-photo';
-      img.src = proxyUrl;
+      img.src = s.photoUrl;
       img.alt = s.realName || s.name;
       img.onerror = function() {
-        // If proxy fails, swap to emoji placeholder
         const ph = document.createElement('div');
         ph.className = 'sug-icon place-photo-placeholder';
         ph.style.background = color;
