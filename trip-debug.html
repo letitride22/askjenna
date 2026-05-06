@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trip Debug — AskJenna</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:monospace;background:#0B1D35;color:#fff;padding:2rem;min-height:100vh}
+h2{color:#C9A84C;margin-bottom:1.5rem;font-family:sans-serif}
+.step{padding:0.5rem 0.75rem;margin:0.3rem 0;border-radius:6px;font-size:0.85rem;border-left:3px solid #333}
+.step.ok{border-color:#1A9070;background:rgba(26,144,112,0.1);color:#5ECFAC}
+.step.err{border-color:#D85A30;background:rgba(216,90,48,0.1);color:#f0a090}
+.step.info{border-color:#C9A84C;background:rgba(201,168,76,0.08);color:#E2BF6E}
+.step.pending{border-color:#5C6B82;background:rgba(92,107,130,0.1);color:#8899aa}
+pre{background:rgba(255,255,255,0.05);padding:0.75rem;border-radius:6px;font-size:0.75rem;overflow-x:auto;margin-top:0.5rem;white-space:pre-wrap;word-break:break-all}
+.sep{border:none;border-top:1px solid rgba(255,255,255,0.1);margin:1rem 0}
+</style>
+</head>
+<body>
+<h2>🔍 AskJenna Trip Page — Diagnostic Mode</h2>
+<div id="log"></div>
+
+<script>
+const SUPA_URL = 'https://okzuzlfxvtrhepaehibk.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9renV6bGZ4dnRyaGVwYWVoaWJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3MzI3NTgsImV4cCI6MjA5MzMwODc1OH0.lEIktCZoPLPVFrPpbTzrjFZoyN1aeSY03bNGW7rRcv0';
+
+function log(msg, type='info', detail='') {
+  const d = document.createElement('div');
+  d.className = 'step ' + type;
+  d.innerHTML = msg + (detail ? '<pre>' + detail + '</pre>' : '');
+  document.getElementById('log').appendChild(d);
+  console.log('[' + type + ']', msg, detail);
+}
+
+window.addEventListener('load', async () => {
+  log('🚀 load event fired', 'ok');
+
+  // 1. Check URL params
+  const params = new URLSearchParams(window.location.search);
+  const tripId = params.get('id');
+  log('URL tripId: ' + JSON.stringify(tripId), tripId ? 'ok' : 'err');
+
+  // 2. Check localStorage
+  const token = localStorage.getItem('aj_token');
+  const userRaw = localStorage.getItem('aj_user');
+  const refreshTok = localStorage.getItem('aj_refresh_token');
+  log('aj_token: ' + (token ? token.slice(0,40)+'...' : 'MISSING'), token ? 'ok' : 'err');
+  log('aj_user: ' + (userRaw ? userRaw.slice(0,60)+'...' : 'MISSING'), userRaw ? 'ok' : 'err');
+  log('aj_refresh_token: ' + (refreshTok ? refreshTok.slice(0,20)+'...' : 'MISSING'), refreshTok ? 'ok' : 'err');
+
+  // 3. Parse user
+  let currentUser = null;
+  if (userRaw) {
+    try {
+      currentUser = JSON.parse(userRaw);
+      log('User parsed: ' + (currentUser.email || currentUser.id || 'unknown'), 'ok');
+    } catch(e) {
+      log('aj_user JSON.parse FAILED: ' + e.message, 'err');
+    }
+  }
+
+  // 4. Decode token expiry
+  if (token) {
+    try {
+      const parts = token.split('.');
+      // Fix base64url to base64
+      let b64 = parts[1].replace(/-/g,'+').replace(/_/g,'/');
+      while (b64.length % 4) b64 += '=';
+      const payload = JSON.parse(atob(b64));
+      const nowSecs = Math.floor(Date.now() / 1000);
+      const expIn = payload.exp - nowSecs;
+      if (expIn < 0) {
+        log('⚠️ Token EXPIRED ' + Math.abs(expIn) + 's ago', 'err', JSON.stringify({exp: payload.exp, now: nowSecs, expiredAgo: Math.abs(expIn)+'s'}));
+      } else {
+        log('Token valid, expires in ' + expIn + 's (' + Math.round(expIn/60) + 'min)', 'ok');
+      }
+    } catch(e) {
+      log('Token decode failed: ' + e.message, 'err');
+    }
+  }
+
+  if (!tripId) {
+    log('No tripId — would redirect to /dashboard.html', 'err');
+    return;
+  }
+
+  // 5. Fetch trip
+  log('Fetching trip from Supabase...', 'pending');
+  try {
+    const headers = { 'apikey': SUPA_KEY };
+    if (token) headers['Authorization'] = 'Bearer ' + token;
+
+    const t0 = Date.now();
+    const tripRes = await fetch(`${SUPA_URL}/rest/v1/trips?id=eq.${tripId}`, { headers });
+    const elapsed = Date.now() - t0;
+    log(`Trip fetch: HTTP ${tripRes.status} in ${elapsed}ms`, tripRes.ok ? 'ok' : 'err');
+
+    const tripBody = await tripRes.text();
+    log('Trip response body:', tripRes.ok && tripBody.includes('[{') ? 'ok' : 'err', tripBody.slice(0, 300));
+
+    // 6. Fetch members
+    log('Fetching members...', 'pending');
+    const membersRes = await fetch(`${SUPA_URL}/rest/v1/trip_members?trip_id=eq.${tripId}&order=created_at.asc`, { headers });
+    const membersBody = await membersRes.text();
+    log(`Members fetch: HTTP ${membersRes.status}`, membersRes.ok ? 'ok' : 'err', membersBody.slice(0, 200));
+
+    // 7. Parse
+    let tripArr;
+    try {
+      tripArr = JSON.parse(tripBody);
+      log('Trip JSON parsed: ' + (Array.isArray(tripArr) ? tripArr.length + ' records' : 'NOT an array'), Array.isArray(tripArr) && tripArr.length > 0 ? 'ok' : 'err');
+      if (Array.isArray(tripArr) && tripArr[0]) {
+        log('Trip: ' + tripArr[0].name + ' / ' + tripArr[0].destination, 'ok', JSON.stringify(tripArr[0], null, 2).slice(0, 400));
+      }
+    } catch(e) {
+      log('Trip JSON parse failed: ' + e.message, 'err');
+    }
+
+  } catch(err) {
+    log('FETCH ERROR: ' + err.message, 'err');
+  }
+
+  log('--- Diagnostic complete ---', 'info');
+});
+</script>
+</body>
+</html>
