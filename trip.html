@@ -8,13 +8,12 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --navy:#0B1D35;--navy2:#142847;--navy3:#1A3358;
-  --gold:#C9A84C;--gold2:#E2BF6E;--cream:#F7F2EA;--cream2:#EEE7D8;
-  --teal:#1A9070;--teal2:#22B589;--teal3:#5ECFAC;
-  --muted:#5C6B82;--border:rgba(11,29,53,0.1);--white:#fff;--red:#D85A30;
+--navy:#0B1D35;--navy2:#142847;--navy3:#1A3358;
+--gold:#C9A84C;--gold2:#E2BF6E;--cream:#F7F2EA;--cream2:#EEE7D8;
+--teal:#1A9070;--teal2:#22B589;--teal3:#5ECFAC;
+--muted:#5C6B82;--border:rgba(11,29,53,0.1);--white:#fff;--red:#D85A30;
 }
 body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--navy);min-height:100vh}
-
 /* NAV */
 nav{background:var(--navy);padding:0 2rem;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,0.2)}
 .nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:#fff;text-decoration:none;display:flex;align-items:center;gap:0.5rem}
@@ -23,10 +22,8 @@ nav{background:var(--navy);padding:0 2rem;height:62px;display:flex;align-items:c
 .nav-right{display:flex;align-items:center;gap:1rem}
 .nav-back{color:rgba(255,255,255,0.5);font-size:0.82rem;text-decoration:none;display:flex;align-items:center;gap:0.4rem;transition:color 0.2s}
 .nav-back:hover{color:var(--gold)}
-
 /* MAIN */
 main{max-width:900px;margin:0 auto;padding:2.5rem 2rem 5rem}
-
 /* TRIP HEADER */
 .trip-hero{background:var(--navy);border-radius:16px;padding:2rem;margin-bottom:1.5rem;position:relative;overflow:hidden}
 .trip-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at top right,rgba(201,168,67,0.12),transparent 60%);pointer-events:none}
@@ -37,7 +34,6 @@ main{max-width:900px;margin:0 auto;padding:2.5rem 2rem 5rem}
 .trip-meta-row{display:flex;gap:1.5rem;flex-wrap:wrap;position:relative}
 .trip-meta-item{display:flex;align-items:center;gap:0.4rem;font-size:0.82rem;color:rgba(255,255,255,0.55)}
 .trip-meta-item strong{color:rgba(255,255,255,0.85);font-weight:500}
-
 /* INVITE CARD */
 .invite-card{background:var(--white);border-radius:14px;border:1px solid var(--border);padding:1.5rem;margin-bottom:1.5rem}
 .invite-title{font-size:0.88rem;font-weight:500;color:var(--navy);margin-bottom:0.4rem;display:flex;align-items:center;gap:0.5rem}
@@ -50,11 +46,9 @@ main{max-width:900px;margin:0 auto;padding:2.5rem 2rem 5rem}
 .invite-share{display:flex;gap:0.5rem;margin-top:0.8rem;flex-wrap:wrap}
 .btn-share{padding:0.5rem 1rem;border-radius:6px;font-size:0.78rem;border:1px solid var(--border);background:var(--cream);color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;display:flex;align-items:center;gap:0.4rem}
 .btn-share:hover{border-color:var(--navy);color:var(--navy)}
-
 /* TWO COL */
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
 @media(max-width:640px){.two-col{grid-template-columns:1fr}}
-
 /* MEMBERS */
 .card{background:var(--white);border-radius:14px;border:1px solid var(--border);padding:1.5rem;margin-bottom:1.5rem}
 .card-title{font-size:0.88rem;font-weight:500;color:var(--navy);margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between}
@@ -68,7 +62,6 @@ main{max-width:900px;margin:0 auto;padding:2.5rem 2rem 5rem}
 .badge-done{background:rgba(26,144,112,0.1);color:var(--teal)}
 .badge-pending{background:rgba(201,168,76,0.1);color:#8a6a20}
 .badge-host{background:rgba(11,29,53,0.08);color:var(--navy)}
-
 /* MATCH SCORE */
 .match-card{background:var(--navy);border-radius:14px;padding:1.5rem;margin-bottom:1.5rem;text-align:center;position:relative;overflow:hidden}
 .match-card::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,0.03) 1px,transparent 1px);background-size:20px 20px}
@@ -77,7 +70,6 @@ main{max-width:900px;margin:0 auto;padding:2.5rem 2rem 5rem}
 .match-score-big{font-family:'Cormorant Garamond',serif;font-size:3.5rem;color:var(--gold);font-weight:600;line-height:1;position:relative}
 .match-score-label{font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.4);margin-top:0.4rem;position:relative}
 .match-score-sub{font-size:0.82rem;color:rgba(255,255,255,0.55);margin-top:0.5rem;position:relative}
-
 /* INTERESTS */
 .interests-section{background:var(--white);border-radius:14px;border:1px solid var(--border);padding:1.5rem;margin-bottom:1.5rem}
 .interests-intro{font-size:0.85rem;color:var(--muted);margin-bottom:1.2rem;line-height:1.6;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:8px;padding:0.8rem 1rem}
@@ -93,7 +85,6 @@ main{max-width:900px;margin:0 auto;padding:2.5rem 2rem 5rem}
 .btn-save-interests:disabled{opacity:0.6;cursor:not-allowed}
 .interests-saved{text-align:center;padding:1rem;color:var(--teal);font-size:0.88rem;display:none}
 .interests-saved span{display:block;font-size:1.5rem;margin-bottom:0.4rem}
-
 /* SUGGESTIONS */
 .suggestions-section{background:var(--white);border-radius:14px;border:1px solid var(--border);padding:1.5rem;margin-bottom:1.5rem}
 .sug-waiting{text-align:center;padding:2rem;color:var(--muted);font-size:0.85rem}
@@ -112,8 +103,6 @@ main{max-width:900px;margin:0 auto;padding:2.5rem 2rem 5rem}
 .vote-btn.active-down{background:var(--red);border-color:var(--red)}
 .vote-btn.active-up span,.vote-btn.active-down span{filter:brightness(10)}
 .vote-count{font-size:0.65rem;color:var(--muted);text-align:center;margin-top:0.1rem}
-.vote-summary{display:flex;align-items:center;gap:0.4rem;margin-top:0.4rem;flex-wrap:wrap}
-.vote-pip{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .notify-btn{width:100%;background:var(--teal);color:#fff;border:none;padding:0.85rem;border-radius:8px;font-size:0.88rem;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;margin-top:1rem;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:0.5rem}
 .notify-btn:hover{background:var(--teal2)}
 .notify-btn:disabled{opacity:0.6;cursor:not-allowed}
@@ -124,12 +113,10 @@ main{max-width:900px;margin:0 auto;padding:2.5rem 2rem 5rem}
 .sug-pct{font-size:0.75rem;font-weight:500;padding:0.2rem 0.6rem;border-radius:12px;flex-shrink:0}
 .pct-high{background:rgba(26,144,112,0.1);color:var(--teal)}
 .pct-med{background:rgba(201,168,76,0.1);color:#8a6a20}
-
 /* LOADING */
 .page-loading{text-align:center;padding:5rem 2rem}
 .page-loading-spinner{width:36px;height:36px;border:3px solid var(--cream2);border-top-color:var(--navy);border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 1rem}
 @keyframes spin{to{transform:rotate(360deg)}}
-
 /* SUGGESTION ENHANCEMENTS */
 .sug-desc{font-size:0.75rem;color:var(--muted);margin-top:0.3rem;line-height:1.5}
 .sug-reason{font-size:0.72rem;color:var(--teal);margin-top:0.2rem;font-style:italic}
@@ -140,23 +127,24 @@ main{max-width:900px;margin:0 auto;padding:2.5rem 2rem 5rem}
 .place-link:hover{border-color:var(--navy);color:var(--navy)}
 .place-link.gmaps{background:rgba(26,144,112,0.06);border-color:rgba(26,144,112,0.2);color:var(--teal)}
 .place-link.gmaps:hover{background:rgba(26,144,112,0.12)}
-.place-rating{display:flex;align-items:center;gap:0.25rem;font-size:0.72rem;color:var(--muted);margin-top:0.2rem}
+.place-rating{display:flex;align-items:center;gap:0.25rem;font-size:0.72rem;color:var(--muted);margin-top:0.2rem;flex-wrap:wrap}
 .place-rating .stars{color:#F59E0B}
 .open-badge{font-size:0.65rem;padding:0.15rem 0.45rem;border-radius:8px;font-weight:500}
 .open-now{background:rgba(26,144,112,0.1);color:var(--teal)}
 .closed-now{background:rgba(216,90,48,0.08);color:var(--red)}
 .api-key-section{background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);border-radius:10px;padding:1rem;margin-bottom:1rem}
-.api-key-row{display:flex;gap:0.5rem;align-items:center;margin-top:0.5rem}
-.api-key-input{flex:1;background:var(--cream);border:1px solid var(--border);border-radius:6px;padding:0.6rem 0.8rem;font-size:0.82rem;color:var(--navy);font-family:monospace;outline:none}
 .btn-generate{background:var(--navy);color:#fff;border:none;padding:0.6rem 1.2rem;border-radius:6px;font-size:0.82rem;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;transition:all 0.2s}
 .btn-generate:hover{background:var(--navy2)}
 .btn-generate:disabled{opacity:0.6;cursor:not-allowed}
 .generating{text-align:center;padding:2rem;color:var(--muted)}
 .generating-spinner{width:28px;height:28px;border:3px solid var(--cream2);border-top-color:var(--navy);border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 0.75rem}
+/* AUTH ERROR */
+.auth-error{background:rgba(216,90,48,0.08);border:1px solid rgba(216,90,48,0.2);border-radius:12px;padding:1.5rem;text-align:center;margin:2rem 0}
+.auth-error p{color:var(--red);font-size:0.88rem;margin-bottom:1rem}
+.btn-reauth{background:var(--navy);color:#fff;border:none;padding:0.7rem 1.5rem;border-radius:8px;font-size:0.88rem;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif}
 </style>
 </head>
 <body>
-
 <nav>
   <a class="nav-logo" href="/">
     <div class="nav-logo-mark">📍</div>
@@ -194,77 +182,208 @@ let authToken = null;
 let tripData = null;
 let selectedInterests = new Set();
 
-// ── INIT ─────────────────────────────────────────
+// ── HELPER: safe HTML escape for use in onclick attrs ──────────
+function esc(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── INIT ─────────────────────────────────────────────────────
+// FIX #1: Wrap entire init in try/catch so JSON.parse failures
+// don't leave the page spinning forever with no visible error.
 window.addEventListener('load', async () => {
-  const token = localStorage.getItem('aj_token');
-  const user = localStorage.getItem('aj_user');
-  const params = new URLSearchParams(window.location.search);
-  const tripId = params.get('id');
+  try {
+    const token = localStorage.getItem('aj_token');
+    const userRaw = localStorage.getItem('aj_user');
+    const params = new URLSearchParams(window.location.search);
+    const tripId = params.get('id');
 
-  if(!tripId){ window.location.href='/dashboard.html'; return; }
+    if (!tripId) { window.location.href = '/dashboard.html'; return; }
 
-  if(token && user){
-    authToken = token;
-    currentUser = JSON.parse(user);
+    if (token && userRaw) {
+      authToken = token;
+      try {
+        currentUser = JSON.parse(userRaw);
+      } catch(parseErr) {
+        // FIX #1: Corrupted localStorage — clear it and proceed as guest
+        console.warn('aj_user parse failed, clearing:', parseErr);
+        localStorage.removeItem('aj_user');
+        localStorage.removeItem('aj_token');
+        authToken = null;
+        currentUser = null;
+      }
+    }
+
+    // FIX #2: Before using the token, check if it's expired
+    // Supabase JWTs store exp in the payload — check it proactively
+    if (authToken) {
+      try {
+        const payload = JSON.parse(atob(authToken.split('.')[1]));
+        const nowSecs = Math.floor(Date.now() / 1000);
+        if (payload.exp && payload.exp < nowSecs) {
+          // Token expired — try to refresh via Supabase
+          console.log('Token expired, attempting refresh...');
+          const refreshed = await refreshToken();
+          if (!refreshed) {
+            // Can't refresh — show re-auth prompt
+            showAuthExpiredError(tripId);
+            return;
+          }
+        }
+      } catch(e) {
+        // Malformed token — treat as expired
+        showAuthExpiredError(tripId);
+        return;
+      }
+    }
+
+    await loadTrip(tripId);
+
+  } catch(err) {
+    // Catch-all: show error instead of infinite spin
+    console.error('Init error:', err);
+    document.getElementById('pageLoading').innerHTML =
+      '<p style="color:var(--muted)">Something went wrong. <a href="/dashboard.html" style="color:var(--navy)">Go back</a></p>';
   }
-
-  await loadTrip(tripId);
 });
 
-// ── LOAD TRIP ─────────────────────────────────────
-async function loadTrip(tripId){
+// ── TOKEN REFRESH ─────────────────────────────────────────────
+// FIX #2: Refresh the Supabase session using the stored refresh token
+async function refreshToken() {
+  const refreshTok = localStorage.getItem('aj_refresh_token');
+  if (!refreshTok) return false;
+  try {
+    const res = await fetch(`${SUPA_URL}/auth/v1/token?grant_type=refresh_token`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPA_KEY },
+      body: JSON.stringify({ refresh_token: refreshTok })
+    });
+    if (!res.ok) return false;
+    const data = await res.json();
+    if (!data.access_token) return false;
+    // Store new tokens
+    authToken = data.access_token;
+    localStorage.setItem('aj_token', data.access_token);
+    if (data.refresh_token) localStorage.setItem('aj_refresh_token', data.refresh_token);
+    if (data.user) {
+      currentUser = data.user;
+      localStorage.setItem('aj_user', JSON.stringify(data.user));
+    }
+    console.log('Token refreshed successfully');
+    return true;
+  } catch(e) {
+    console.error('Token refresh failed:', e);
+    return false;
+  }
+}
+
+// ── AUTH EXPIRED ERROR ────────────────────────────────────────
+function showAuthExpiredError(tripId) {
+  document.getElementById('pageLoading').innerHTML = `
+    <div class="auth-error">
+      <p>Your session has expired. Please sign in again to view this trip.</p>
+      <button class="btn-reauth" onclick="window.location.href='/auth.html?redirect=/trip.html?id=${esc(tripId)}'">
+        Sign in again
+      </button>
+    </div>`;
+}
+
+// ── LOAD TRIP ─────────────────────────────────────────────────
+async function loadTrip(tripId) {
   try {
     const headers = { 'apikey': SUPA_KEY };
-    if(authToken) headers['Authorization'] = 'Bearer ' + authToken;
+    if (authToken) headers['Authorization'] = 'Bearer ' + authToken;
 
     const [tripRes, membersRes] = await Promise.all([
       fetch(`${SUPA_URL}/rest/v1/trips?id=eq.${tripId}`, { headers }),
       fetch(`${SUPA_URL}/rest/v1/trip_members?trip_id=eq.${tripId}&order=created_at.asc`, { headers })
     ]);
 
+    // FIX #2: detect Supabase auth errors explicitly
+    if (tripRes.status === 401) {
+      const tripId2 = new URLSearchParams(window.location.search).get('id');
+      showAuthExpiredError(tripId2 || tripId);
+      return;
+    }
+
     const tripDataArr = await tripRes.json();
     const membersData = await membersRes.json();
 
-    if(!tripDataArr || tripDataArr.length === 0){
-      document.getElementById('pageLoading').innerHTML = '<p style="color:var(--muted)">Trip not found.</p>';
+    if (!Array.isArray(tripDataArr) || tripDataArr.length === 0) {
+      document.getElementById('pageLoading').innerHTML =
+        '<p style="color:var(--muted)">Trip not found.</p>';
       return;
     }
 
     tripData = tripDataArr[0];
     tripData.members = Array.isArray(membersData) ? membersData : [];
+
     renderPage();
-    // Load host's existing interests if any
-    if(currentUser) loadExistingInterests(membersData);
-// Cache restore disabled — always fetch fresh suggestions
-  } catch(err){
-    document.getElementById('pageLoading').innerHTML = '<p style="color:var(--muted)">Could not load trip — please refresh.</p>';
+    if (currentUser) loadExistingInterests(membersData);
+
+  } catch(err) {
+    console.error('loadTrip error:', err);
+    document.getElementById('pageLoading').innerHTML =
+      '<p style="color:var(--muted)">Could not load trip — please refresh.</p>';
   }
 }
 
-// ── RENDER PAGE ───────────────────────────────────
-function renderPage(){
+// ── RENDER PAGE ───────────────────────────────────────────────
+function renderPage() {
   const t = tripData;
   const inviteUrl = `${window.location.origin}/join.html?code=${t.invite_code}`;
   const isHost = currentUser && t.user_id === currentUser.id;
   const memberCount = (t.members ? t.members.length + 1 : t.member_count || 1);
-
   const dateStr = t.start_date
-    ? new Date(t.start_date).toLocaleDateString('en-US',{month:'short',day:'numeric'}) +
-      (t.end_date ? ' – ' + new Date(t.end_date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '')
+    ? new Date(t.start_date).toLocaleDateString('en-US', {month:'short', day:'numeric'}) +
+      (t.end_date ? ' – ' + new Date(t.end_date).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}) : '')
     : 'Dates TBD';
 
   document.title = `${t.name} — AskJenna`;
 
+  const budgetLabels = {budget:'Budget',moderate:'Moderate',comfortable:'Comfortable',luxury:'Luxury'};
+
+  // Build members HTML using DOM-safe string concatenation
+  let membersHtml = '';
+  if (t.members && t.members.length > 0) {
+    const colors = ['#1A9070','#534AB7','#D85A30','#C9A84C','#2196F3'];
+    t.members.forEach((m, i) => {
+      const color = colors[i % colors.length];
+      const initial = m.name ? m.name.charAt(0).toUpperCase() : '?';
+      const hasInterests = m.interests && m.interests.length > 0;
+      const interestPreview = hasInterests ? m.interests.slice(0,3).join(' · ') : 'Joined — no interests yet';
+      // FIX #3: Use data-id / data-name attributes + event delegation instead of
+      // inline onclick with string interpolation — avoids ALL escaping issues.
+      const removeBtn = isHost
+        ? `<button class="member-remove-btn" data-id="${esc(m.id)}" data-name="${esc(m.name)}" style="background:rgba(216,90,48,0.08);border:1px solid rgba(216,90,48,0.2);color:#D85A30;font-size:0.72rem;cursor:pointer;padding:0.2rem 0.6rem;border-radius:4px;font-family:'DM Sans',sans-serif">Remove</button>`
+        : '';
+      membersHtml += `<div class="member-item" id="member-${esc(m.id)}">
+        <div class="member-av" style="background:${color}">${initial}</div>
+        <div class="member-info">
+          <div class="member-name">${esc(m.name)}</div>
+          <div class="member-status">${esc(interestPreview)}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:0.4rem">
+          <span class="member-badge ${hasInterests ? 'badge-done' : 'badge-pending'}">${hasInterests ? '✓ Ready' : 'Pending'}</span>
+          ${removeBtn}
+        </div>
+      </div>`;
+    });
+  } else {
+    membersHtml = '<div style="font-size:0.78rem;color:var(--muted);text-align:center;padding:0.75rem;border-top:1px solid var(--border);margin-top:0.5rem">Waiting for friends to join via the invite link...</div>';
+  }
+
+  // FIX #4 & #5: Share buttons use data-* attributes + JS handlers,
+  // no inline interpolation of user data into onclick strings.
   document.getElementById('mainContent').innerHTML = `
     <!-- TRIP HEADER -->
     <div class="trip-hero">
       <div class="trip-eyebrow">✦ Your group trip</div>
-      <div class="trip-name">${t.name}</div>
-      <div class="trip-dest">📍 ${t.destination || 'Destination TBD'}</div>
+      <div class="trip-name">${esc(t.name)}</div>
+      <div class="trip-dest">📍 ${esc(t.destination || 'Destination TBD')}</div>
       <div class="trip-meta-row">
         <div class="trip-meta-item">📅 <strong>${dateStr}</strong></div>
-        <div class="trip-meta-item">👥 <strong>${memberCount} traveler${memberCount>1?'s':''}</strong></div>
-        ${t.budget ? `<div class="trip-meta-item">💰 <strong>${{budget:'Budget',moderate:'Moderate',comfortable:'Comfortable',luxury:'Luxury'}[t.budget]||t.budget}</strong></div>` : ''}
+        <div class="trip-meta-item">👥 <strong>${memberCount} traveler${memberCount > 1 ? 's' : ''}</strong></div>
+        ${t.budget ? `<div class="trip-meta-item">💰 <strong>${budgetLabels[t.budget] || t.budget}</strong></div>` : ''}
       </div>
     </div>
 
@@ -273,14 +392,14 @@ function renderPage(){
       <div class="invite-title">🔗 Invite your travel crew</div>
       <div class="invite-sub">Share this link with everyone joining the trip. They'll add their interests and Jenna will find the perfect itinerary for the whole group.</div>
       <div class="invite-link-row">
-        <div class="invite-link-box" id="inviteUrl">${inviteUrl}</div>
-        <button class="btn-copy" id="copyBtn" onclick="copyInvite('${inviteUrl}')">Copy link</button>
+        <div class="invite-link-box" id="inviteUrlBox">${esc(inviteUrl)}</div>
+        <button class="btn-copy" id="copyBtn">Copy link</button>
       </div>
-      <div class="invite-share">
-        <button class="btn-share" onclick="shareWhatsApp('${inviteUrl}','${t.name}')">💬 WhatsApp</button>
-        <button class="btn-share" onclick="shareText('${inviteUrl}','${t.name}')">📱 Text</button>
-        <button class="btn-share" onclick="shareEmail('${inviteUrl}','${t.name}')">📧 Email</button>
-        ${navigator.share ? `<button class="btn-share" onclick="nativeShare('${inviteUrl}','${t.name}')">⬆ Share</button>` : ''}
+      <div class="invite-share" id="shareButtons">
+        <button class="btn-share" id="shareWhatsAppBtn">💬 WhatsApp</button>
+        <button class="btn-share" id="shareTextBtn">📱 Text</button>
+        <button class="btn-share" id="shareEmailBtn">📧 Email</button>
+        ${navigator.share ? '<button class="btn-share" id="nativeShareBtn">⬆ Share</button>' : ''}
       </div>
     </div>
 
@@ -290,46 +409,26 @@ function renderPage(){
         <div class="card-title">
           <span>👥 Travelers (${memberCount})</span>
         </div>
-                  <div class="member-list" id="memberList">
-          <!-- Host -->
+        <div class="member-list" id="memberList">
           <div class="member-item">
             <div class="member-av" style="background:var(--navy)">
-              ${currentUser ? currentUser.user_metadata?.full_name?.charAt(0).toUpperCase() || 'H' : 'H'}
+              ${currentUser ? (esc(currentUser.user_metadata?.full_name?.charAt(0).toUpperCase()) || 'H') : 'H'}
             </div>
             <div class="member-info">
-              <div class="member-name">${currentUser ? (currentUser.user_metadata?.full_name || 'Trip Host') : 'Trip Host'}</div>
+              <div class="member-name">${currentUser ? esc(currentUser.user_metadata?.full_name || 'Trip Host') : 'Trip Host'}</div>
               <div class="member-status">Trip organizer</div>
             </div>
             <span class="member-badge badge-host">Host</span>
           </div>
-          <!-- Real members from database -->
-          ${(t.members && t.members.length > 0) ? t.members.map((m, i) => {
-            const colors = ['#1A9070','#534AB7','#D85A30','#C9A84C','#2196F3'];
-            const color = colors[i % colors.length];
-            const initial = m.name ? m.name.charAt(0).toUpperCase() : '?';
-            const hasInterests = m.interests && m.interests.length > 0;
-            const interestPreview = hasInterests ? m.interests.slice(0,3).join(' · ') : 'Joined — no interests yet';
-            const isHost = currentUser && t.user_id === currentUser.id;
-            return '<div class="member-item" id="member-' + m.id + '">' +
-              '<div class="member-av" style="background:' + color + '">' + initial + '</div>' +
-              '<div class="member-info">' +
-                '<div class="member-name">' + m.name + '</div>' +
-                '<div class="member-status">' + interestPreview + '</div>' +
-              '</div>' +
-              '<div style="display:flex;align-items:center;gap:0.4rem">' +
-                '<span class="member-badge ' + (hasInterests ? 'badge-done' : 'badge-pending') + '">' + (hasInterests ? '✓ Ready' : 'Pending') + '</span>' +
-                (isHost ? '<button onclick="removeMember(\'' + m.id + '\',\'' + m.name + '\')" style="background:rgba(216,90,48,0.08);border:1px solid rgba(216,90,48,0.2);color:#D85A30;font-size:0.72rem;cursor:pointer;padding:0.2rem 0.6rem;border-radius:4px;font-family:DM Sans,sans-serif">Remove</button>' : '') +
-              '</div>' +
-            '</div>';
-          }).join('') : '<div style="font-size:0.78rem;color:var(--muted);text-align:center;padding:0.75rem;border-top:1px solid var(--border);margin-top:0.5rem">Waiting for friends to join via the invite link...</div>'}
-        </div></div>
+          ${membersHtml}
+        </div>
       </div>
 
       <!-- MATCH SCORE -->
       <div class="match-card">
         ${memberCount < 2
-          ? `<div class="match-waiting"><span>⏳</span>Waiting for your crew to join and add their interests...</div>`
-          : `<div class="match-score-big">84%</div><div class="match-score-label">Group compatibility</div><div class="match-score-sub">Great match — most activities will satisfy everyone</div>`
+          ? '<div class="match-waiting"><span>⏳</span>Waiting for your crew to join and add their interests...</div>'
+          : '<div class="match-score-big">84%</div><div class="match-score-label">Group compatibility</div><div class="match-score-sub">Great match — most activities will satisfy everyone</div>'
         }
       </div>
     </div>
@@ -341,15 +440,15 @@ function renderPage(){
         Select everything you'd love to do on this trip. Be generous — the more you pick, the better Jenna can match the whole group. Nobody else sees your individual answers.
       </div>
       <div class="interests-grid" id="interestsGrid">
-        ${INTERESTS.map((int,i) => `
-          <div class="int-btn" data-idx="${i}" onclick="toggleInt(this)">
+        ${INTERESTS.map((int, i) => `
+          <div class="int-btn" data-idx="${i}" id="intbtn-${i}">
             <span class="ico">${int.ico}</span>
             <span class="lbl">${int.lbl}</span>
           </div>
         `).join('')}
       </div>
-      <button class="btn-save-interests" id="saveIntBtn" onclick="saveInterests()">
-        ✦ Save my interests & get suggestions
+      <button class="btn-save-interests" id="saveIntBtn">
+        ✦ Save my interests &amp; get suggestions
       </button>
       <div class="interests-saved" id="interestsSaved">
         <span>✓</span>
@@ -360,116 +459,162 @@ function renderPage(){
     <!-- SUGGESTIONS -->
     <div class="suggestions-section">
       <div class="card-title" style="margin-bottom:0.75rem">✦ Jenna's suggestions for this group</div>
-      
-      <!-- Ask Jenna button (shown after interests saved) -->
       <div class="api-key-section" id="apiKeySection" style="display:none;text-align:center">
         <div style="font-size:0.88rem;color:var(--muted);margin-bottom:1rem;line-height:1.6">
           Your interests are saved! Ready for Jenna to find the perfect activities for your group?
         </div>
-        <button class="btn-generate" id="generateBtn" onclick="generateSuggestions()" style="width:100%;padding:0.9rem;font-size:0.95rem">
+        <button class="btn-generate" id="generateBtn" style="width:100%;padding:0.9rem;font-size:0.95rem">
           ✦ Ask Jenna for suggestions
         </button>
       </div>
-
-      <!-- Waiting state -->
       <div class="sug-waiting" id="sugWaiting">
         <span>🤔</span>
         Add your interests above and invite your crew — then ask Jenna for suggestions!
       </div>
-
-      <!-- Generating state -->
       <div class="generating" id="sugGenerating" style="display:none">
         <div class="generating-spinner"></div>
         <div style="font-size:0.88rem;font-weight:500;color:var(--navy);margin-bottom:0.3rem">Jenna is thinking...</div>
         <div style="font-size:0.78rem;color:var(--muted)">Analyzing your group's interests and finding the perfect activities</div>
       </div>
-
-      <!-- Results -->
       <div class="sug-list" id="sugList" style="display:none;flex-direction:column;gap:0.75rem"></div>
     </div>
   `;
+
+  // ── Wire up all event listeners after innerHTML is set ────────
+  // FIX #4: All share/copy/notify wired via JS, not inline onclick.
+  // This also avoids any data escaping issues entirely.
+
+  // Interests grid click delegation
+  document.getElementById('interestsGrid').addEventListener('click', e => {
+    const btn = e.target.closest('.int-btn');
+    if (btn) toggleInt(btn);
+  });
+
+  // Save interests
+  document.getElementById('saveIntBtn').addEventListener('click', saveInterests);
+
+  // Generate suggestions
+  document.getElementById('generateBtn').addEventListener('click', generateSuggestions);
+
+  // Copy invite link
+  document.getElementById('copyBtn').addEventListener('click', () => copyInvite(inviteUrl));
+
+  // Share buttons
+  document.getElementById('shareWhatsAppBtn').addEventListener('click', () => shareWhatsApp(inviteUrl, t.name));
+  document.getElementById('shareTextBtn').addEventListener('click', () => shareText(inviteUrl, t.name));
+  document.getElementById('shareEmailBtn').addEventListener('click', () => shareEmail(inviteUrl, t.name));
+  const nativeBtn = document.getElementById('nativeShareBtn');
+  if (nativeBtn) nativeBtn.addEventListener('click', () => nativeShare(inviteUrl, t.name));
+
+  // FIX #3: Remove member buttons — event delegation, no inline onclick
+  document.getElementById('memberList').addEventListener('click', e => {
+    const btn = e.target.closest('.member-remove-btn');
+    if (btn) removeMember(btn.dataset.id, btn.dataset.name);
+  });
 }
 
-// ── LOAD EXISTING INTERESTS ──────────────────────
-function loadExistingInterests(members){
-  if(!currentUser || !members) return;
-  const myRecord = members.find(m => m.user_id === currentUser.id);
-  if(!myRecord || !myRecord.interests) return;
+// ── SHARE FUNCTIONS (FIX #4) ─────────────────────────────────
+function copyInvite(url) {
+  navigator.clipboard.writeText(url).then(() => {
+    const btn = document.getElementById('copyBtn');
+    if (btn) { btn.textContent = 'Copied!'; btn.classList.add('copied'); setTimeout(() => { btn.textContent = 'Copy link'; btn.classList.remove('copied'); }, 2000); }
+  }).catch(() => {
+    // Fallback for older browsers
+    const box = document.getElementById('inviteUrlBox');
+    if (box) { const range = document.createRange(); range.selectNode(box); window.getSelection().removeAllRanges(); window.getSelection().addRange(range); document.execCommand('copy'); window.getSelection().removeAllRanges(); }
+  });
+}
 
-  // Pre-select existing interests
+function shareWhatsApp(url, tripName) {
+  const text = encodeURIComponent(`Join me on ${tripName}! Add your travel interests here: ${url}`);
+  window.open(`https://wa.me/?text=${text}`, '_blank');
+}
+
+function shareText(url, tripName) {
+  window.location.href = `sms:?body=${encodeURIComponent(`Join me on ${tripName}! ${url}`)}`;
+}
+
+function shareEmail(url, tripName) {
+  const subject = encodeURIComponent(`Join my trip: ${tripName}`);
+  const body = encodeURIComponent(`Hey! I'm planning a trip and want you to join.\n\nAdd your travel interests here so Jenna can find the perfect activities for everyone:\n${url}`);
+  window.location.href = `mailto:?subject=${subject}&body=${body}`;
+}
+
+function nativeShare(url, tripName) {
+  if (navigator.share) {
+    navigator.share({ title: tripName, text: `Join my trip: ${tripName}`, url }).catch(() => {});
+  }
+}
+
+// ── LOAD EXISTING INTERESTS ───────────────────────────────────
+function loadExistingInterests(members) {
+  if (!currentUser || !members) return;
+  const myRecord = members.find(m => m.user_id === currentUser.id);
+  if (!myRecord || !myRecord.interests) return;
+
   myRecord.interests.forEach(interest => {
     const idx = INTERESTS.findIndex(i => i.lbl === interest);
-    if(idx !== -1){
+    if (idx !== -1) {
       selectedInterests.add(String(idx));
-      const btn = document.querySelector(`[data-idx="${idx}"]`);
-      if(btn) btn.classList.add('sel');
+      const btn = document.getElementById('intbtn-' + idx);
+      if (btn) btn.classList.add('sel');
     }
   });
 
-  // Update button to show editing state
   const saveBtn = document.getElementById('saveIntBtn');
-  if(saveBtn){
+  if (saveBtn) {
     saveBtn.textContent = '✓ Update my interests';
     saveBtn.style.background = 'var(--teal)';
   }
 
-  // Show Ask Jenna button if host already has interests
-  if(tripData.user_id === currentUser.id){
+  if (tripData.user_id === currentUser.id) {
     document.getElementById('apiKeySection').style.display = 'block';
     document.getElementById('sugWaiting').style.display = 'none';
   }
 }
 
-// ── INTERESTS ─────────────────────────────────────
-function toggleInt(el){
+// ── INTERESTS ─────────────────────────────────────────────────
+function toggleInt(el) {
   el.classList.toggle('sel');
   const idx = el.dataset.idx;
-  if(el.classList.contains('sel')) selectedInterests.add(idx);
+  if (el.classList.contains('sel')) selectedInterests.add(idx);
   else selectedInterests.delete(idx);
 }
 
-async function saveInterests(){
-  if(selectedInterests.size === 0){
+async function saveInterests() {
+  if (selectedInterests.size === 0) {
     alert('Please select at least a few interests first!');
     return;
   }
   const btn = document.getElementById('saveIntBtn');
   btn.disabled = true;
   btn.textContent = 'Saving...';
-
   const interestData = Array.from(selectedInterests).map(i => INTERESTS[i].lbl);
 
   try {
-    // Check if host already has a member record
     const checkRes = await fetch(
       `${SUPA_URL}/rest/v1/trip_members?trip_id=eq.${tripData.id}&user_id=eq.${currentUser.id}`,
-      { headers:{ 'apikey':SUPA_KEY, 'Authorization':'Bearer '+authToken } }
+      { headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + authToken } }
     );
     const existing = await checkRes.json();
 
-    if(existing && existing.length > 0) {
-      // Update existing record
+    if (existing && existing.length > 0) {
       await fetch(
         `${SUPA_URL}/rest/v1/trip_members?trip_id=eq.${tripData.id}&user_id=eq.${currentUser.id}`,
         {
-          method:'PATCH',
-          headers:{
-            'Content-Type':'application/json',
-            'apikey':SUPA_KEY,
-            'Authorization':'Bearer '+authToken
-          },
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json', 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + authToken },
           body: JSON.stringify({ interests: interestData })
         }
       );
     } else {
-      // Create new record
       await fetch(`${SUPA_URL}/rest/v1/trip_members`, {
-        method:'POST',
-        headers:{
-          'Content-Type':'application/json',
-          'apikey':SUPA_KEY,
-          'Authorization':'Bearer '+authToken,
-          'Prefer':'return=minimal'
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPA_KEY,
+          'Authorization': 'Bearer ' + authToken,
+          'Prefer': 'return=minimal'
         },
         body: JSON.stringify({
           trip_id: tripData.id,
@@ -480,62 +625,53 @@ async function saveInterests(){
         })
       });
     }
-  } catch(err){ console.log('Could not save interests:', err); }
+  } catch(err) {
+    console.log('Could not save interests:', err);
+  }
 
   localStorage.setItem('interests_' + tripData.id, JSON.stringify(interestData));
-
   document.getElementById('interestsSaved').style.display = 'block';
   btn.textContent = '✓ Interests saved — update anytime';
   btn.disabled = false;
   btn.style.background = 'var(--teal)';
-  btn.onclick = saveInterests;
 
-  // Show Ask Jenna button
-  if(currentUser && tripData.user_id === currentUser.id) {
+  if (currentUser && tripData.user_id === currentUser.id) {
     document.getElementById('apiKeySection').style.display = 'block';
     document.getElementById('sugWaiting').style.display = 'none';
   }
 }
 
-// ── GENERATE AI SUGGESTIONS ───────────────────────
-async function generateSuggestions(){
+// ── GENERATE AI SUGGESTIONS ───────────────────────────────────
+async function generateSuggestions() {
   document.getElementById('apiKeySection').style.display = 'none';
   document.getElementById('sugWaiting').style.display = 'none';
   document.getElementById('sugGenerating').style.display = 'block';
 
   try {
-    // Load all members
     const headers = { 'apikey': SUPA_KEY };
-    if(authToken) headers['Authorization'] = 'Bearer ' + authToken;
+    if (authToken) headers['Authorization'] = 'Bearer ' + authToken;
+
     const membersRes = await fetch(
       `${SUPA_URL}/rest/v1/trip_members?trip_id=eq.${tripData.id}`,
       { headers }
     );
     const members = await membersRes.json();
 
-    // Call Supabase Edge Function (API key is secure on server)
-    const res = await fetch(
-      `${SUPA_URL}/functions/v1/ask-jenna`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + authToken,
-          'apikey': SUPA_KEY
-        },
-        body: JSON.stringify({
-          trip: tripData,
-          members: members || []
-        })
-      }
-    );
+    const res = await fetch(`${SUPA_URL}/functions/v1/ask-jenna`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + authToken,
+        'apikey': SUPA_KEY
+      },
+      body: JSON.stringify({ trip: tripData, members: members || [] })
+    });
 
     const data = await res.json();
+    if (data.error) throw new Error(data.error);
 
-    if(data.error) throw new Error(data.error);
-
-    // Enrich with Google Places data
     let finalSuggestions = data.suggestions;
+
     try {
       const placesRes = await fetch(`${SUPA_URL}/functions/v1/find-places`, {
         method: 'POST',
@@ -544,16 +680,14 @@ async function generateSuggestions(){
           'Authorization': 'Bearer ' + authToken,
           'apikey': SUPA_KEY
         },
-        body: JSON.stringify({
-          suggestions: data.suggestions,
-          destination: tripData.destination || ''
-        })
+        body: JSON.stringify({ suggestions: data.suggestions, destination: tripData.destination || '' })
       });
       const placesData = await placesRes.json();
-      if(placesData.suggestions) finalSuggestions = placesData.suggestions;
-    } catch(err){
+      if (placesData.suggestions) finalSuggestions = placesData.suggestions;
+    } catch(err) {
       console.log('Places enrichment failed, using AI suggestions:', err);
     }
+
     console.log('Final suggestions:', JSON.stringify(finalSuggestions.map(s => ({
       name: s.realName || s.name,
       found: s.found,
@@ -562,63 +696,56 @@ async function generateSuggestions(){
       address: s.address
     }))));
 
-    // Render results
     document.getElementById('sugGenerating').style.display = 'none';
     document.getElementById('sugList').style.display = 'flex';
     renderVotableSuggestions(finalSuggestions);
-    // Store suggestions for re-render
-    sessionStorage.setItem('suggestions_'+tripData.id, JSON.stringify(finalSuggestions));
+    sessionStorage.setItem('suggestions_' + tripData.id, JSON.stringify(finalSuggestions));
 
-  } catch(err){
+  } catch(err) {
     document.getElementById('sugGenerating').style.display = 'none';
     document.getElementById('sugWaiting').style.display = 'block';
     document.getElementById('sugWaiting').innerHTML = '<span>😕</span>Something went wrong — please try again.';
     const retryBtn = document.createElement('button');
     retryBtn.textContent = 'Try again';
     retryBtn.style.cssText = 'margin-top:0.8rem;background:var(--navy);color:#fff;border:none;padding:0.5rem 1.2rem;border-radius:6px;font-size:0.82rem;cursor:pointer;font-family:DM Sans,sans-serif';
-    retryBtn.onclick = generateSuggestions;
+    retryBtn.addEventListener('click', generateSuggestions);
     document.getElementById('sugWaiting').appendChild(retryBtn);
     console.error('Jenna error:', err);
   }
 }
 
-// ── REMOVE MEMBER ────────────────────────────────
-async function removeMember(memberId, memberName){
-  if(!confirm('Remove ' + memberName + ' from this trip?')) return;
+// ── REMOVE MEMBER ─────────────────────────────────────────────
+// FIX #3: Called via event delegation, no onclick string interpolation needed
+async function removeMember(memberId, memberName) {
+  if (!confirm('Remove ' + memberName + ' from this trip?')) return;
   try {
     await fetch(`${SUPA_URL}/rest/v1/trip_members?id=eq.${memberId}`, {
       method: 'DELETE',
-      headers: {
-        'apikey': SUPA_KEY,
-        'Authorization': 'Bearer ' + authToken
-      }
+      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + authToken }
     });
-    // Remove from UI
     const el = document.getElementById('member-' + memberId);
-    if(el) el.remove();
-    // Update member count display
+    if (el) el.remove();
     const params = new URLSearchParams(window.location.search);
     await loadTrip(params.get('id'));
-  } catch(err){
+  } catch(err) {
     alert('Could not remove member — please try again');
   }
 }
 
-// ── VOTING ───────────────────────────────────────
-function getVotes(tripId){
-  try{ return JSON.parse(localStorage.getItem('votes_'+tripId)||'{}'); }
-  catch{ return {}; }
-}
-function saveVotes(tripId, votes){
-  localStorage.setItem('votes_'+tripId, JSON.stringify(votes));
+// ── VOTING ────────────────────────────────────────────────────
+function getVotes(tripId) {
+  try { return JSON.parse(localStorage.getItem('votes_' + tripId) || '{}'); }
+  catch { return {}; }
 }
 
-function vote(suggestionIdx, direction){
+function saveVotes(tripId, votes) {
+  localStorage.setItem('votes_' + tripId, JSON.stringify(votes));
+}
+
+function vote(suggestionIdx, direction) {
   const votes = getVotes(tripData.id);
   const current = votes[suggestionIdx];
-
-  // Toggle off if same vote
-  if(current === direction){
+  if (current === direction) {
     delete votes[suggestionIdx];
   } else {
     votes[suggestionIdx] = direction;
@@ -627,29 +754,27 @@ function vote(suggestionIdx, direction){
   updateVoteUI(suggestionIdx, votes[suggestionIdx]);
 }
 
-function updateVoteUI(idx, direction){
-  const item = document.getElementById('sug-item-'+idx);
-  if(!item) return;
-
+function updateVoteUI(idx, direction) {
+  const item = document.getElementById('sug-item-' + idx);
+  if (!item) return;
   const upBtn = item.querySelector('.vote-btn.up');
   const downBtn = item.querySelector('.vote-btn.down');
-
-  item.classList.remove('voted-up','voted-down');
-  if(upBtn) upBtn.classList.remove('active-up');
-  if(downBtn) downBtn.classList.remove('active-down');
-
-  if(direction === 'up'){
+  item.classList.remove('voted-up', 'voted-down');
+  if (upBtn) upBtn.classList.remove('active-up');
+  if (downBtn) downBtn.classList.remove('active-down');
+  if (direction === 'up') {
     item.classList.add('voted-up');
-    if(upBtn) upBtn.classList.add('active-up');
-  } else if(direction === 'down'){
+    if (upBtn) upBtn.classList.add('active-up');
+  } else if (direction === 'down') {
     item.classList.add('voted-down');
-    if(downBtn) downBtn.classList.add('active-down');
+    if (downBtn) downBtn.classList.add('active-down');
   }
 }
 
-function renderVotableSuggestions(suggestions){
+// ── RENDER VOTABLE SUGGESTIONS ────────────────────────────────
+function renderVotableSuggestions(suggestions) {
   const container = document.getElementById('sugList');
-  if(!container) return;
+  if (!container) return;
   container.innerHTML = '';
 
   const votes = getVotes(tripData.id);
@@ -663,23 +788,31 @@ function renderVotableSuggestions(suggestions){
     const scoreClass = s.matchScore >= 80 ? 'pct-high' : 'pct-med';
     const currentVote = votes[i];
 
-    // Create item div
     const item = document.createElement('div');
-    item.className = 'sug-item' + (currentVote==='up' ? ' voted-up' : currentVote==='down' ? ' voted-down' : '');
+    item.className = 'sug-item' + (currentVote === 'up' ? ' voted-up' : currentVote === 'down' ? ' voted-down' : '');
     item.id = 'sug-item-' + i;
 
-    // Photo
-    if(s.photoUrl) {
-      const proxyUrl = 'https://images.weserv.nl/?url=' + encodeURIComponent(s.photoUrl.replace('https://',''));
+    // FIX: emoji fallback + sug-icon class for correct sizing
+    if (s.photoUrl) {
+      const proxyUrl = 'https://images.weserv.nl/?url=' + encodeURIComponent(s.photoUrl.replace('https://', ''));
       const img = document.createElement('img');
       img.className = 'place-photo';
       img.src = proxyUrl;
       img.alt = s.realName || s.name;
+      img.onerror = function() {
+        // If proxy fails, swap to emoji placeholder
+        const ph = document.createElement('div');
+        ph.className = 'sug-icon place-photo-placeholder';
+        ph.style.background = color;
+        ph.textContent = s.emoji || '📍';
+        img.replaceWith(ph);
+      };
       item.appendChild(img);
     } else {
       const ph = document.createElement('div');
-      ph.className = 'place-photo-placeholder';
-      ph.textContent = s.emoji;
+      ph.className = 'sug-icon place-photo-placeholder';
+      ph.style.background = color;
+      ph.textContent = s.emoji || '📍';
       item.appendChild(ph);
     }
 
@@ -693,52 +826,56 @@ function renderVotableSuggestions(suggestions){
     nameEl.textContent = s.realName || s.name;
     body.appendChild(nameEl);
 
-    if(s.address) {
+    if (s.address) {
       const addrEl = document.createElement('div');
       addrEl.style.cssText = 'font-size:0.7rem;color:var(--muted);margin-top:0.1rem';
-      addrEl.textContent = s.address.split(',').slice(0,2).join(',');
+      addrEl.textContent = s.address.split(',').slice(0, 2).join(',');
       body.appendChild(addrEl);
     }
 
     const metaEl = document.createElement('div');
     metaEl.className = 'sug-meta';
-    metaEl.textContent = s.category + ' · ' + s.duration + ' · ' + s.price;
+    metaEl.textContent = (s.category || '') + ' · ' + (s.duration || '') + ' · ' + (s.price || '');
     body.appendChild(metaEl);
 
-    if(s.rating) {
+    if (s.rating) {
       const ratingEl = document.createElement('div');
       ratingEl.className = 'place-rating';
       ratingEl.innerHTML = '<span class="stars">★</span>' + s.rating +
-        (s.totalRatings ? ' <span>(' + s.totalRatings.toLocaleString() + ')</span>' : '') +
-        (s.openNow===true ? '<span class="open-badge open-now">Open now</span>' : s.openNow===false ? '<span class="open-badge closed-now">Closed</span>' : '');
+        (s.totalRatings ? ' <span>(' + Number(s.totalRatings).toLocaleString() + ')</span>' : '') +
+        (s.openNow === true ? '<span class="open-badge open-now">Open now</span>' : s.openNow === false ? '<span class="open-badge closed-now">Closed</span>' : '');
       body.appendChild(ratingEl);
     }
 
-    const reasonEl = document.createElement('div');
-    reasonEl.className = 'sug-reason';
-    reasonEl.textContent = '✦ ' + s.matchReason;
-    body.appendChild(reasonEl);
+    if (s.matchReason) {
+      const reasonEl = document.createElement('div');
+      reasonEl.className = 'sug-reason';
+      reasonEl.textContent = '✦ ' + s.matchReason;
+      body.appendChild(reasonEl);
+    }
 
-    if(s.found) {
+    if (s.found) {
       const linksEl = document.createElement('div');
       linksEl.className = 'place-links';
-      if(s.googleMapsUrl) {
+      if (s.googleMapsUrl) {
         const a = document.createElement('a');
         a.className = 'place-link gmaps';
         a.href = s.googleMapsUrl;
         a.target = '_blank';
+        a.rel = 'noopener';
         a.textContent = '📍 Maps';
         linksEl.appendChild(a);
       }
-      if(s.website) {
+      if (s.website) {
         const a = document.createElement('a');
         a.className = 'place-link';
         a.href = s.website;
         a.target = '_blank';
+        a.rel = 'noopener';
         a.textContent = '🌐 Website';
         linksEl.appendChild(a);
       }
-      if(s.phone) {
+      if (s.phone) {
         const a = document.createElement('a');
         a.className = 'place-link';
         a.href = 'tel:' + s.phone;
@@ -750,30 +887,30 @@ function renderVotableSuggestions(suggestions){
 
     item.appendChild(body);
 
-    // Vote buttons
+    // Vote column
     const voteCol = document.createElement('div');
     voteCol.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:0.3rem;flex-shrink:0';
 
     const pct = document.createElement('div');
     pct.className = 'sug-pct ' + scoreClass;
-    pct.textContent = s.matchScore + '%';
+    pct.textContent = (s.matchScore || 0) + '%';
     voteCol.appendChild(pct);
 
     const voteBtns = document.createElement('div');
     voteBtns.className = 'vote-btns';
 
     const upBtn = document.createElement('button');
-    upBtn.className = 'vote-btn up' + (currentVote==='up' ? ' active-up' : '');
+    upBtn.className = 'vote-btn up' + (currentVote === 'up' ? ' active-up' : '');
     upBtn.title = 'Love it';
     upBtn.innerHTML = '<span>👍</span>';
-    upBtn.onclick = function(){ vote(i, 'up'); };
+    upBtn.addEventListener('click', function() { vote(i, 'up'); });
     voteBtns.appendChild(upBtn);
 
     const downBtn = document.createElement('button');
-    downBtn.className = 'vote-btn down' + (currentVote==='down' ? ' active-down' : '');
+    downBtn.className = 'vote-btn down' + (currentVote === 'down' ? ' active-down' : '');
     downBtn.title = 'Not for me';
     downBtn.innerHTML = '<span>👎</span>';
-    downBtn.onclick = function(){ vote(i, 'down'); };
+    downBtn.addEventListener('click', function() { vote(i, 'down'); });
     voteBtns.appendChild(downBtn);
 
     voteCol.appendChild(voteBtns);
@@ -781,14 +918,51 @@ function renderVotableSuggestions(suggestions){
     container.appendChild(item);
   });
 
-  // Add notify group button if host
-  if(currentUser && tripData.user_id === currentUser.id){
+  // Notify section for host
+  if (currentUser && tripData.user_id === currentUser.id) {
     const notifySection = document.createElement('div');
     notifySection.id = 'notifySection';
     notifySection.style.marginTop = '1rem';
-    notifySection.innerHTML = '<button class="notify-btn" id="notifyBtn" onclick="notifyGroup()">🔔 Notify everyone — suggestions are ready to vote on!</button><p style="font-size:0.75rem;color:var(--muted);text-align:center;margin-top:0.5rem">Sends an email to all group members with a link to vote</p>';
+
+    const notifyBtn = document.createElement('button');
+    notifyBtn.className = 'notify-btn';
+    notifyBtn.id = 'notifyBtn';
+    notifyBtn.textContent = '🔔 Notify everyone — suggestions are ready to vote on!';
+    notifyBtn.addEventListener('click', notifyGroup);
+
+    const notifyNote = document.createElement('p');
+    notifyNote.style.cssText = 'font-size:0.75rem;color:var(--muted);text-align:center;margin-top:0.5rem';
+    notifyNote.textContent = 'Sends an email to all group members with a link to vote';
+
+    notifySection.appendChild(notifyBtn);
+    notifySection.appendChild(notifyNote);
     container.after(notifySection);
   }
 }
 
-
+// ── NOTIFY GROUP ──────────────────────────────────────────────
+async function notifyGroup() {
+  const btn = document.getElementById('notifyBtn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
+  try {
+    const res = await fetch(`${SUPA_URL}/functions/v1/notify-group`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + authToken,
+        'apikey': SUPA_KEY
+      },
+      body: JSON.stringify({ trip_id: tripData.id })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    if (btn) { btn.textContent = '✓ Notifications sent!'; btn.style.background = 'var(--teal)'; }
+  } catch(err) {
+    console.error('notifyGroup error:', err);
+    if (btn) { btn.disabled = false; btn.textContent = '🔔 Notify everyone — suggestions are ready to vote on!'; }
+    alert('Could not send notifications — please try again.');
+  }
+}
+</script>
+</body>
+</html>
