@@ -469,8 +469,18 @@ footer::before{content:'';position:absolute;inset:0;background-image:radial-grad
 
 
 
+
+/* HERO STEPS */
+.hero-steps{display:flex;align-items:center;gap:0.75rem;margin:1.8rem 0;flex-wrap:wrap}
+.hero-step{display:flex;align-items:center;gap:0.5rem;font-size:0.82rem;color:rgba(255,255,255,0.7)}
+.step-num{width:22px;height:22px;background:var(--gold);color:var(--navy);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:600;flex-shrink:0}
+.hero-step-divider{color:rgba(255,255,255,0.3);font-size:0.9rem}
+.hero-trust{display:flex;gap:1.2rem;flex-wrap:wrap;margin-top:1.2rem}
+.hero-trust span{font-size:0.78rem;color:rgba(255,255,255,0.45);display:flex;align-items:center;gap:0.3rem}
+.btn-hero-ghost{color:rgba(255,255,255,0.6);font-size:0.88rem;border:1px solid rgba(255,255,255,0.2);padding:0.75rem 1.5rem;border-radius:8px;background:transparent;transition:all 0.2s;font-family:'DM Sans',sans-serif;cursor:pointer}
+.btn-hero-ghost:hover{color:#fff;border-color:rgba(255,255,255,0.5)}
 </style>
-</head>
+
 <body>
 
 <!-- NAV -->
@@ -504,8 +514,6 @@ footer::before{content:'';position:absolute;inset:0;background-image:radial-grad
   </div>
 </nav>
 
-
-
 <!-- Mobile PWA Install Strip -->
 <div id="mobileInstallStrip" style="background:#0B1D35;border-top:3px solid #C9A84C;border-bottom:1px solid rgba(201,168,76,0.3);padding:0.75rem 1rem;display:flex;align-items:center;justify-content:space-between;gap:0.75rem;margin-top:62px;position:relative;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,0.4);">
   <div style="display:flex;align-items:center;gap:0.7rem">
@@ -521,6 +529,7 @@ footer::before{content:'';position:absolute;inset:0;background-image:radial-grad
   </div>
 </div>
 
+
 <!-- HERO -->
 <section class="hero" id="top">
   <div class="hero-bg">
@@ -528,30 +537,9 @@ footer::before{content:'';position:absolute;inset:0;background-image:radial-grad
     <div class="hero-bg-orb2"></div>
     <div class="hero-bg-grid"></div>
     <div class="hero-bg-dots"></div>
-
-    <!-- Compass SVG -->
-    <svg class="hero-svg-compass" width="220" height="220" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="50" cy="50" r="45" stroke="white" stroke-width="1"/>
-      <circle cx="50" cy="50" r="38" stroke="white" stroke-width="0.5"/>
-      <circle cx="50" cy="50" r="3" fill="white"/>
-      <line x1="50" y1="8" x2="50" y2="18" stroke="white" stroke-width="1.5"/>
-      <line x1="50" y1="82" x2="50" y2="92" stroke="white" stroke-width="1"/>
-      <line x1="8" y1="50" x2="18" y2="50" stroke="white" stroke-width="1"/>
-      <line x1="82" y1="50" x2="92" y2="50" stroke="white" stroke-width="1"/>
-      <polygon points="50,15 46,45 50,48 54,45" fill="white"/>
-      <polygon points="50,85 46,55 50,52 54,55" fill="white" opacity="0.4"/>
-      <text x="47" y="6" fill="white" font-size="5" font-family="serif">N</text>
-      <text x="47" y="98" fill="white" font-size="4" font-family="serif" opacity="0.5">S</text>
-      <text x="2" y="52" fill="white" font-size="4" font-family="serif" opacity="0.5">W</text>
-      <text x="94" y="52" fill="white" font-size="4" font-family="serif" opacity="0.5">E</text>
-    </svg>
-
-    <!-- Mountain silhouette at base -->
     <svg class="hero-svg-mountains" width="100%" height="180" viewBox="0 0 1200 180" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M0 180 L0 120 L150 40 L280 100 L420 20 L560 90 L680 30 L800 80 L950 10 L1050 70 L1200 35 L1200 180 Z" fill="white"/>
     </svg>
-
-    <!-- Dashed flight route -->
     <svg class="hero-route" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
       <path d="M-50 300 Q300 50 700 200 Q900 280 1300 100" stroke="white" stroke-width="1" stroke-dasharray="8 12" fill="none"/>
       <circle cx="200" cy="155" r="4" fill="white"/>
@@ -575,209 +563,133 @@ footer::before{content:'';position:absolute;inset:0;background-image:radial-grad
       <div class="ticker-item"><span class="ticker-dot"></span>Maldives</div>
       <div class="ticker-item"><span class="ticker-dot"></span>Machu Picchu</div>
       <div class="ticker-item"><span class="ticker-dot"></span>Safari, Kenya</div>
-      <!-- duplicate for seamless loop -->
       <div class="ticker-item"><span class="ticker-dot"></span>Paris, France</div>
       <div class="ticker-item"><span class="ticker-dot"></span>Tokyo, Japan</div>
       <div class="ticker-item"><span class="ticker-dot"></span>New York City</div>
       <div class="ticker-item"><span class="ticker-dot"></span>Bali, Indonesia</div>
       <div class="ticker-item"><span class="ticker-dot"></span>Barcelona, Spain</div>
       <div class="ticker-item"><span class="ticker-dot"></span>Cape Town, SA</div>
-      <div class="ticker-item"><span class="ticker-dot"></span>Santorini, Greece</div>
-      <div class="ticker-item"><span class="ticker-dot"></span>Kyoto, Japan</div>
-      <div class="ticker-item"><span class="ticker-dot"></span>Amalfi Coast</div>
-      <div class="ticker-item"><span class="ticker-dot"></span>Maldives</div>
-      <div class="ticker-item"><span class="ticker-dot"></span>Machu Picchu</div>
-      <div class="ticker-item"><span class="ticker-dot"></span>Safari, Kenya</div>
     </div>
   </div>
 
   <div class="hero-content-wrap">
   <div class="hero-inner container">
-    <!-- LEFT: headline + CTA -->
+    <!-- LEFT -->
     <div class="hero-left">
       <div class="hero-eyebrow">
         <div class="hero-eyebrow-dot"></div>
         <span>AI-Powered Group Travel · Now in Beta</span>
       </div>
-      <h1>Where should<br>we go?<br><span class="accent">Jenna knows.</span></h1>
-      <p class="hero-sub">AskJenna turns your whole group's wishlist into one perfect, AI-crafted itinerary — then keeps discovering new experiences once you arrive.</p>
-      <div class="hero-tagline">✦ Group travel, finally done right</div>
-      <div class="hero-actions">
-        <button class="btn-hero-primary" onclick="document.getElementById('demo').scrollIntoView({behavior:'smooth'})">
-          ✦ Try the live demo
+      <h1 class="hero-headline">
+        Where should<br>we go?<br>
+        <em>Jenna knows.</em>
+      </h1>
+      <p class="hero-sub">
+        Tell Jenna what everyone loves. She'll find the perfect trip for your whole group — then help you plan every detail.
+      </p>
+
+      <!-- 3 simple steps inline -->
+      <div class="hero-steps">
+        <div class="hero-step">
+          <span class="step-num">1</span>
+          <span>Invite your crew</span>
+        </div>
+        <div class="hero-step-divider">→</div>
+        <div class="hero-step">
+          <span class="step-num">2</span>
+          <span>Everyone adds interests</span>
+        </div>
+        <div class="hero-step-divider">→</div>
+        <div class="hero-step">
+          <span class="step-num">3</span>
+          <span>Jenna plans the trip</span>
+        </div>
+      </div>
+
+      <div class="hero-cta-row">
+        <button class="btn-hero-cta" onclick="window.location.href='/auth.html'">
+          Start planning free →
         </button>
-        <button class="btn-hero-ghost" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">
-          See how it works
-        </button>
+        <a class="btn-hero-ghost" href="#demo">See how it works</a>
+      </div>
+
+      <div class="hero-trust">
+        <span>✓ Free to start</span>
+        <span>✓ No credit card</span>
+        <span>✓ Works on any phone</span>
       </div>
     </div>
 
-    <!-- RIGHT: animated group joining card -->
-    <div class="hero-anim" id="heroAnim">
-      <div class="anim-header">Live preview</div>
-      <div class="anim-trip-name">Weekend in Barcelona 🇪🇸</div>
-      <div class="anim-trip-dest">May 16–19 · 4 travelers joining...</div>
-      <div class="anim-members">
-        <div class="anim-member" id="am1">
-          <div class="anim-av" style="background:#C9A84C;color:#0B1D35">JK</div>
-          <div class="anim-member-info">
-            <div class="anim-member-name">Jamie K.</div>
-            <div class="anim-member-status done" id="as1">✦ Interests added</div>
-          </div>
-          <div class="anim-check show" id="ac1">✓</div>
+    <!-- RIGHT: Demo card (keep existing) -->
+    <div class="hero-right">
+      <div class="hero-card fade-up">
+        <div class="card-header">
+          <div class="card-badge"><span class="card-badge-dot"></span>LIVE PREVIEW</div>
+          <div class="card-trip-name">Weekend in Barcelona <span class="card-flag">🇪🇸</span></div>
+          <div class="card-trip-meta">May 16–19 · 4 travelers joining...</div>
         </div>
-        <div class="anim-member" id="am2">
-          <div class="anim-av" style="background:#1A9070;color:#fff">SM</div>
-          <div class="anim-member-info">
-            <div class="anim-member-name">Sofia M.</div>
-            <div class="anim-member-status" id="as2">Joining trip...</div>
+        <div class="card-members">
+          <div class="card-member joining">
+            <div class="member-av" style="background:#1A9070">JK</div>
+            <div class="member-info">
+              <div class="member-name">Jamie K.</div>
+              <div class="member-tag added">+ Interests added</div>
+            </div>
+            <div class="member-check">✓</div>
           </div>
-          <div class="anim-check" id="ac2">✓</div>
+          <div class="card-member joining" style="animation-delay:0.3s">
+            <div class="member-av" style="background:#534AB7">SM</div>
+            <div class="member-info">
+              <div class="member-name">Sofia M.</div>
+              <div class="member-tag added">+ Interests added</div>
+            </div>
+            <div class="member-check">✓</div>
+          </div>
+          <div class="card-member" style="animation-delay:0.6s">
+            <div class="member-av" style="background:#C9A84C">TR</div>
+            <div class="member-info">
+              <div class="member-name">Tyler R.</div>
+              <div class="member-tag pending">Joining...</div>
+            </div>
+          </div>
         </div>
-        <div class="anim-member" id="am3">
-          <div class="anim-av" style="background:#534AB7;color:#fff">TR</div>
-          <div class="anim-member-info">
-            <div class="anim-member-name">Tyler R.</div>
-            <div class="anim-member-status" id="as3">Joining trip...</div>
-          </div>
-          <div class="anim-check" id="ac3">✓</div>
-        </div>
-        <div class="anim-member" id="am4">
-          <div class="anim-av" style="background:#D85A30;color:#fff">AL</div>
-          <div class="anim-member-info">
-            <div class="anim-member-name">Anika L.</div>
-            <div class="anim-member-status" id="as4">Joining trip...</div>
-          </div>
-          <div class="anim-check" id="ac4">✓</div>
+        <div class="card-jenna-row">
+          <div class="card-jenna-icon">✦</div>
+          <div class="card-jenna-text">Jenna is matching 3 interests sets...</div>
+          <div class="card-jenna-dots"><span></span><span></span><span></span></div>
         </div>
       </div>
-      <div class="anim-score-label">
-        <span>Group match score</span>
-        <span class="anim-score-num" id="animScore">—</span>
-      </div>
-      <div class="anim-bar-track">
-        <div class="anim-bar-fill" id="animBar"></div>
-      </div>
-      <div class="anim-suggestion" id="animSug">
-        <div class="anim-sug-icon">🎸</div>
-        <div>
-          <div class="anim-sug-text">Primavera Sound Festival + Tapas Tour</div>
-          <div class="anim-sug-match">94% group match · Jenna's top pick</div>
-        </div>
-      </div>
-      <button class="anim-restart" onclick="runHeroAnim()">↺ Replay</button>
     </div>
   </div>
-  </div><!-- /hero-content-wrap -->
-  <div class="hero-scroll">
-    <div class="scroll-line"></div>
-    <span>Scroll</span>
   </div>
 </section>
 
-<!-- PROBLEM STRIP -->
-<div class="problem-strip">
-  <div class="problem-inner container">
-    <div class="problem-item">
-      <div class="problem-icon">💬</div>
-      <span>47 unanswered group texts</span>
-    </div>
-    <div class="problem-arrow">→</div>
-    <div class="problem-item">
-      <div class="problem-icon">😤</div>
-      <span>Someone's always unhappy</span>
-    </div>
-    <div class="problem-arrow">→</div>
-    <div class="problem-item">
-      <div class="problem-icon">🗺</div>
-      <span>Generic tourist trap itinerary</span>
-    </div>
-    <div class="problem-arrow">→</div>
-    <div class="problem-item" style="color:var(--teal);font-weight:500">
-      <div class="problem-icon" style="background:rgba(26,144,112,0.12)">✦</div>
-      <span>AskJenna fixes all of this</span>
-    </div>
-  </div>
-</div>
-
-<!-- HOW IT WORKS -->
-<section class="how" id="how">
+<!-- HOW IT WORKS — 3 steps, clean -->
+<section style="background:var(--white);padding:5rem 0">
   <div class="container">
-    <div class="section-header fade-up">
+    <div style="text-align:center;margin-bottom:3rem">
       <div class="tag">How it works</div>
-      <h2>Four steps from<br>chaos to perfect trip</h2>
-      <p>No more endless group chats. AskJenna turns everyone's wishlist into a single, AI-optimized plan — and keeps working once you land.</p>
+      <h2 style="font-size:2.2rem;color:var(--navy)">Planning a group trip just got easy</h2>
     </div>
-    <div class="steps-container">
-      <div class="step fade-up">
-        <span class="step-num">01</span>
-        <span class="step-icon">👥</span>
-        <h3>Create your crew</h3>
-        <p>Start a trip in seconds and share a simple invite link. No app download required for guests. Set your destination, travel dates, and a rough budget range — or let Jenna suggest a destination based on everyone's interests.</p>
-        <div class="step-features">
-          <span class="step-pill">Shareable invite link</span>
-          <span class="step-pill">No download needed</span>
-          <span class="step-pill">Budget ranges</span>
-          <span class="step-pill">Anonymous preferences</span>
-        </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:2rem">
+      <div style="text-align:center;padding:2rem">
+        <div style="width:56px;height:56px;background:var(--navy);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin:0 auto 1.2rem">🔗</div>
+        <h3 style="font-size:1.2rem;color:var(--navy);margin-bottom:0.6rem">Create & invite</h3>
+        <p style="font-size:0.9rem;color:var(--muted);line-height:1.7">Create a trip in 30 seconds. Share a link with your whole crew — no accounts needed to join.</p>
       </div>
-      <div class="step featured fade-up">
-        <span class="step-num">02</span>
-        <span class="step-icon">🎯</span>
-        <h3>Share your vibe</h3>
-        <p>Each group member independently picks from 60+ interest categories — food, nightlife, museums, hiking, concerts, spas, sports, and more. Rate how important each is. Nobody sees each other's answers until Jenna compiles them.</p>
-        <div class="step-features">
-          <span class="step-pill">60+ categories</span>
-          <span class="step-pill">Priority weighting</span>
-          <span class="step-pill">Dietary preferences</span>
-          <span class="step-pill">Accessibility needs</span>
-        </div>
+      <div style="text-align:center;padding:2rem">
+        <div style="width:56px;height:56px;background:var(--teal);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin:0 auto 1.2rem">🎯</div>
+        <h3 style="font-size:1.2rem;color:var(--navy);margin-bottom:0.6rem">Everyone picks interests</h3>
+        <p style="font-size:0.9rem;color:var(--muted);line-height:1.7">Each person picks what they love — food, culture, adventure, nightlife. Privately. No group pressure.</p>
       </div>
-      <div class="step fade-up">
-        <span class="step-num">03</span>
-        <span class="step-icon">✦</span>
-        <h3>Jenna works her magic</h3>
-        <p>AskJenna's AI scores every activity, restaurant, and experience against the whole group's preferences. It finds what satisfies the most people, surfaces smart compromises, and shows each traveler their personal satisfaction score.</p>
-        <div class="step-features">
-          <span class="step-pill">Group match score</span>
-          <span class="step-pill">Per-person fit %</span>
-          <span class="step-pill">Smart compromise logic</span>
-          <span class="step-pill">Veto & re-suggest</span>
-        </div>
-      </div>
-      <div class="step fade-up">
-        <span class="step-num">04</span>
-        <span class="step-icon">📍</span>
-        <h3>Live discovery</h3>
-        <p>Once you land, Jenna becomes your real-time guide. She surfaces nearby hidden gems, live events, concerts, sports games, and flash deals — even adapting to the weather. "It's raining — here are 5 incredible indoor things nearby."</p>
-        <div class="step-features">
-          <span class="step-pill">Real-time location</span>
-          <span class="step-pill">Live event feeds</span>
-          <span class="step-pill">Weather adaptation</span>
-          <span class="step-pill">Flash deals</span>
-        </div>
+      <div style="text-align:center;padding:2rem">
+        <div style="width:56px;height:56px;background:var(--gold);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin:0 auto 1.2rem">✦</div>
+        <h3 style="font-size:1.2rem;color:var(--navy);margin-bottom:0.6rem">Jenna builds the plan</h3>
+        <p style="font-size:0.9rem;color:var(--muted);line-height:1.7">Jenna analyzes everyone's interests and suggests real venues, activities, and experiences your whole group will love.</p>
       </div>
     </div>
   </div>
 </section>
-
-<!-- DESTINATIONS STRIP -->
-<div class="dest-strip">
-  <div class="dest-strip-inner container">
-    <div class="tag">Jenna knows them all</div>
-    <h3>From bucket list to backyard — she's got you covered</h3>
-    <div class="dest-cards">
-      <div class="dest-card"><span class="dest-card-emoji">🗼</span><div class="dest-card-name">Paris</div><div class="dest-card-tag">France</div></div>
-      <div class="dest-card"><span class="dest-card-emoji">🌸</span><div class="dest-card-name">Tokyo</div><div class="dest-card-tag">Japan</div></div>
-      <div class="dest-card"><span class="dest-card-emoji">🌉</span><div class="dest-card-name">San Francisco</div><div class="dest-card-tag">California</div></div>
-      <div class="dest-card"><span class="dest-card-emoji">🏖</span><div class="dest-card-name">Bali</div><div class="dest-card-tag">Indonesia</div></div>
-      <div class="dest-card"><span class="dest-card-emoji">🏛</span><div class="dest-card-name">Rome</div><div class="dest-card-tag">Italy</div></div>
-      <div class="dest-card"><span class="dest-card-emoji">🌵</span><div class="dest-card-name">Scottsdale</div><div class="dest-card-tag">Arizona</div></div>
-      <div class="dest-card"><span class="dest-card-emoji">🎭</span><div class="dest-card-name">New York</div><div class="dest-card-tag">New York</div></div>
-      <div class="dest-card"><span class="dest-card-emoji">🦁</span><div class="dest-card-name">Nairobi</div><div class="dest-card-tag">Kenya</div></div>
-    </div>
-  </div>
-</div>
 
 <!-- DEMO -->
 <section class="demo" id="demo">
@@ -858,77 +770,6 @@ footer::before{content:'';position:absolute;inset:0;background-image:radial-grad
   </div>
 </section>
 
-<!-- LIVE EXPLORE -->
-<section class="explore" id="explore">
-  <!-- Compass rose watermark -->
-  <svg class="explore-compass" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="100" cy="100" r="95" stroke="#0B1D35" stroke-width="2" fill="none"/>
-    <circle cx="100" cy="100" r="80" stroke="#0B1D35" stroke-width="1" fill="none"/>
-    <circle cx="100" cy="100" r="5" fill="#0B1D35"/>
-    <polygon points="100,10 95,95 100,98 105,95" fill="#0B1D35"/>
-    <polygon points="100,190 95,105 100,102 105,105" fill="#0B1D35" opacity="0.4"/>
-    <polygon points="10,100 95,95 98,100 95,105" fill="#0B1D35" opacity="0.4"/>
-    <polygon points="190,100 105,95 102,100 105,105" fill="#0B1D35" opacity="0.4"/>
-    <line x1="100" y1="5" x2="100" y2="25" stroke="#0B1D35" stroke-width="2"/>
-    <line x1="100" y1="175" x2="100" y2="195" stroke="#0B1D35" stroke-width="1"/>
-    <line x1="5" y1="100" x2="25" y2="100" stroke="#0B1D35" stroke-width="1"/>
-    <line x1="175" y1="100" x2="195" y2="100" stroke="#0B1D35" stroke-width="1"/>
-    <text x="96" y="3" fill="#0B1D35" font-size="10" font-family="serif" font-weight="bold">N</text>
-  </svg>
-
-  <div class="container">
-    <div class="section-header fade-up">
-      <div class="tag">Live discovery</div>
-      <h2>You've landed.<br>Now ask Jenna.</h2>
-      <p>Real-time discovery tailored to your group's vibe. Jenna surfaces what's happening right now, right nearby — from hidden gems to tonight's hottest events.</p>
-    </div>
-    <div class="explore-tabs fade-up">
-      <button class="etab on" onclick="filterCards(this,'all')">All nearby</button>
-      <button class="etab" onclick="filterCards(this,'food')">Food & Drink</button>
-      <button class="etab" onclick="filterCards(this,'events')">Live Events</button>
-      <button class="etab" onclick="filterCards(this,'culture')">Culture</button>
-      <button class="etab" onclick="filterCards(this,'outdoors')">Outdoors</button>
-      <button class="etab" onclick="filterCards(this,'sports')">Sports</button>
-    </div>
-    <div class="explore-grid fade-up" id="exploreGrid">
-      <div class="ecard" data-cat="food"><div class="ecard-top" style="background:#FFF9E6"><span class="ecard-status status-open">Open now</span>🦪<span class="ecard-match">94% match</span></div><div class="ecard-body"><div class="ecard-name">Hog Island Oyster Co.</div><div class="ecard-detail">Fresh oysters · Waterfront views · 4.8★</div><div class="ecard-footer"><span class="ecard-price">$$</span><span class="ecard-dist">0.3 mi away</span></div></div></div>
-      <div class="ecard" data-cat="events"><div class="ecard-top" style="background:#EEF0FB"><span class="ecard-status status-tonight">Tonight</span>🎸<span class="ecard-match">92% match</span></div><div class="ecard-body"><div class="ecard-name">The Fillmore — Indie Night</div><div class="ecard-detail">Live music · Doors 8pm · Limited tickets</div><div class="ecard-footer"><span class="ecard-price">$35</span><span class="ecard-dist">1.1 mi away</span></div></div></div>
-      <div class="ecard" data-cat="culture"><div class="ecard-top" style="background:#FDE8E0">🖼<span class="ecard-match">89% match</span></div><div class="ecard-body"><div class="ecard-name">de Young Museum</div><div class="ecard-detail">World-class art · Open until 5pm · 4.7★</div><div class="ecard-footer"><span class="ecard-price">$15</span><span class="ecard-dist">1.8 mi away</span></div></div></div>
-      <div class="ecard" data-cat="outdoors"><div class="ecard-top" style="background:#E8F5E9">🌁<span class="ecard-match">85% match</span></div><div class="ecard-body"><div class="ecard-name">Golden Gate Bridge Walk</div><div class="ecard-detail">Iconic landmark · Clear skies today · 2hrs</div><div class="ecard-footer"><span class="ecard-price">Free</span><span class="ecard-dist">2.4 mi away</span></div></div></div>
-      <div class="ecard" data-cat="food"><div class="ecard-top" style="background:#F3E5F5"><span class="ecard-status status-hot">🔥 Hot</span>🍷<span class="ecard-match">91% match</span></div><div class="ecard-body"><div class="ecard-name">Quince Restaurant</div><div class="ecard-detail">Michelin-starred fine dining · 4.9★</div><div class="ecard-footer"><span class="ecard-price">$$$$</span><span class="ecard-dist">0.7 mi away</span></div></div></div>
-      <div class="ecard" data-cat="sports"><div class="ecard-top" style="background:#E3F2FD">⚾<span class="ecard-match">72% match</span></div><div class="ecard-body"><div class="ecard-name">Giants vs. Dodgers</div><div class="ecard-detail">Oracle Park · Tonight 7pm · Tickets avail</div><div class="ecard-footer"><span class="ecard-price">$45+</span><span class="ecard-dist">0.9 mi away</span></div></div></div>
-      <div class="ecard" data-cat="culture"><div class="ecard-top" style="background:#FFF8E1">🏛<span class="ecard-match">88% match</span></div><div class="ecard-body"><div class="ecard-name">Alcatraz Island</div><div class="ecard-detail">Historic landmark · Audio tour · Ferry included</div><div class="ecard-footer"><span class="ecard-price">$42</span><span class="ecard-dist">Ferry: 0.5mi</span></div></div></div>
-      <div class="ecard" data-cat="outdoors"><div class="ecard-top" style="background:#E0F7FA">🌿</div><div class="ecard-body"><div class="ecard-name">Lands End Coastal Trail</div><div class="ecard-detail">3.5mi loop · Moderate · Ocean views</div><div class="ecard-footer"><span class="ecard-price">Free</span><span class="ecard-dist">4.1 mi away</span></div></div></div>
-      <div class="ecard" data-cat="food"><div class="ecard-top" style="background:#FFF3CD"><span class="ecard-status status-open">Open now</span>🍜</div><div class="ecard-body"><div class="ecard-name">China Live</div><div class="ecard-detail">Modern Chinese · Street food stalls · 4.6★</div><div class="ecard-footer"><span class="ecard-price">$$</span><span class="ecard-dist">0.5 mi away</span></div></div></div>
-      <div class="ecard" data-cat="events"><div class="ecard-top" style="background:#FCE4EC"><span class="ecard-status status-tonight">This week</span>🎭<span class="ecard-match">76% match</span></div><div class="ecard-body"><div class="ecard-name">SF Symphony — Pops Night</div><div class="ecard-detail">Davies Symphony Hall · Thu & Fri</div><div class="ecard-footer"><span class="ecard-price">$55+</span><span class="ecard-dist">1.3 mi away</span></div></div></div>
-      <div class="ecard" data-cat="food"><div class="ecard-top" style="background:#E8F5E9"><span class="ecard-status status-open">Open now</span>🍸</div><div class="ecard-body"><div class="ecard-name">Trick Dog Bar</div><div class="ecard-detail">Inventive cocktails · No reservations · 4.7★</div><div class="ecard-footer"><span class="ecard-price">$$</span><span class="ecard-dist">1.9 mi away</span></div></div></div>
-      <div class="ecard" data-cat="culture"><div class="ecard-top" style="background:#E8EAF6">🔭</div><div class="ecard-body"><div class="ecard-name">California Academy of Sciences</div><div class="ecard-detail">Living roof · Aquarium · Planetarium</div><div class="ecard-footer"><span class="ecard-price">$35</span><span class="ecard-dist">2.0 mi away</span></div></div></div>
-    </div>
-  </div>
-</section>
-
-<!-- FEATURES -->
-<section class="features" id="features">
-  <div class="container">
-    <div class="section-header fade-up">
-      <div class="tag">Platform features</div>
-      <h2>Everything a group<br>of travelers needs</h2>
-      <p>Built from the ground up for how real people actually plan and experience travel together.</p>
-    </div>
-    <div class="features-grid">
-      <div class="feat fade-up"><div class="feat-icon">✦</div><h3>AI interest matching</h3><p>Jenna weighs each person's preferences against 10,000+ activities to find the plan that makes the most people happiest.</p></div>
-      <div class="feat fade-up"><div class="feat-icon">📍</div><h3>Real-time discovery</h3><p>Live location-aware suggestions once you're at your destination. Concerts tonight, a farmers market two blocks away, current wait times.</p></div>
-      <div class="feat fade-up"><div class="feat-icon">🗳</div><h3>Group voting & veto</h3><p>Anyone can suggest changes, vote on alternatives, or veto an activity. Jenna instantly re-optimizes. No drama, just decisions.</p></div>
-      <div class="feat fade-up"><div class="feat-icon">💰</div><h3>Expense splitting</h3><p>Track shared costs, split bills, and settle up — all inside AskJenna. No more Venmo screenshots three days after the trip.</p><span class="feat-coming">Coming soon</span></div>
-      <div class="feat fade-up"><div class="feat-icon">🎫</div><h3>In-app booking</h3><p>Book restaurants, tours, experiences, and event tickets without leaving the app. Integrated with Viator, OpenTable, Ticketmaster, and more.</p><span class="feat-coming">Coming soon</span></div>
-      <div class="feat fade-up"><div class="feat-icon">🧠</div><h3>Jenna remembers you</h3><p>AskJenna remembers every trip and learns your preferences over time. After three trips, she knows you prefer boutique hotels and always want a beach day.</p><span class="feat-coming">Coming soon</span></div>
-      <div class="feat fade-up"><div class="feat-icon">🌦</div><h3>Weather adaptation</h3><p>Real-time weather integration means Jenna automatically suggests indoor alternatives on rainy days and pushes outdoor plans when the sun's out.</p></div>
-      <div class="feat fade-up"><div class="feat-icon">📱</div><h3>Offline access</h3><p>Your full itinerary, maps, and recommendations available offline. No roaming charges, no spotty signal stress.</p><span class="feat-coming">Coming soon</span></div>
-      <div class="feat fade-up"><div class="feat-icon">🎁</div><h3>Group gifting</h3><p>Friends can pool money to gift a Jenna-planned experience. A dinner, a tour, a surprise activity. Thoughtful, easy, and viral.</p><span class="feat-coming">Coming soon</span></div>
-    </div>
-  </div>
-</section>
-
 
 
 <!-- CTA -->
@@ -950,6 +791,8 @@ footer::before{content:'';position:absolute;inset:0;background-image:radial-grad
   </div>
   <p style="color:rgba(255,255,255,0.25);font-size:0.75rem;margin-top:1.2rem;position:relative">Free forever · No credit card needed · Unsubscribe anytime</p>
 </section>
+
+
 
 <!-- FOOTER -->
 <footer>
@@ -1280,6 +1123,9 @@ window.addEventListener('beforeinstallprompt', e => {
   </div>
 </div>
 
+
+</body>
+</html>
 
 </body>
 </html>
